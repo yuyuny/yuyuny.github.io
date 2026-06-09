@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>프랑스어문법1 연습</title>
+<style>
+  :root{
+    --bg:#f5f3ee; --card:#fff; --ink:#23211c; --sub:#6f6a60; --line:#e3ded3;
+    --accent:#2f6f5e; --accent2:#3a5a8c; --ok:#1f8a5b; --okbg:#e7f5ec;
+    --no:#c0392b; --nobg:#fbeae8; --chip:#efe9dc; --hint:#a86b1f; --hintbg:#fbf3e3;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Helvetica Neue",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.6;}
+  .wrap{max-width:800px;margin:0 auto;padding:20px 16px 80px;}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  h1{font-size:20px;margin:0;letter-spacing:-.3px}
+  .sub{color:var(--sub);font-size:13px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:2px solid var(--line);flex-wrap:wrap}
+  .tab{font-size:14px;font-weight:600;color:var(--sub);background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:8px 14px;cursor:pointer}
+  .tab:hover{color:var(--ink)}
+  .tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+  .order{display:inline-flex;align-items:center;gap:6px}
+  .seg{font-size:12px;border:1px solid var(--line);background:var(--card);color:var(--sub);padding:3px 9px;cursor:pointer}
+  .seg#segShuffle{border-radius:6px 0 0 6px} .seg#segSeq{border-radius:0 6px 6px 0;border-left:none}
+  .seg.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .filters .lab{font-size:12px;color:var(--sub);margin-right:4px}
+  .chip{font-size:12.5px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer;user-select:none}
+  .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--sub)}
+  .bar .score b{color:var(--ink)}
+  .toggle{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .qhead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .qtag{display:inline-block;font-size:12px;color:var(--accent);background:var(--chip);border-radius:6px;padding:2px 9px;font-weight:600}
+  .hintbtn{font-size:12px;color:var(--hint);background:var(--hintbg);border:1px solid #ecd9b3;border-radius:999px;padding:3px 10px;cursor:pointer}
+  .hintbox{display:none;font-size:13px;color:var(--hint);background:var(--hintbg);border:1px dashed #e2c98f;border-radius:8px;padding:7px 11px;margin-bottom:12px}
+  .qtext{font-size:16px;white-space:pre-wrap;margin-bottom:14px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{display:block;text-align:left;width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:15px;cursor:pointer;transition:.12s}
+  .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opt:disabled{cursor:default}
+  .opt .line{display:flex;gap:10px;align-items:flex-start}
+  .opt .num{flex:none;width:22px;height:22px;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--sub);margin-top:1px}
+  .opt.ok{background:var(--okbg);border-color:var(--ok)}
+  .opt.ok .num{background:var(--ok);color:#fff}
+  .opt.no{background:var(--nobg);border-color:var(--no)}
+  .opt.no .num{background:var(--no);color:#fff}
+  .optipa{display:none;font-family:"DejaVu Sans Mono","Menlo","Consolas",monospace;color:var(--accent2);font-size:13px;margin-top:5px;padding-left:32px}
+  .opt.revealed .optipa{display:block}
+  .optr{display:none;font-size:13px;color:var(--sub);margin-top:3px;padding-left:32px}
+  .opt.revealed .optr{display:block}
+  .expl{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;display:none}
+  .expl.show{display:block}
+  .verdict{font-weight:700;margin-bottom:10px}
+  .verdict.ok{color:var(--ok)} .verdict.no{color:var(--no)}
+  .row{margin:10px 0}
+  .k{font-size:11.5px;color:var(--sub);letter-spacing:.3px;text-transform:uppercase;margin-bottom:3px}
+  .sentence{background:#faf8f2;border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto}
+  pre.align{margin:0;font-family:"DejaVu Sans Mono","Menlo","Consolas","Courier New",monospace;font-size:14.5px;line-height:1.7;white-space:pre}
+  pre.align.fr{color:var(--ink)} pre.align.ipa{color:var(--accent2)}
+  .trans{font-size:15px}
+  table.vocab{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
+  table.vocab td{border-bottom:1px solid var(--line);padding:6px 4px;vertical-align:top}
+  table.vocab td.w{font-weight:600;white-space:nowrap}
+  table.vocab td.p{white-space:nowrap;font-family:"DejaVu Sans Mono","Menlo",monospace;color:var(--accent2)}
+  .g{font-size:10.5px;color:#fff;border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle;font-weight:600}
+  .g.m{background:#3a5a8c} .g.f{background:#b0568a} .g.v{background:#2f8f5b} .g.adj{background:#c8841f}
+  .g.adv{background:#6b7280} .g.conj{background:#8b5c9e} .g.prep{background:#2f8f8f} .g.pron{background:#9b6a3f}
+  .g.num{background:#7a8b2f} .g.expr{background:#857f74}
+  .actions{display:flex;gap:10px;margin-top:16px}
+  .btn{border:none;border-radius:10px;padding:11px 18px;font-size:15px;cursor:pointer;font-weight:600}
+  .btn.primary{background:var(--accent);color:#fff} .btn:disabled{opacity:.4;cursor:default}
+  .hint{font-size:12px;color:var(--sub);margin-top:10px}
+  .empty{color:var(--sub);text-align:center;padding:30px 0}
+  a.reset{color:var(--sub);font-size:12px;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>프랑스어 연습</h1>
+    <div class="sub" id="poolinfo"></div>
+  </header>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="panel">
+    <div class="filters" id="filters"><span class="lab">강 선택</span></div>
+    <div class="bar">
+      <span class="score">점수 <b id="sright">0</b> / <b id="stotal">0</b></span>
+      <span id="acc"></span>
+      <span class="order">출제
+        <button type="button" class="seg" id="segShuffle" title="누르면 출제 가능한 문제를 다시 섞습니다">섞기</button><button type="button" class="seg" id="segSeq">순서대로</button>
+      </span>
+      <span class="toggle">
+        <label style="display:flex;gap:5px;align-items:center;cursor:pointer">
+          <input type="checkbox" id="reviewChk"> <span>오답만 다시 풀기</span>
+        </label>
+        <a class="reset" id="resetBtn">기록 초기화</a>
+      </span>
+    </div>
+  </div>
+
+  <div class="panel" id="qpanel">
+    <div class="qhead">
+      <span class="qtag" id="qtag"></span>
+      <button class="hintbtn" id="hintBtn">💡 힌트 보기</button>
+    </div>
+    <div class="hintbox" id="hintbox"></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+
+    <div class="expl" id="expl">
+      <div class="verdict" id="verdict"></div>
+      <div class="row"><div class="k">근거</div><div id="why"></div></div>
+      <div class="row sentence" id="rowSentence">
+        <pre class="align fr" id="alignFr"></pre>
+        <pre class="align ipa" id="alignIpa"></pre>
+      </div>
+      <div class="row" id="rowTrans"><div class="k">해석</div><div class="trans" id="trans"></div></div>
+      <div class="row" id="rowVocab"><div class="k">주요 단어</div><table class="vocab" id="vocab"></table></div>
+    </div>
+
+    <div class="actions"><button class="btn primary" id="nextBtn">다음 문제 →</button></div>
+    <div class="hint">단축키: 1·2·3·4 답 선택, Enter/→ 다음 문제, H 힌트 · 품사: 남/여(명사) 동(동사) 형(형용사) 부(부사) 접(접속사) 전(전치사) 대(대명사) 수(수사) 숙(숙어)</div>
+  </div>
+</div>
+
+<script>
+/* 스키마: {l, c, q, o[4], a, w, fr, tr, ipa, oi?[4], v[[단어, 품사, 발음기호, 뜻]]}
+   품사 코드: m/f(명사 남/여) v(동사) adj(형용사) adv(부사) conj(접속사) prep(전치사) pron(대명사) num(수사) expr(숙어) ""(기타)
+   oi: 보기가 문장/구일 때 보기별 발음기호 (선택). fr/ipa는 단어 수가 같으면 자동 정렬. */
+/*QSTART*/
+const QUESTIONS = [
+// ===== 1강 =====
+{l:1,c:"접속법 (il faut que)",q:"( ) 안에 들어갈 알맞은 것은?\nIl faut qu'il ( ).",o:["part","parte","partira","partirait"],a:1,
+ w:"il faut que + 접속법 → partir의 접속법 parte.",oi:["/paʁ/","/paʁt/","/paʁtiʁa/","/paʁtiʁɛ/"],ot:["직설법 현재","접속법 ← 정답","단순미래","조건법 현재"],fr:"Il faut qu'il parte",tr:"그는 떠나야 한다.",ipa:"/il fo kil paʁt/",
+ v:[["falloir (il faut)","v","il fo","~해야 한다"],["partir","v","paʁtiʁ","떠나다"],["que","conj","kə","~라는 것을"]]},
+{l:1,c:"간접목적어 (불가 동사)",q:"( ) 안에 들어갈 수 없는 동사는?\nIl lui ( ) son stylo.",o:["donne","poursuit","prête","emprunte"],a:1,
+ w:"lui는 간접목적어. donner/prêter/emprunter à qqn은 가능하나 poursuivre는 안 맞음.",oi:["/dɔn/","/puʁsɥi/","/pʁɛt/","/ɑ̃pʁœ̃t/"],ot:["준다","뒤쫓다/계속하다 ← 안 맞음","빌려준다","빌린다"],fr:"Il lui donne son stylo",tr:"그는 그에게 자기 펜을 준다.",ipa:"/il lɥi dɔn sɔ̃ stilo/",
+ v:[["donner","v","dɔne","주다"],["prêter","v","pʁɛte","빌려주다"],["emprunter","v","ɑ̃pʁœ̃te","빌리다"],["stylo","m","stilo","펜"],["lui","pron","lɥi","그에게"]]},
+{l:1,c:"접속사 vs 전치사",q:"( ) 안에 들어갈 수 없는 것은?\nJe rentre ( ) il pleut.",o:["avec","quand","et","parce qu'"],a:0,
+ w:"avec는 전치사라 절(il pleut)을 잇지 못함. quand/et/parce qu'는 접속사.",oi:["/avɛk/","/kɑ̃/","/e/","/paʁs k/"],ot:["~와 함께 (전치사) ← 절 불가","~할 때 (접속사)","그리고 (접속사)","~때문에 (접속사)"],fr:"Je rentre parce qu'il pleut",tr:"비가 와서 나는 들어간다.",ipa:"/ʒə ʁɑ̃tʁ paʁs kil plø/",
+ v:[["rentrer","v","ʁɑ̃tʁe","돌아가다"],["pleuvoir","v","plø","비가 오다 (il pleut)"],["avec","prep","avɛk","~와 함께"],["quand","conj","kɑ̃","~할 때"],["parce que","conj","paʁsə kə","~때문에"]]},
+{l:1,c:"동사 구문 (tomber amoureux de)",q:"( ) 안에 들어갈 알맞은 것은?\nIl ( ) amoureux de ce pays.",o:["poursuit","tombe","parle","enseigne"],a:1,
+ w:"tomber amoureux de = ~와 사랑에 빠지다.",oi:["/puʁsɥi/","/tɔ̃b/","/paʁl/","/ɑ̃sɛɲ/"],ot:["뒤쫓다","빠지다 (tomber amoureux) ← 정답","말하다","가르치다"],fr:"Il tombe amoureux de ce pays",tr:"그는 이 나라와 사랑에 빠진다.",ipa:"/il tɔ̃b amuʁø də sə pɛi/",
+ v:[["tomber","v","tɔ̃be","넘어지다/빠지다"],["amoureux","adj","amuʁø","사랑에 빠진"],["pays","m","pɛi","나라"],["de","prep","də","~의/에 대한"]]},
+{l:1,c:"trouver + 명사 + 형용사",q:"( ) 안에 들어갈 알맞은 것은?\nJe trouve ce film ( ).",o:["drôle","de drôle","en drôle","pour drôle"],a:0,
+ w:"trouver + 목적어 + 형용사(직접) → Je trouve ce film drôle.",oi:["/dʁol/","/də dʁol/","/ɑ̃ dʁol/","/puʁ dʁol/"],ot:["웃긴 (직접 형용사) ← 정답","(전치사 불필요)","(전치사 불필요)","(전치사 불필요)"],fr:"Je trouve ce film drôle",tr:"나는 이 영화가 웃기다고 생각한다.",ipa:"/ʒə tʁuv sə film dʁol/",
+ v:[["trouver","v","tʁuve","~라고 여기다"],["film","m","film","영화"],["drôle","adj","dʁol","웃긴"]]},
+{l:1,c:"부사 불변",q:"위 밑줄 친 것 중 성과 수에 따라 형태가 변하는 낱말이 아닌 것은?\nIl est {u}assis{/u}(ⓐ) {u}confortablement{/u}(ⓑ) dans {u}son{/u}(ⓒ) {u}fauteuil{/u}(ⓓ).",o:["ⓐ assis","ⓑ confortablement","ⓒ son","ⓓ fauteuil"],a:1,
+ w:"confortablement은 부사라 불변. assis(분사)·son(소유형용사)·fauteuil(복수)은 형태 변화.",oi:["/asi/","/kɔ̃fɔʁtabləmɑ̃/","/sɔ̃/","/fotœj/"],ot:["앉은 (분사, 일치)","편안하게 (부사, 불변) ← 정답","그의 (소유, 변화)","안락의자 (명사, 복수변화)"],fr:"Il est assis confortablement dans son fauteuil",tr:"그는 안락의자에 편안하게 앉아 있다.",ipa:"/il ɛ asi kɔ̃fɔʁtabləmɑ̃ dɑ̃ sɔ̃ fotœj/",
+ v:[["être assis","v","ɛtʁ asi","앉아 있다"],["confortablement","adv","kɔ̃fɔʁtabləmɑ̃","편안하게"],["fauteuil","m","fotœj","안락의자"],["dans","prep","dɑ̃","~안에"]]},
+{l:1,c:"être + 직업 무관사 (여성형)",q:"( ) 안에 들어갈 문장 중 문법적으로 옳은 것은?\nL'auteure est ( ).",o:["étudiant de Paris","un étudiant de Paris","étudiante de Paris","une étudiante de Paris"],a:2,
+ w:"être+직업 명사는 무관사, 주어가 여성(L'auteure)이라 여성형 → étudiante de Paris.",ot:["남성형 (오류)","관사+남성 (오류)","무관사 여성형 ← 정답","관사+여성 (오류)"],fr:"L'auteure est étudiante de Paris",tr:"그 여성 작가는 파리의 학생이다.",ipa:"/lotœʁ ɛ etydjɑ̃t də paʁi/",
+ oi:["/etydjɑ̃ də paʁi/","/œ̃ n‿etydjɑ̃ də paʁi/","/etydjɑ̃t də paʁi/","/yn‿etydjɑ̃t də paʁi/"],
+ v:[["auteure","f","otœʁ","작가 (여)"],["étudiant / étudiante","","etydjɑ̃ / etydjɑ̃t","학생"],["être","v","ɛtʁ","~이다"]]},
+{l:1,c:"관사 의미 차이 (le=특정)",q:"다음 중 나머지 셋과 가장 의미가 다른 것은?",o:["Veux-tu du café ?","Veux-tu un café ?","Veux-tu le café ?","Veux-tu une tasse de café ?"],a:2,
+ w:"마시다/원하다 맥락에서 du(좀)·un(한 잔)·une tasse de(한 잔)는 모두 '커피(한 잔)를 원하니'(불특정). le café만 '그 특정한 커피'라 의미가 다름.",fr:"Veux-tu le café",tr:"그 커피를 원하니? (특정한 커피)",ipa:"/vø-ty lə kafe/",
+ oi:["/vø-ty dy kafe/","/vø-ty œ̃ kafe/","/vø-ty lə kafe/","/vø-ty yn tas də kafe/"],ot:["커피 (좀) 마실래?","커피 한 잔 마실래?","그 커피 마실래?","커피 한 잔 마실래?"],
+ v:[["vouloir","v","vulwaʁ","원하다"],["café","m","kafe","커피"],["tasse","f","tas","잔"]]},
+
+{l:1,c:"접속법 (vouloir que)",q:"( ) 안에 들어갈 알맞은 것은?\nJe veux qu'il ( ).",o:["vient","vienne","viendra","viendrait"],a:1,
+ w:"vouloir que + 접속법 → venir의 접속법 vienne.",oi:["/vjɛ̃/","/vjɛn/","/vjɛ̃dʁa/","/vjɛ̃dʁɛ/"],ot:["직설법 현재","접속법 ← 정답","단순미래","조건법 현재"],fr:"Je veux qu'il vienne",tr:"나는 그가 오기를 원한다.",ipa:"/ʒə vø kil vjɛn/",
+ v:[["vouloir","v","vulwaʁ","원하다"],["venir","v","vəniʁ","오다"],["que","conj","kə","~라는 것을"]]},
+{l:1,c:"간접목적어 (obéir à)",q:"( ) 안에 들어갈 알맞은 것은?\nNous obéissons ( ) nos parents.",o:["à","de","en","par"],a:0,
+ w:"obéir à qqn (간접목적어).",oi:["/a/","/də/","/ɑ̃/","/paʁ/"],ot:["~에게 (obéir à) ← 정답","~의","~안에","~에 의해"],fr:"Nous obéissons à nos parents",tr:"우리는 부모님께 순종한다.",ipa:"/nu z‿obeisɔ̃ a no paʁɑ̃/",
+ v:[["obéir à","v","obeiʁ","순종하다"],["parents","m","paʁɑ̃","부모"],["à","prep","a","~에게"]]},
+
+// ===== 2강 =====
+{l:2,c:"quelques는 복수 전용",q:"( ) 안에 들어갈 수 없는 것은?\nTu peux y voir ( ) oiseau.",o:["un","l'","mon","quelques"],a:3,
+ w:"oiseau는 단수, quelques는 복수 명사를 요구 → 단수와 안 맞음.",oi:["/œ̃/","/l/","/mɔ̃/","/kɛlk/"],ot:["한 (부정관사)","그 (정관사)","나의 (소유)","몇몇의 (복수 전용) ← 단수와 안 맞음"],fr:"Tu peux y voir un oiseau",tr:"너는 거기서 새 한 마리를 볼 수 있다.",ipa:"/ty pø i vwaʁ œ̃ n‿wazo/",
+ v:[["voir","v","vwaʁ","보다"],["oiseau","m","wazo","새"],["quelques","adj","kɛlk","몇몇의 (복수)"],["y","pron","i","거기에"]]},
+{l:2,c:"국가명의 성",q:"다음 중 남성 국가명은?",o:["France","Corée","Chine","Mexique"],a:3,
+ w:"le Mexique만 남성. -e로 끝나는 France·Corée·Chine은 여성.",oi:["/fʁɑ̃s/","/kɔʁe/","/ʃin/","/mɛksik/"],ot:["프랑스 (여성)","한국 (여성)","중국 (여성)","멕시코 (남성) ← 정답"],fr:"le Mexique",tr:"멕시코는 남성 국가명이다.",ipa:"/lə mɛksik/",
+ v:[["Mexique","m","mɛksik","멕시코"],["France","f","fʁɑ̃s","프랑스"],["Chine","f","ʃin","중국"]]},
+{l:2,c:"지명이 보통명사로 (포도주)",q:"다음 중 포도주와 관계있는 명사는?",o:["le brie","le bordeaux","un tartuffe","le champagne"],a:1,
+ w:"le bordeaux = 보르도 포도주. (brie=치즈, tartuffe=위선자, champagne=샴페인.)",oi:["/lə bʁi/","/lə bɔʁdo/","/œ̃ taʁtyf/","/lə ʃɑ̃paɲ/"],ot:["브리 치즈","보르도 포도주 ← 정답","위선자","샴페인"],fr:"le bordeaux",tr:"le bordeaux는 보르도 포도주이다.",ipa:"/lə bɔʁdo/",
+ v:[["bordeaux","m","bɔʁdo","보르도 포도주"],["vin","m","vɛ̃","포도주"],["brie","m","bʁi","브리 치즈"]]},
+{l:2,c:"동음이의 성 (le poste)",q:"다음 중 밑줄 친 관사가 옳지 않은 것은?",o:["{u}la{/u} mode des années 80","{u}la{/u} poste de TV (수상기)","{u}la{/u} critique (비평)","{u}une{/u} manœuvre (조작)"],a:1,
+ w:"텔레비전 '수상기'는 le poste(기기). la poste는 우체국.",ot:["la mode=유행 (정상)","la poste=우체국 → 수상기는 le poste ← 오류","la critique=비평 (정상)","une manœuvre=조작 (정상)"],fr:"le poste de télévision",tr:"텔레비전 수상기 = le poste.",ipa:"/lə pɔst də televizjɔ̃/",
+ oi:["/la mɔd de z‿ane katʁə-vɛ̃/","/la pɔst də teve/","/la kʁitik/","/yn manœvʁ/"],
+ v:[["poste","m","pɔst","기기/수상기/자리"],["poste","f","pɔst","우체국"],["mode","f","mɔd","유행"],["critique","f","kʁitik","비평"]]},
+{l:2,c:"숙어 (passer pour)",q:"( ) 안에 들어갈 알맞은 것은?\nIl passe ( ) un rigolo.",o:["d'","pour","en","comme"],a:1,
+ w:"passer pour + 명사 = ~로 통하다/여겨지다.",oi:["/d/","/puʁ/","/ɑ̃/","/kɔm/"],ot:["~의","~로 통하다 (passer pour) ← 정답","~안에/로","~처럼"],fr:"Il passe pour un rigolo",tr:"그는 익살꾼으로 통한다.",ipa:"/il pas puʁ œ̃ ʁiɡolo/",
+ v:[["passer pour","expr","pase puʁ","~로 통하다"],["rigolo","m","ʁiɡolo","익살꾼"],["pour","prep","puʁ","~로서/위해"]]},
+{l:2,c:"여성형 (actrice)",q:"다음 중 여성형 명사가 옳지 않은 것은?",o:["un acteur / une acteuse","un directeur / une directrice","un menteur / une menteuse","un visiteur / une visiteuse"],a:0,
+ w:"acteur의 여성형은 actrice (acteuse 아님).",oi:["/aktœʁ / aktøz/","/diʁɛktœʁ / diʁɛktʁis/","/mɑ̃tœʁ / mɑ̃tøz/","/vizitœʁ / vizitøz/"],ot:["배우 → 여성형은 actrice ← 오류","책임자 (정상)","거짓말쟁이 (정상)","방문객 (정상)"],fr:"une actrice",tr:"acteur의 여성형은 actrice.",ipa:"/yn aktʁis/",
+ v:[["acteur / actrice","","aktœʁ / aktʁis","배우"],["menteur / menteuse","","mɑ̃tœʁ / mɑ̃tøz","거짓말쟁이"],["directeur / directrice","","diʁɛktœʁ / diʁɛktʁis","책임자"]]},
+{l:2,c:"여성형 (artisane)",q:"다음 중 여성형 명사가 옳지 않은 것은?",o:["un patron / une patronne","un artisan / une artisanne","un chat / une chatte","un lion / une lionne"],a:1,
+ w:"artisan의 여성형은 artisane (n 하나).",oi:["/patʁɔ̃ / patʁɔn/","/aʁtizɑ̃ / aʁtizan/","/ʃa / ʃat/","/ljɔ̃ / ljɔn/"],ot:["사장 (정상)","장인 → artisane (n 하나) ← 오류","고양이 (정상)","사자 (정상)"],fr:"une artisane",tr:"artisan의 여성형은 artisane.",ipa:"/yn aʁtizan/",
+ v:[["artisan / artisane","","aʁtizɑ̃ / aʁtizan","장인"],["patron / patronne","","patʁɔ̃ / patʁɔn","사장"],["chat / chatte","","ʃa / ʃat","고양이"]]},
+{l:2,c:"복수형 예외 (festival)",q:"다음 중 복수형 명사가 옳지 않은 것은?",o:["travail / travaux","tableau / tableaux","animal / animaux","festival / festivaux"],a:3,
+ w:"festival의 복수는 festivals(예외). -al→-aux 규칙을 따르지 않는다.",oi:["/tʁavaj / tʁavo/","/tablo / tablo/","/animal / animo/","/fɛstival/"],ot:["일 → travaux (정상)","그림 → tableaux (정상)","동물 → animaux (정상)","축제 → festivals ← 오류"],fr:"des festivals",tr:"festival의 복수형은 festivals이다.",ipa:"/de fɛstival/",
+ v:[["festival","m","fɛstival","축제"],["travail","m","tʁavaj","일/노동"],["animal","m","animal","동물"]]},
+{l:2,c:"복합명사 복수 (avant 불변)",q:"다음 중 복수형 명사가 옳지 않은 것은?",o:["un coffre-fort / des coffres-forts","une avant-garde / des avants-gardes","un sac à main / des sacs à main","un cure-dent / des cure-dents"],a:1,
+ w:"avant은 부사·전치사라 불변 → des avant-gardes.",oi:["/kɔfʁ-fɔʁ/","/avɑ̃ɡaʁd/","/sak a mɛ̃/","/kyʁ-dɑ̃/"],ot:["금고 (둘 다 일치, 정상)","아방가르드 → avant 불변 des avant-gardes ← 오류","핸드백 (à main 불변, 정상)","이쑤시개 (cure 불변, 정상)"],fr:"des avant-gardes",tr:"avant-garde의 복수는 avant-gardes.",ipa:"/de avɑ̃ɡaʁd/",
+ v:[["avant-garde","f","avɑ̃ɡaʁd","전위/아방가르드"],["coffre-fort","m","kɔfʁəfɔʁ","금고"],["sac à main","m","sak a mɛ̃","핸드백"]]},
+{l:2,c:"명사의 성 (victime)",q:"다음 중 밑줄 친 부분이 성이 옳지 않은 것은?",o:["Elle est {u}le chef{/u} de l'État.","{u}la première médecin{/u} de la ville","{u}une médecin{/u} généraliste","Paul est {u}un victime{/u} de la guerre."],a:3,
+ w:"victime은 가리키는 대상과 무관하게 항상 여성 → une victime.",ot:["le chef (현대 용법 허용)","la première médecin (허용)","une médecin (허용)","victime은 항상 여성 → une victime ← 오류"],fr:"Paul est une victime de la guerre",tr:"폴은 전쟁의 희생자다.",ipa:"/pɔl ɛ tyn viktim də la ɡɛʁ/",
+ oi:["/ɛl ɛ lə ʃɛf də leta/","/la pʁəmjɛʁ medsɛ̃ də la vil/","/yn medsɛ̃ ʒeneʁalist/","/pɔl ɛ tyn viktim də la ɡɛʁ/"],
+ v:[["victime","f","viktim","희생자 (항상 여성)"],["guerre","f","ɡɛʁ","전쟁"],["chef","m","ʃɛf","우두머리"],["médecin","m","medsɛ̃","의사"]]},
+
+// ===== 3강 =====
+{l:3,c:"부분관사 vs 총칭 정관사",q:"( )들 안에 들어갈 관사가 올바르게 짝지어진 것은?\nJe bois ( ⓐ ) bière car j'aime ( ⓑ ) bière.",o:["une – une","de la – de la","la – de la","de la – la"],a:3,
+ w:"마시다=부분관사 de la / 좋아하다=총칭 정관사 la.",oi:["/yn yn/","/də la də la/","/la də la/","/də la la/"],ot:["부정-부정","부분-부분","총칭-부분","마시다=부분 de la / 좋아하다=총칭 la ← 정답"],fr:"Je bois de la bière car j'aime la bière",tr:"나는 맥주를 좋아해서 맥주를 마신다.",ipa:"/ʒə bwa də la bjɛʁ kaʁ ʒɛm la bjɛʁ/",
+ v:[["boire","v","bwaʁ","마시다"],["aimer","v","eme","좋아하다"],["bière","f","bjɛʁ","맥주"],["car","conj","kaʁ","왜냐하면"]]},
+{l:3,c:"도시는 부정관사 (une ville)",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["{u}L'argent{/u} ne fait pas le bonheur","{u}Le Coréen{/u} est diligent","{u}Le père de Paul{/u} est gentil.","Montpellier, c'est {u}la ville{/u} du sud de la France."],a:3,
+ w:"Montpellier는 남부의 여러 도시 중 하나라 une ville가 맞음.",fr:"Montpellier est une ville du sud de la France",tr:"몽펠리에는 프랑스 남부의 한 도시이다.",ipa:"/mɔ̃pəlje ɛ tyn vil dy syd də la fʁɑ̃s/",
+ oi:["/laʁʒɑ̃ nə fɛ pa lə bɔnœʁ/","/lə kɔʁeɛ̃ ɛ diliʒɑ̃/","/lə pɛʁ də pɔl ɛ ʒɑ̃ti/","/mɔ̃pəlje sɛ la vil dy syd də la fʁɑ̃s/"],ot:["돈이 행복을 만들지 않는다.","한국인은 부지런하다.","폴의 아버지는 친절하다.","몽펠리에는 프랑스 남부의 (그) 도시이다."],
+ v:[["ville","f","vil","도시"],["sud","m","syd","남쪽"],["argent","m","aʁʒɑ̃","돈"],["bonheur","m","bɔnœʁ","행복"]]},
+{l:3,c:"부분관사 (du vin)",q:"( )들 안에 들어갈 관사가 올바르게 짝지어진 것은?\nHier soir, j'ai bu ( ⓐ ) vin délicieux. / Il a montré ( ⓑ ) grand courage.",o:["le – le","un – un","du – du","du – un"],a:3,
+ w:"ⓐ 마신 포도주는 부분관사 du / ⓑ 추상명사+형용사는 부정관사 un grand courage.",oi:["/lə lə/","/œ̃ œ̃/","/dy dy/","/dy œ̃/"],ot:["정관-정관","부정-부정","부분-부분","du(부분, 마신 술) / un(추상+형용사) ← 정답"],fr:"J'ai bu du vin délicieux",tr:"나는 맛있는 포도주를 마셨다.",ipa:"/ʒe by dy vɛ̃ delisjø/",
+ v:[["boire","v","bwaʁ","마시다"],["vin","m","vɛ̃","포도주"],["délicieux","adj","delisjø","맛있는"],["courage","m","kuʁaʒ","용기"]]},
+{l:3,c:"être 부정문 관사 불변",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["Il n'y a plus {u}de vin{/u} dans la cave.","Ce n'est pas {u}d'eau{/u}.","J'ai besoin {u}d'argent{/u}.","J'ai besoin {u}d'un visa{/u} pour visiter le Canada."],a:1,
+ w:"être 부정문은 부분관사가 de로 바뀌지 않음 → Ce n'est pas de l'eau.",fr:"Ce n'est pas de l'eau",tr:"이것은 물이 아니다.",ipa:"/sə nɛ pa də lo/",
+ oi:["/il ni a ply də vɛ̃ dɑ̃ la kav/","/sə nɛ pa də lo/","/ʒe bəzwɛ̃ daʁʒɑ̃/","/ʒe bəzwɛ̃ dœ̃ viza puʁ vizite lə kanada/"],ot:["지하실에 포도주가 더는 없다.","이것은 물이 아니다.","나는 돈이 필요하다.","캐나다 방문에 비자가 필요하다."],
+ v:[["être","v","ɛtʁ","~이다"],["eau","f","o","물"],["cave","f","kav","지하 저장고"],["besoin","m","bəzwɛ̃","필요"]]},
+{l:3,c:"être+무관사는 직업만",q:"( ) 안에 들어가기에 옳지 않은 것은?\nThomas est ( ).",o:["étudiant","journaliste","pharmacien","collègue"],a:3,
+ w:"collègue(동료)는 직업이 아니라 관계어라 무관사 불가 → un collègue.",oi:["/etydjɑ̃/","/ʒuʁnalist/","/faʁmasjɛ̃/","/kɔlɛɡ/"],ot:["학생 (직업, 무관사 OK)","기자 (직업, OK)","약사 (직업, OK)","동료 (직업 아님, 무관사 불가) ← 정답"],fr:"Thomas est étudiant",tr:"토마는 학생이다.",ipa:"/tɔmas ɛ etydjɑ̃/",
+ v:[["étudiant","m","etydjɑ̃","학생"],["journaliste","","ʒuʁnalist","기자"],["pharmacien","m","faʁmasjɛ̃","약사"],["collègue","","kɔlɛɡ","동료"]]},
+{l:3,c:"무관사 (Noël)",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["{u}le{/u} 15 avril","{u}la{/u} Toussaint","{u}le{/u} Noël","{u}le{/u} pauvre Paul"],a:2,
+ w:"Noël은 무관사 → 'Noël' / 'à Noël'. le Noël은 오류.",oi:["/lə kɛ̃z avʁil/","/la tusɛ̃/","/lə nɔɛl/","/lə povʁ pɔl/"],ot:["4월 15일 (le 정상)","만성절 (la 정상)","크리스마스 → 무관사, le Noël ← 오류","가련한 폴 (le 정상)"],fr:"à Noël",tr:"크리스마스에 = à Noël.",ipa:"/a nɔɛl/",
+ v:[["Noël","m","nɔɛl","크리스마스"],["Toussaint","f","tusɛ̃","만성절"],["pauvre","adj","povʁ","가련한 (명사 앞)"]]},
+{l:3,c:"pâte vs pâtes",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["Il fait {u}du vélo{/u}.","Il fait {u}du violon{/u}.","Je mange {u}de la pâte{/u}.","Il mange {u}du boeuf{/u}."],a:2,
+ w:"파스타는 항상 복수 des pâtes. de la pâte는 '반죽'을 뜻함.",fr:"Je mange des pâtes",tr:"나는 파스타를 먹는다.",ipa:"/ʒə mɑ̃ʒ de pɑt/",
+ oi:["/il fɛ dy velo/","/il fɛ dy vjɔlɔ̃/","/ʒə mɑ̃ʒ də la pɑt/","/il mɑ̃ʒ dy bœf/"],ot:["그는 자전거를 탄다.","그는 바이올린을 켠다.","나는 반죽을 먹는다 (의도: 파스타).","그는 소고기를 먹는다."],
+ v:[["manger","v","mɑ̃ʒe","먹다"],["pâtes","f","pɑt","파스타 (복수)"],["pâte","f","pɑt","반죽"],["vélo","m","velo","자전거"],["boeuf","m","bœf","소고기"]]},
+{l:3,c:"besoin de + 가산명사",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["J'ai besoin {u}de dictionnaire{/u}.","J'ai besoin {u}d'un dictionnaire{/u}.","J'ai besoin {u}de dictionnaires{/u}.","J'ai besoin {u}des dictionnaires{/u}."],a:0,
+ w:"besoin de + 가산 단수명사는 관사 필요 → d'un dictionnaire.",fr:"J'ai besoin d'un dictionnaire",tr:"나는 사전 한 권이 필요하다.",ipa:"/ʒe bəzwɛ̃ dœ̃ diksjɔnɛʁ/",
+ oi:["/ʒe bəzwɛ̃ də diksjɔnɛʁ/","/ʒe bəzwɛ̃ dœ̃ diksjɔnɛʁ/","/ʒe bəzwɛ̃ də diksjɔnɛʁ/","/ʒe bəzwɛ̃ de diksjɔnɛʁ/"],ot:["나는 사전이 필요하다 (관사 누락·오류).","나는 사전 한 권이 필요하다.","나는 사전들이 필요하다.","나는 그 사전들이 필요하다."],
+ v:[["avoir besoin de","expr","avwaʁ bəzwɛ̃","~이 필요하다"],["dictionnaire","m","diksjɔnɛʁ","사전"]]},
+{l:3,c:"총칭 주어 정관사",q:"( )에 들어갈 알맞은 것은?\n( ) bruit est un des problèmes de la vie moderne.",o:["Le","Un","Du","Beaucoup de"],a:0,
+ w:"'소음 일반'을 총칭하는 주어 → 정관사 Le.",oi:["/lə/","/œ̃/","/dy/","/boku də/"],ot:["정관사 (총칭 주어) ← 정답","부정관사","부분관사","많은 (술어와 안 맞음)"],fr:"Le bruit est un des problèmes de la vie moderne",tr:"소음은 현대 생활의 문제 중 하나다.",ipa:"/lə bʁɥi ɛ œ̃ de pʁɔblɛm də la vi mɔdɛʁn/",
+ v:[["bruit","m","bʁɥi","소음"],["problème","m","pʁɔblɛm","문제"],["vie","f","vi","삶/생활"],["moderne","adj","mɔdɛʁn","현대의"]]},
+{l:3,c:"형용사 앞 des→de",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["{u}des{/u} jeunes gens","{u}des{/u} petites filles","{u}des{/u} grands magasins","{u}des{/u} bons amis"],a:3,
+ w:"형용사가 명사 앞이면 복수 des→de → de bons amis. (jeunes gens 등은 굳어진 복합명사라 예외.)",oi:["/de ʒœn ʒɑ̃/","/de pətit fij/","/de ɡʁɑ̃ maɡazɛ̃/","/de bɔ̃ z‿ami/"],ot:["젊은이들 (굳은 표현, des 유지)","어린 소녀들 (굳은 표현)","백화점들 (굳은 표현)","좋은 친구들 → de bons amis ← 오류"],fr:"de bons amis",tr:"좋은 친구들 = de bons amis.",ipa:"/də bɔ̃ z‿ami/",
+ v:[["ami / amie","","ami","친구"],["bon","adj","bɔ̃","좋은"],["magasin","m","maɡazɛ̃","상점"],["jeune","adj","ʒœn","젊은"]]},
+
+// ===== 4강 =====
+{l:4,c:"지시형용사 복수 (ces)",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["{u}cet{/u} enfant","{u}cette{/u} fleur","{u}ces{/u} enfants","{u}cettes{/u} fleurs"],a:3,
+ w:"지시형용사 복수는 남녀 공통 ces. cettes는 존재하지 않는다.",oi:["/sɛt ɑ̃fɑ̃/","/sɛt flœʁ/","/se z‿ɑ̃fɑ̃/","/se flœʁ/"],ot:["이 아이 (cet, 정상)","이 꽃 (cette, 정상)","이 아이들 (ces, 정상)","이 꽃들 → cettes 없음, ces ← 오류"],fr:"ces fleurs",tr:"이 꽃들 = ces fleurs.",ipa:"/se flœʁ/",
+ v:[["fleur","f","flœʁ","꽃"],["enfant","","ɑ̃fɑ̃","아이"],["ce / cette / ces","adj","sə / sɛt / se","이/그 (지시형용사)"]]},
+{l:4,c:"소유형용사 (sa propre)",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["{u}mon{/u} ami","{u}mon{/u} amie","{u}son{/u} histoire","{u}son{/u} propre histoire"],a:3,
+ w:"형용사 propre(자음)가 끼면 여성형으로 → sa propre histoire.",oi:["/mɔ̃ n‿ami/","/mɔ̃ n‿ami/","/sɔ̃ n‿istwaʁ/","/sɔ̃ pʁɔpʁ istwaʁ/"],ot:["내 친구 (남, 정상)","내 친구 (여, 모음앞 mon, 정상)","그의 이야기 (모음앞 son, 정상)","형용사 끼면 sa propre histoire ← 오류"],fr:"sa propre histoire",tr:"그 자신의 이야기 = sa propre histoire.",ipa:"/sa pʁɔpʁ istwaʁ/",
+ v:[["histoire","f","istwaʁ","이야기/역사"],["propre","adj","pʁɔpʁ","자신의 (명사 앞)"],["son / sa","adj","sɔ̃ / sa","그의/그녀의"]]},
+{l:4,c:"부정형용사 (aucune)",q:"( ) 안에 들어갈 알맞은 것은?\nJe n'ai ( ) idée.",o:["aucune","chacune","quelque","toute"],a:0,
+ w:"ne … aucune = 전혀 ~없다. idée가 여성이라 aucune.",oi:["/okyn/","/ʃakyn/","/kɛlk/","/tut/"],ot:["아무 ~도 없는 (ne…aucune) ← 정답","각각의 (부적합)","어떤 (부적합)","모든 (부적합)"],fr:"Je n'ai aucune idée",tr:"나는 전혀 모르겠다(생각이 없다).",ipa:"/ʒə nɛ okyn ide/",
+ v:[["avoir","v","avwaʁ","가지다"],["aucun / aucune","adj","okœ̃ / okyn","아무 ~도 없는"],["idée","f","ide","생각"]]},
+{l:4,c:"부사구 (tous les jours)",q:"다음을 프랑스어로 옮길 때 ( )에 들어갈 알맞은 것은?\n\"그는 매일 오후 6시에 퇴근한다.\" → Il quitte son bureau ( ) à 18 heures.",o:["tout le jour","tous les jours","toute la journée","toutes les journées"],a:1,
+ w:"매일 = tous les jours. (tout le jour=온종일, toute la journée=하루 종일은 뜻이 다름.)",oi:["/tu lə ʒuʁ/","/tu le ʒuʁ/","/tut la ʒuʁne/","/tut le ʒuʁne/"],ot:["온종일","매일 ← 정답","하루 종일","(부적합)"],fr:"Il quitte son bureau tous les jours à dix-huit heures",tr:"그는 매일 18시에 퇴근한다.",ipa:"/il kit sɔ̃ byʁo tu le ʒuʁ a dizɥit œʁ/",
+ v:[["quitter","v","kite","떠나다/퇴근하다"],["bureau","m","byʁo","사무실"],["jour","m","ʒuʁ","날/하루"],["heure","f","œʁ","시(時)"]]},
+{l:4,c:"수사 (mille 불변)",q:"다음 중 수의 표현이 옳지 않은 것은?",o:["72 : soixante-douze","90 : quatre-vingt-dix","200 : deux cents","10 000 : dix milles"],a:3,
+ w:"mille은 불변 → dix mille. (cent은 조건부로 s가 붙는다: deux cents.)",oi:["/swasɑ̃t duz/","/katʁə-vɛ̃ dis/","/dø sɑ̃/","/di mil/"],ot:["72 (정상)","90 (정상)","200 (cent 조건부 s, 정상)","10,000 → mille 불변 dix mille ← 오류"],fr:"dix mille",tr:"10,000 = dix mille.",ipa:"/di mil/",
+ v:[["mille","num","mil","천 (불변)"],["cent","num","sɑ̃","백"],["dix","num","dis","십"]]},
+{l:4,c:"tout 들어갈 수 없는 것",q:"( )에 <tout(Tout)>가 들어갈 수 없는 것은?",o:["Son histoire est ( ) un roman.","( ) est de réussir.","( ) homme a le droit à vivre.","Il est ( ) content."],a:1,
+ w:"관용구는 Le tout est de réussir라서 Le가 필요, 단독 Tout은 부적합.",ot:["tout un roman=그야말로 소설 (가능)","Le tout est de…라 Le 필요 ← tout 불가","tout homme=모든 사람 (가능)","tout content=매우 (가능)"],fr:"Le tout est de réussir",tr:"요는(중요한 것은) 성공하는 것이다.",ipa:"/lə tu ɛ də ʁeysiʁ/",
+ oi:["/sɔ̃ n‿istwaʁ ɛ tut œ̃ ʁɔmɑ̃/","/lə tu ɛ də ʁeysiʁ/","/tut‿ɔm a lə dʁwa a vivʁ/","/il ɛ tu kɔ̃tɑ̃/"],
+ v:[["le tout","m","lə tu","요점/전체"],["réussir","v","ʁeysiʁ","성공하다"],["tout","","tu","모든/매우 (부사)"]]},
+{l:4,c:"시간 지시 (ce mois-ci)",q:"다음 밑줄 친 부분이 옳지 않은 것은?",o:["Il arrive {u}cet après-midi{/u}.","{u}Cette année{/u}, il pleut beaucoup.","Il y a deux jours fériés {u}ce-mois{/u}.","On ne le voit pas {u}ces derniers jours{/u}."],a:2,
+ w:"'이번 달'은 ce mois-ci (ce와 mois 사이 붙임표 없음).",fr:"ce mois-ci",tr:"이번 달 = ce mois-ci.",ipa:"/sə mwasi/",
+ oi:["/il aʁiv sɛt apʁɛ-midi/","/sɛt ane il plø boku/","/il i a dø ʒuʁ feʁje sə mwasi/","/ɔ̃ nə lə vwa pa se dɛʁnje ʒuʁ/"],ot:["그는 오늘 오후에 도착한다.","올해는 비가 많이 온다.","이번 달에 공휴일이 이틀 있다.","요즘 그를 못 본다."],
+ v:[["mois","m","mwa","달/월"],["année","f","ane","해/년"],["après-midi","m","apʁɛ-midi","오후"],["férié","adj","feʁje","공휴일의"]]},
+{l:4,c:"무관사 구문 (옳은 것)",q:"다음 중 밑줄 친 부분이 옳은 것은? (관사에 주의할 것)",o:["Pour la première fois, j'ai peur {u}d'un virus{/u}.","Il s'est trompé {u}de la date{/u}.","Il a changé {u}de l'attitude{/u}.","J'ai {u}de la soif{/u}."],a:0,
+ w:"avoir peur de + 명사 → j'ai peur d'un virus. (se tromper de, changer de, avoir soif는 무관사.)",fr:"J'ai peur d'un virus",tr:"나는 바이러스가 무섭다.",ipa:"/ʒe pœʁ dœ̃ viʁys/",
+ oi:["/puʁ la pʁəmjɛʁ fwa ʒe pœʁ dœ̃ viʁys/","/il sɛ tʁɔ̃pe də la dat/","/il a ʃɑ̃ʒe də latityd/","/ʒe də la swaf/"],ot:["처음으로 나는 바이러스가 무섭다.","그는 날짜를 착각했다 (de la 오류).","그는 태도를 바꿨다 (de l 오류).","나는 목마르다 (de la 오류)."],
+ v:[["avoir peur de","expr","avwaʁ pœʁ","무서워하다"],["virus","m","viʁys","바이러스"],["se tromper de","v","sə tʁɔ̃pe","~을 착각하다"],["soif","f","swaf","갈증"]]},
+{l:4,c:"관계절로 한정 → 정관사",q:"다음 중 밑줄 친 부분이 옳지 않은 것은? (관사에 주의할 것)",o:["Il est interdit de faire {u}du bruit{/u}.","Je vais aller faire {u}du café{/u}.","Il a {u}du courage{/u}.","Je bois {u}du lait{/u} que tu viens d'acheter."],a:3,
+ w:"관계절 que tu viens d'acheter로 특정된 우유 → le lait.",fr:"Je bois le lait que tu viens d'acheter",tr:"나는 네가 방금 산 우유를 마신다.",ipa:"/ʒə bwa lə lɛ kə ty vjɛ̃ daʃte/",
+ oi:["/il ɛ t‿ɛ̃tɛʁdi də fɛʁ dy bʁɥi/","/ʒə vɛ ale fɛʁ dy kafe/","/il a dy kuʁaʒ/","/ʒə bwa lə lɛ kə ty vjɛ̃ daʃte/"],ot:["소음을 내는 것은 금지돼 있다.","나는 가서 커피를 탈 것이다.","그는 용기가 있다.","나는 네가 방금 산 우유를 마신다 (→ le lait)."],
+ v:[["boire","v","bwaʁ","마시다"],["lait","m","lɛ","우유"],["acheter","v","aʃte","사다"],["interdit","adj","ɛ̃tɛʁdi","금지된"]]},
+{l:4,c:"être 부정문 관사 불변 (옳은 것)",q:"다음 중 밑줄 친 부분이 옳은 것은? (관사에 주의할 것)",o:["Elle ne s'occupe pas {u}d'enfants{/u}.","Ce n'est pas {u}de l'eau{/u}.","Je n'ai pas {u}des amis{/u}.","Faites-moi {u}de la confiance{/u}."],a:1,
+ w:"être 부정문은 부분관사 불변 → Ce n'est pas de l'eau.",fr:"Ce n'est pas de l'eau",tr:"이것은 물이 아니다.",ipa:"/sə nɛ pa də lo/",
+ oi:["/ɛl nə sɔkyp pa dɑ̃fɑ̃/","/sə nɛ pa də lo/","/ʒə nɛ pa de z‿ami/","/fɛt-mwa də la kɔ̃fjɑ̃s/"],ot:["그녀는 아이들을 돌보지 않는다.","이것은 물이 아니다.","나는 친구가 없다 (→ pas d amis).","저를 믿어 주세요 (→ confiance, 무관사)."],
+ v:[["être","v","ɛtʁ","~이다"],["eau","f","o","물"],["s'occuper de","v","sɔkype","~을 돌보다"],["confiance","f","kɔ̃fjɑ̃s","신뢰"]]},
+
+// ===== 5강 =====
+{l:5,c:"여성형 (complète)",q:"다음 중 형용사의 여성형이 옳지 않은 것은?",o:["frais / fraîche","favori / favorite","malin / maligne","complet / complette"],a:3,
+ w:"complet의 여성형은 complète (t 하나 + 악센트). complette는 오류.",oi:["/fʁɛ / fʁɛʃ/","/favɔʁi / favɔʁit/","/malɛ̃ / maliɲ/","/kɔ̃plɛ / kɔ̃plɛt/"],ot:["신선한 (정상)","좋아하는 (정상)","영리한 (정상)","완전한 → complète (t 하나) ← 오류"],fr:"complète",tr:"complet의 여성형은 complète이다.",ipa:"/kɔ̃plɛt/",
+ v:[["complet / complète","adj","kɔ̃plɛ / kɔ̃plɛt","완전한/만원의"],["frais / fraîche","adj","fʁɛ / fʁɛʃ","신선한"],["malin / maligne","adj","malɛ̃ / maliɲ","영리한"]]},
+{l:5,c:"형용사 위치 (mauvais는 앞)",q:"다음 중 밑줄 친 부분의 위치가 옳지 않은 것은?",o:["un tableau {u}noir{/u}","un étudiant {u}étranger{/u}","une feuille {u}morte{/u}","un caractère {u}mauvais{/u}"],a:3,
+ w:"mauvais는 명사 앞 → un mauvais caractère.",ot:["검은 칠판 (색, 뒤 정상)","외국 학생 (뒤 정상)","마른 잎 (뒤 정상)","mauvais는 앞 un mauvais caractère ← 오류"],fr:"un mauvais caractère",tr:"나쁜 성격 = un mauvais caractère.",ipa:"/œ̃ movɛ kaʁaktɛʁ/",
+ oi:["/œ̃ tablo nwaʁ/","/œ̃ n‿etydjɑ̃ etʁɑ̃ʒe/","/yn fœj mɔʁt/","/œ̃ kaʁaktɛʁ movɛ/"],
+ v:[["caractère","m","kaʁaktɛʁ","성격"],["mauvais","adj","movɛ","나쁜"],["noir","adj","nwaʁ","검은"],["étranger","adj","etʁɑ̃ʒe","외국의"]]},
+{l:5,c:"색채형용사 불변 (marron)",q:"( )에 들어갈 알맞은 것은?\ndes robes ( )",o:["marron","maronne","marrons","maronnes"],a:0,
+ w:"marron은 명사 유래 색채형용사라 불변 → des robes marron.",oi:["/maʁɔ̃/","/maʁɔn/","/maʁɔ̃/","/maʁɔn/"],ot:["밤색 (불변) ← 정답","(철자·변화 오류)","(불변이라 s 오류)","(오류)"],fr:"des robes marron",tr:"밤색 드레스들 (marron 불변).",ipa:"/de ʁɔb maʁɔ̃/",
+ v:[["robe","f","ʁɔb","드레스/원피스"],["marron","adj","maʁɔ̃","밤색 (불변)"]]},
+{l:5,c:"quelque chose de + 형용사",q:"( )에 들어갈 알맞은 것은?\nY a-t-il ( )?",o:["nouveau quelque chose","de nouveau quelque chose","quelque chose nouveau","quelque chose de nouveau"],a:3,
+ w:"quelque chose de + 남성 형용사 → quelque chose de nouveau.",oi:["/nuvo kɛlkə ʃoz/","/də nuvo kɛlkə ʃoz/","/kɛlkə ʃoz nuvo/","/kɛlkə ʃoz də nuvo/"],ot:["(어순 오류)","(어순 오류)","(de 누락)","무언가 새로운 것 ← 정답"],fr:"Y a-t-il quelque chose de nouveau",tr:"새로운 것이 있나요?",ipa:"/ja t‿il kɛlkə ʃoz də nuvo/",
+ v:[["quelque chose","pron","kɛlkə ʃoz","무언가"],["nouveau","adj","nuvo","새로운"]]},
+{l:5,c:"le moindre",q:"다음을 프랑스어로 옮길 때 ( )에 들어갈 알맞은 것은?\n\"나는 조금도 의심하지 않는다.\" → Je n'ai pas ( ) doute.",o:["le plus petit","le moindre","le pis","le pire"],a:1,
+ w:"'조금도 ~않다'의 관용 표현은 le moindre → 추호의 의심도 없다.",oi:["/lə ply pəti/","/lə mwɛ̃dʁ/","/lə pi/","/lə piʁ/"],ot:["가장 작은 (문자적)","조금도/추호의 (관용) ← 정답","더 나쁜 (부사)","최악"],fr:"Je n'ai pas le moindre doute",tr:"나는 추호의 의심도 없다.",ipa:"/ʒə nɛ pa lə mwɛ̃dʁ dut/",
+ v:[["moindre","adj","mwɛ̃dʁ","가장 작은/사소한"],["doute","m","dut","의심"]]},
+{l:5,c:"형용사 위치 의미 (seul)",q:"다음 밑줄 친 형용사 중 그 의미가 옳지 않은 것은?",o:["mon {u}ancienne{/u} maison – 예전에 살던 집","un {u}pauvre{/u} homme – 가련한 사람","un {u}seul{/u} enfant – 홀로 있는 아이","la semaine {u}dernière{/u} – 지난 주"],a:2,
+ w:"un seul enfant(seul 앞)는 '단 한 명의 아이'. '홀로 있는 아이'는 un enfant seul.",ot:["예전에 살던 집 (ancien 앞)","가련한 사람 (pauvre 앞)","'단 한 명의 아이' → 홀로 있는 아이는 un enfant seul ← 의미 오류","지난 주 (dernière 뒤)"],fr:"un enfant seul",tr:"홀로 있는 아이 = un enfant seul (seul 뒤).",ipa:"/œ̃ n‿ɑ̃fɑ̃ sœl/",
+ oi:["/mɔ̃ n‿ɑ̃sjɛn mɛzɔ̃/","/œ̃ povʁ‿ɔm/","/œ̃ sœl ɑ̃fɑ̃/","/la səmɛn dɛʁnjɛʁ/"],
+ v:[["seul","adj","sœl","유일한(앞)/홀로의(뒤)"],["ancien","adj","ɑ̃sjɛ̃","예전의(앞)/오래된(뒤)"],["pauvre","adj","povʁ","가련한(앞)/가난한(뒤)"]]},
+{l:5,c:"demi 일치",q:"밑줄 친 부분이 문법적으로 옳지 않은 것은?",o:["les langues {u}anglaise et allemande{/u}","des robes {u}orange{/u}","une heure et {u}demi{/u}","une jupe et un chemisier {u}blancs{/u}"],a:2,
+ w:"demi가 명사 뒤에 오면 성에 일치 → une heure et demie.",ot:["각 언어에 단수 일치 (정상)","orange 불변 (정상)","명사 뒤 demie로 일치 ← 오류","혼성명사라 남성복수 blancs (정상)"],fr:"une heure et demie",tr:"한 시간 반 = une heure et demie.",ipa:"/yn œʁ e dəmi/",
+ oi:["/le lɑ̃ɡ‿ɑ̃ɡlɛz e almɑ̃d/","/de ʁɔb ɔʁɑ̃ʒ/","/yn œʁ e dəmi/","/yn ʒyp e œ̃ ʃəmizje blɑ̃/"],
+ v:[["heure","f","œʁ","시간"],["demi / demie","adj","dəmi","절반"],["langue","f","lɑ̃ɡ","언어"],["jupe","f","ʒyp","치마"]]},
+{l:5,c:"비교급 (moindre)",q:"( )에 알맞은 것은?\n\"그의 권력은 당신보다 작지 않다.\" → Son pouvoir n'est pas ( ) que le vôtre.",o:["meilleur","pire","pis","moindre"],a:3,
+ w:"'(정도가) 작지 않다'는 moindre → n'est pas moindre que.",oi:["/mɛjœʁ/","/piʁ/","/pi/","/mwɛ̃dʁ/"],ot:["더 좋은","더 나쁜 (형용사)","더 나쁜 (부사)","(정도가) 더 작은 ← 정답"],fr:"Son pouvoir n'est pas moindre que le vôtre",tr:"그의 권력은 당신의 것보다 작지 않다.",ipa:"/sɔ̃ puvwaʁ nɛ pa mwɛ̃dʁ kə lə votʁ/",
+ v:[["pouvoir","m","puvwaʁ","권력"],["moindre","adj","mwɛ̃dʁ","더 작은"],["que","conj","kə","~보다 (비교)"]]},
+{l:5,c:"비교급 (pire, 형용사)",q:"( )에 알맞은 것은?\n\"그의 최근 소설은 그 이전 것보다 더 나쁘다.\" → Son dernier roman est ( ) que son précédent.",o:["moindre","pire","pis","meilleur"],a:1,
+ w:"명사(roman)를 수식하는 '더 나쁜'은 형용사 pire. (pis는 부사.)",oi:["/mwɛ̃dʁ/","/piʁ/","/pi/","/mɛjœʁ/"],ot:["더 작은","더 나쁜 (형용사, 명사 수식) ← 정답","더 나쁜 (부사)","더 좋은"],fr:"Son dernier roman est pire que son précédent",tr:"그의 최근 소설은 그 이전 것보다 더 나쁘다.",ipa:"/sɔ̃ dɛʁnje ʁɔmɑ̃ ɛ piʁ kə sɔ̃ pʁesedɑ̃/",
+ v:[["roman","m","ʁɔmɑ̃","소설"],["pire","adj","piʁ","더 나쁜"],["dernier","adj","dɛʁnje","최근의/마지막의"],["précédent","m","pʁesedɑ̃","이전 것"]]},
+{l:5,c:"비교급 (s'attendre au pire)",q:"( )에 알맞은 것은?\n\"그녀는 항상 최악을 예상한다.\" → Elle s'attend toujours ( ).",o:["au pire","au pis","au plus mauvais","au meilleur"],a:0,
+ w:"s'attendre au pire = 최악을 예상하다. le pire = 최악(명사).",oi:["/o piʁ/","/o pi/","/o ply movɛ/","/o mɛjœʁ/"],ot:["최악을 (예상) ← 정답","(au pis aller에만)","(부자연)","최선을"],fr:"Elle s'attend toujours au pire",tr:"그녀는 늘 최악을 예상한다.",ipa:"/ɛl satɑ̃ tuʒuʁ o piʁ/",
+ v:[["s'attendre à","v","satɑ̃dʁ","예상하다"],["pire","","piʁ","더 나쁜/최악"],["toujours","adv","tuʒuʁ","늘/항상"]]},
+
+// ===== 6강 =====
+{l:6,c:"두 동사 부정 연결 (ne…ni ne)",q:"( ) 안에 들어갈 알맞은 것은?\nElle ne l'aime, ( ).",o:["et elle ne l'estime pas","et ne l'estime pas","ni elle ne l'estime pas","ni ne l'estime"],a:3,
+ w:"두 동사를 부정으로 이을 때 ne … ni ne … → Elle ne l'aime ni ne l'estime.",fr:"Elle ne l'aime ni ne l'estime",tr:"그녀는 그를 사랑하지도 존중하지도 않는다.",ipa:"/ɛl nə lɛm ni nə lɛstim/",
+ oi:["/e ɛl nə lɛstim pa/","/e nə lɛstim pa/","/ni ɛl nə lɛstim pa/","/ni nə lɛstim/"],ot:["그리고 그녀는 그를 존중하지 않는다.","그리고 존중하지 않는다.","(비문).","그를 존중하지도 않는다."],
+ v:[["aimer","v","eme","사랑하다"],["estimer","v","ɛstime","존중하다"],["ni","conj","ni","~도 아니다"]]},
+{l:6,c:"부정 동조 (non plus)",q:"( ) 안에 들어갈 알맞은 것은?\nVous ne fumez pas et votre mari? ― (그 사람도 담배를 피우지 않습니다.)",o:["Il aussi.","Il non plus.","Lui, aussi.","Lui, non plus."],a:3,
+ w:"부정문 동조는 non plus, 주어 강조는 강세형 Lui → Lui non plus.",fr:"Lui non plus",tr:"그 사람도 (담배를) 안 핀다.",ipa:"/lɥi nɔ̃ ply/",
+ oi:["/il osi/","/il nɔ̃ ply/","/lɥi osi/","/lɥi nɔ̃ ply/"],ot:["그도요 (주어 형태 오류).","그도 아니에요 (주어 형태 오류).","그 사람도요 (긍정).","그 사람도 아니에요."],
+ v:[["non plus","adv","nɔ̃ ply","~도 아니다"],["aussi","adv","osi","~도 (긍정)"],["lui","pron","lɥi","그 (강세형)"],["fumer","v","fyme","담배 피우다"]]},
+{l:6,c:"중성 le (속사 대용)",q:"( ) 안에 들어갈 알맞은 것은?\nElle n'est pas encore médecin, mais elle ( ) sera bientôt.",o:["le","la","se","en"],a:0,
+ w:"속사(médecin)를 받는 중성대명사 le(불변) → elle le sera bientôt.",oi:["/lə/","/la/","/sə/","/ɑ̃/"],ot:["속사 받는 중성 le ← 정답","여성 직접목적 (부적합)","재귀","de 대용"],fr:"elle le sera bientôt",tr:"그녀는 곧 그것(의사)이 될 것이다.",ipa:"/ɛl lə səʁa bjɛ̃to/",
+ v:[["être","v","ɛtʁ","~이다"],["médecin","m","medsɛ̃","의사"],["le","pron","lə","그것 (중성)"],["bientôt","adv","bjɛ̃to","곧"]]},
+{l:6,c:"penser à + 강세형",q:"다음을 프랑스어로 올바르게 옮긴 것은?\n나는 그를 생각한다.",o:["Je le pense.","Je lui pense.","Je pense de lui.","Je pense à lui."],a:3,
+ w:"penser à + 사람 → 전치사 + 강세형 → Je pense à lui.",fr:"Je pense à lui",tr:"나는 그를 생각한다.",ipa:"/ʒə pɑ̃s a lɥi/",
+ oi:["/ʒə lə pɑ̃s/","/ʒə lɥi pɑ̃s/","/ʒə pɑ̃s də lɥi/","/ʒə pɑ̃s a lɥi/"],ot:["나는 그렇게 생각한다 (그것을).","(비문).","(비문).","나는 그를 생각한다."],
+ v:[["penser à","v","pɑ̃se","생각하다"],["lui","pron","lɥi","그 (강세형)"],["à","prep","a","~에/에게"]]},
+{l:6,c:"대명동사 se (직접목적보어)",q:"다음 중 밑줄 친 부분이 직접목적보어로 사용된 것은?",o:["Il {u}se{/u} promène dans le jardin.","Il {u}se{/u} demande le but de ces manifestations.","Je {u}me{/u} suis acheté un dictionnaire.","Ils {u}se{/u} ressemblent."],a:0,
+ w:"se promener의 se는 직접목적보어. se demander·s'acheter·se ressembler의 se(me)는 간접목적보어.",fr:"Il se promène dans le jardin",tr:"그는 정원에서 산책한다.",ipa:"/il sə pʁɔmɛn dɑ̃ lə ʒaʁdɛ̃/",
+ oi:["/il sə pʁɔmɛn dɑ̃ lə ʒaʁdɛ̃/","/il sə dəmɑ̃d lə byt də se manifɛstasjɔ̃/","/ʒə mə sɥi z‿aʃte œ̃ diksjɔnɛʁ/","/il sə ʁəsɑ̃bl/"],ot:["그는 정원에서 산책한다 (se=직접목적).","그는 이 시위들의 목적을 자문한다 (se=간접).","나는 (나에게) 사전을 샀다 (me=간접).","그들은 서로 닮았다 (se=간접)."],
+ v:[["se promener","v","sə pʁɔmne","산책하다"],["jardin","m","ʒaʁdɛ̃","정원"],["se demander","v","sə dəmɑ̃de","자문하다"],["se ressembler","v","sə ʁəsɑ̃ble","서로 닮다"]]},
+{l:6,c:"ressembler à → 클리틱 lui",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["Il ressemble {u}à lui{/u}.","Je renonce {u}à eux{/u}.","Ce parapluie est {u}à moi{/u}.","Je pense {u}à toi{/u}."],a:0,
+ w:"ressembler à 사람은 간접대명사 lui로 → Il lui ressemble.",fr:"Il lui ressemble",tr:"그는 그를 닮았다.",ipa:"/il lɥi ʁəsɑ̃bl/",
+ oi:["/il ʁəsɑ̃bl a lɥi/","/ʒə ʁənɔ̃s a ø/","/sə paʁaplɥi ɛ t‿a mwa/","/ʒə pɑ̃s a twa/"],ot:["그는 그를 닮았다 (→ il lui ressemble).","나는 그들을 포기한다.","이 우산은 내 것이다.","나는 너를 생각한다."],
+ v:[["ressembler à","v","ʁəsɑ̃ble","닮다"],["renoncer à","v","ʁənɔ̃se","포기하다"],["parapluie","m","paʁaplɥi","우산"],["lui","pron","lɥi","그에게"]]},
+{l:6,c:"soi vs lui (한정 주어)",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["Chacun ne pense qu'{u}à soi{/u}.","Tout le monde vit {u}pour soi{/u}.","On parle {u}de soi{/u}.","Son mari travaille {u}pour soi{/u}."],a:3,
+ w:"soi는 부정대명사 주어일 때만. 한정된 'son mari'면 pour lui.",fr:"Son mari travaille pour lui",tr:"그녀의 남편은 자신을 위해 일한다.",ipa:"/sɔ̃ maʁi tʁavaj puʁ lɥi/",
+ oi:["/ʃakœ̃ nə pɑ̃s ka swa/","/tu lə mɔ̃d vi puʁ swa/","/ɔ̃ paʁl də swa/","/sɔ̃ maʁi tʁavaj puʁ swa/"],ot:["각자 자기 자신만 생각한다.","모두가 자기 자신을 위해 산다.","사람들은 자기 자신에 대해 말한다.","그녀의 남편은 자신을 위해 일한다 (→ pour lui)."],
+ v:[["travailler","v","tʁavaje","일하다"],["mari","m","maʁi","남편"],["soi","pron","swa","자기 자신 (부정대명사용)"],["chacun","pron","ʃakœ̃","각자"]]},
+{l:6,c:"s'adresser à",q:"다음을 프랑스어로 옳게 옮긴 것은?\n\"그는 그녀에게 문의한다.\"",o:["Il lui adresse.","Il adresse à elle.","Il lui s'adresse.","Il s'adresse à elle."],a:3,
+ w:"s'adresser à qqn → Il s'adresse à elle. (대명동사 se 유지 + à+강세형.)",fr:"Il s'adresse à elle",tr:"그는 그녀에게 문의한다.",ipa:"/il sadʁɛs a ɛl/",
+ oi:["/il lɥi adʁɛs/","/il adʁɛs a ɛl/","/il lɥi sadʁɛs/","/il sadʁɛs a ɛl/"],ot:["(비문).","(비문).","(어순 오류).","그는 그녀에게 말을 건다."],
+ v:[["s'adresser à","v","sadʁese","문의하다/말을 걸다"],["elle","pron","ɛl","그녀 (강세형)"]]},
+{l:6,c:"ni … ni",q:"다음을 프랑스어로 옳게 옮긴 것은?\n\"그는 좋지도 나쁘지도 않다.\"",o:["Il n'est pas bon et méchant.","Il n'est pas bon ni méchant.","Il n'est ni bon ni méchant.","Il n'est pas bon pas méchant."],a:2,
+ w:"'~도 ~도 아니다' = ne … ni … ni … (pas 사용 안 함).",fr:"Il n'est ni bon ni méchant",tr:"그는 좋지도 나쁘지도 않다.",ipa:"/il nɛ ni bɔ̃ ni meʃɑ̃/",
+ oi:["/il nɛ pa bɔ̃ e meʃɑ̃/","/il nɛ pa bɔ̃ ni meʃɑ̃/","/il nɛ ni bɔ̃ ni meʃɑ̃/","/il nɛ pa bɔ̃ pa meʃɑ̃/"],ot:["(et 사용 오류).","(혼합 오류).","그는 좋지도 나쁘지도 않다.","(pas 중복 오류)."],
+ v:[["bon","adj","bɔ̃","좋은"],["méchant","adj","meʃɑ̃","나쁜/심술궂은"],["ni","conj","ni","~도 아니다"]]},
+{l:6,c:"이중대명사 (lui-lui)",q:"( )에 들어갈 알맞은 말로 짝지어진 것은?\nJe ( ) ai téléphoné pour ( ) souhaiter un bon anniversaire.",o:["l' - le","lui - lui","l' - lui","lui - le"],a:1,
+ w:"téléphoner à qqn → lui / souhaiter qqch à qqn → lui.",oi:["/l lə/","/lɥi lɥi/","/l lɥi/","/lɥi lə/"],ot:["(부적합)","téléphoner à→lui / souhaiter à→lui ← 정답","(부적합)","(부적합)"],fr:"Je lui ai téléphoné pour lui souhaiter un bon anniversaire",tr:"나는 그에게 생일 축하를 하려고 전화했다.",ipa:"/ʒə lɥi e telefɔne puʁ lɥi swɛte œ̃ bɔn anivɛʁsɛʁ/",
+ v:[["téléphoner à","v","telefɔne","전화하다"],["souhaiter","v","swɛte","기원하다"],["anniversaire","m","anivɛʁsɛʁ","생일"],["lui","pron","lɥi","그에게"]]},
+
+// ===== 7강 =====
+{l:7,c:"en (revenir de)",q:"( ) 안에 들어갈 알맞은 것은?\nQuand est-ce qu'elle revient de France? ― Elle ( ) revient cet été.",o:["le","lui","en","y"],a:2,
+ w:"revenir de + 장소 → en → Elle en revient cet été.",oi:["/lə/","/lɥi/","/ɑ̃/","/i/"],ot:["그것을 (직접)","그에게 (간접)","de+장소 대용 (en) ← 정답","à 대용 (y)"],fr:"Elle en revient cet été",tr:"그녀는 이번 여름에 거기서 돌아온다.",ipa:"/ɛl ɑ̃ ʁəvjɛ̃ sɛt ete/",
+ v:[["revenir","v","ʁəvniʁ","돌아오다"],["en","pron","ɑ̃","그것에서 (de 대용)"],["été","m","ete","여름"]]},
+{l:7,c:"y (consentir à)",q:"( ) 안에 들어갈 알맞은 것은?\nIl consent à cette proposition? ― Oui, il ( ) consent.",o:["le","lui","en","y"],a:3,
+ w:"consentir à qqch → à+사물은 y → il y consent.",oi:["/lə/","/lɥi/","/ɑ̃/","/i/"],ot:["그것을","그에게","de 대용","à+사물 대용 (y) ← 정답"],fr:"Oui, il y consent",tr:"네, 그는 그것에 동의한다.",ipa:"/wi il i kɔ̃sɑ̃/",
+ v:[["consentir à","v","kɔ̃sɑ̃tiʁ","동의하다"],["y","pron","i","그것에 (à 대용)"],["proposition","f","pʁɔpozisjɔ̃","제안"]]},
+{l:7,c:"이중대명사 (lui en … un)",q:"( ) 안에 들어갈 알맞은 것은?\nIl m'a demandé votre nouveau livre, je(j') ( ).",o:["le lui offrirai.","lui le offrirai.","lui en offrirai un","en lui offrirai un"],a:2,
+ w:"offrir qqch à qqn: 간접 lui + 부정 수량(en … un) → je lui en offrirai un.",fr:"Je lui en offrirai un",tr:"나는 그에게 그것 하나를 줄 것이다.",ipa:"/ʒə lɥi ɑ̃n ɔfʁiʁe œ̃/",
+ oi:["/lə lɥi ɔfʁiʁe/","/lɥi lə ɔfʁiʁe/","/lɥi ɑ̃n ɔfʁiʁe œ̃/","/ɑ̃ lɥi ɔfʁiʁe œ̃/"],ot:["(내용 오류).","(어순 오류).","나는 그에게 그것 하나를 줄 것이다.","(어순 오류)."],
+ v:[["offrir","v","ɔfʁiʁe","주다/선물하다"],["livre","m","livʁ","책"],["lui","pron","lɥi","그에게"],["en","pron","ɑ̃","그것 (de 대용)"]]},
+{l:7,c:"긍정 명령 어순 (les-leur)",q:"( ) 안에 들어갈 알맞은 것은?\nEst-ce que je peux montrer ces documents à mes collègues? ― Oui, montrez-( ).",o:["les-lui","lui-les","leur-les","les-leur"],a:3,
+ w:"긍정 명령은 직접(les)-간접(leur) 순, 붙임표 → montrez-les-leur.",oi:["/le-lɥi/","/lɥi-le/","/lœʁ-le/","/le-lœʁ/"],ot:["(어순 오류)","(어순 오류)","(어순 오류)","직접 les + 간접 leur ← 정답"],fr:"Montrez-les-leur",tr:"그것들을 그들에게 보여주세요.",ipa:"/mɔ̃tʁe-le-lœʁ/",
+ v:[["montrer","v","mɔ̃tʁe","보여주다"],["document","m","dɔkymɑ̃","서류"],["leur","pron","lœʁ","그들에게"],["les","pron","le","그것들을"]]},
+{l:7,c:"지시대명사 (celle de)",q:"( ) 안에 들어갈 알맞은 것은?\nIl a suivi la meilleure route, ( ) du bon sens.",o:["celle","celle-ci","celle-là","cela"],a:0,
+ w:"'la route'를 받는 지시대명사 + de → celle du bon sens.",oi:["/sɛl/","/sɛl-si/","/sɛl-la/","/səla/"],ot:["그것 (celle de) ← 정답","이것","저것","그것 (중성)"],fr:"celle du bon sens",tr:"양식(良識)의 길, 즉 그것.",ipa:"/sɛl dy bɔ̃ sɑ̃s/",
+ v:[["route","f","ʁut","길"],["bon sens","m","bɔ̃ sɑ̃s","양식/상식"],["celle","pron","sɛl","그것 (여성 지시대명사)"]]},
+{l:7,c:"y (penser à)",q:"( )에 들어갈 알맞은 것은?\nJ'adore les vacances, j'( ) pense toujours.",o:["lui","y","en","les"],a:1,
+ w:"penser à qqch → y → j'y pense toujours.",oi:["/lɥi/","/i/","/ɑ̃/","/le/"],ot:["그에게","à+사물 대용 (y) ← 정답","de 대용","그것들을"],fr:"J'adore les vacances, j'y pense toujours",tr:"나는 방학을 정말 좋아해서 늘 그것을 생각한다.",ipa:"/ʒadɔʁ le vakɑ̃s ʒi pɑ̃s tuʒuʁ/",
+ v:[["adorer","v","adɔʁe","아주 좋아하다"],["vacances","f","vakɑ̃s","방학/휴가 (복수)"],["y","pron","i","그것에 (à 대용)"],["toujours","adv","tuʒuʁ","늘"]]},
+{l:7,c:"대명동사 + en (se servir de)",q:"( )에 들어갈 알맞은 것은?\nJ'ai acheté un ordinateur portable; je(j') ( ) sers souvent.",o:["en","y","m'en","m'y"],a:2,
+ w:"se servir de qqch(사용하다) → 재귀 me + de→en → je m'en sers souvent.",oi:["/ɑ̃/","/i/","/mɑ̃/","/mi/"],ot:["de 대용 (재귀 누락)","à 대용","재귀 me + de→en ← 정답","재귀 me + à→y"],fr:"Je m'en sers souvent",tr:"나는 그것을 자주 사용한다.",ipa:"/ʒə mɑ̃ sɛʁ suvɑ̃/",
+ v:[["se servir de","v","sə sɛʁviʁ","사용하다"],["ordinateur","m","ɔʁdinatœʁ","컴퓨터"],["souvent","adv","suvɑ̃","자주"]]},
+{l:7,c:"부정 명령 어순",q:"다음을 프랑스어로 옮기면?\n\"그것을 그에게 빌려주지 말라.\"",o:["Ne le lui prête pas.","Ne lui le prête pas.","Ne prête-le-lui pas.","Ne prête-lui-le pas."],a:0,
+ w:"부정 명령문은 대명사가 동사 앞, 정상 어순 → Ne le lui prête pas.",fr:"Ne le lui prête pas",tr:"그것을 그에게 빌려주지 마라.",ipa:"/nə lə lɥi pʁɛt pa/",
+ oi:["/nə lə lɥi pʁɛt pa/","/nə lɥi lə pʁɛt pa/","/nə pʁɛt-lə-lɥi pa/","/nə pʁɛt-lɥi-lə pa/"],ot:["그것을 그에게 빌려주지 마라.","(어순 오류).","(어순 오류).","(어순 오류)."],
+ v:[["prêter","v","pʁɛte","빌려주다"],["le","pron","lə","그것을"],["lui","pron","lɥi","그에게"]]},
+{l:7,c:"en + 수량 (quelques-unes)",q:"( )에 들어갈 알맞은 것은?\nAvez-vous pris des photos ? - Oui, ( ).",o:["je les ai pris.","je les ai prises.","j'en ai pris quelques","j'en ai pris quelques-unes"],a:3,
+ w:"photos(여성복수)를 en + 부정수량으로 → j'en ai pris quelques-unes.",fr:"J'en ai pris quelques-unes",tr:"네, 몇 장 찍었어요.",ipa:"/ʒɑ̃n e pʁi kɛlkəzyn/",
+ oi:["/ʒə le z‿e pʁi/","/ʒə le z‿e pʁiz/","/ʒɑ̃n e pʁi kɛlk/","/ʒɑ̃n e pʁi kɛlkəzyn/"],ot:["(성 일치 오류).","나는 그것들을 (다) 찍었다.","(불완전).","나는 그중 몇 장 찍었다."],
+ v:[["prendre","v","pʁɑ̃dʁ","(사진을) 찍다"],["photo","f","fɔto","사진"],["quelques-unes","pron","kɛlkəzyn","몇 개 (여성)"],["en","pron","ɑ̃","그것 (de 대용)"]]},
+{l:7,c:"대명동사 + y (s'attendre à)",q:"( )에 들어갈 알맞은 것은?\n\"그는 오늘 저녁 떠날 것인데, 나는 그것을 예상하고 있었다.\" → Il va partir ce soir et je(j') ( ).",o:["l'attendais","y en attendais","m'en attendais","m'y attendais"],a:3,
+ w:"s'attendre à qqch → 재귀 me + à→y → je m'y attendais.",oi:["/latɑ̃dɛ/","/i ɑ̃n‿ atɑ̃dɛ/","/mɑ̃n‿ atɑ̃dɛ/","/mi atɑ̃dɛ/"],ot:["(부적합)","(부적합)","재귀+de (부적합)","재귀 me + à→y ← 정답"],fr:"Il va partir ce soir et je m'y attendais",tr:"그는 오늘 저녁 떠날 텐데, 나는 그것을 예상하고 있었다.",ipa:"/il va paʁtiʁ sə swaʁ e ʒə mi atɑ̃dɛ/",
+ v:[["s'attendre à","v","satɑ̃dʁ","예상하다"],["partir","v","paʁtiʁ","떠나다"],["soir","m","swaʁ","저녁"],["y","pron","i","그것에 (à 대용)"]]},
+
+// ===== 8강 =====
+{l:8,c:"의문 (사람 주어)",q:"( )에 들어갈 알맞은 것은?\nQui te l'a dit? = ( ) te l'a dit?",o:["Qui est-ce qui","Qui est-ce que","Qu'est-ce qui","Qu'est-ce que"],a:0,
+ w:"사람·주어를 묻는 의문 → Qui est-ce qui.",ot:["사람·주어 (누가) ← 정답","사람·목적어","사물·주어","사물·목적어"],fr:"Qui est-ce qui te l'a dit",tr:"누가 그것을 네게 말했니?",ipa:"/ki ɛs ki tə la di/",
+ oi:["/ki ɛs ki/","/ki ɛs kə/","/kɛs ki/","/kɛs kə/"],
+ v:[["dire","v","diʁ","말하다"],["qui","pron","ki","누가"]]},
+{l:8,c:"의문 (사람 목적어)",q:"( ) 안에 들어갈 알맞은 것은?\nQui cherchez-vous? = ( ) vous cherchez ?",o:["Qui est-ce qui","Qu'est-ce qui","Qui est-ce que","Qu'est-ce que"],a:2,
+ w:"사람·목적어를 묻는 의문 → Qui est-ce que.",ot:["사람·주어","사물·주어","사람·목적어 (누구를) ← 정답","사물·목적어"],fr:"Qui est-ce que vous cherchez",tr:"당신은 누구를 찾나요?",ipa:"/ki ɛs kə vu ʃɛʁʃe/",
+ oi:["/ki ɛs ki/","/kɛs ki/","/ki ɛs kə/","/kɛs kə/"],
+ v:[["chercher","v","ʃɛʁʃe","찾다"],["qui","pron","ki","누구"]]},
+{l:8,c:"devenir 속사 의문 (Que)",q:"다음 문장을 프랑스어로 옮길 때 ( )에 알맞은 것은?\n\"그는 어떻게(무엇이) 되었니?\" → ( ) est-il devenu?",o:["Qui","Qu'","Qui est-ce qu'","Quel"],a:1,
+ w:"devenir의 속사(무엇이 되었나)는 사물 속성 → Qu'est-il devenu?",ot:["누구","무엇 (사물 속성) ← 정답","누구를 (사람)","어떤 (형용사)"],fr:"Qu'est-il devenu",tr:"그는 무엇이 되었나?",ipa:"/kɛ-til dəvny/",
+ oi:["/ki/","/kə/","/ki ɛs kə/","/kɛl/"],
+ v:[["devenir","v","dəvniʁ","되다"],["que / quoi","pron","kə / kwa","무엇"]]},
+{l:8,c:"ce à quoi (penser à)",q:"다음 문장을 프랑스어로 옮길 때 ( )에 들어갈 알맞은 것은?\n\"바로 이것이 우리가 생각하는 것이다.\" → Voilà ce ( ) nous pensons.",o:["que","dont","auquel","à quoi"],a:3,
+ w:"penser à qqch → 선행사 ce + à quoi → ce à quoi nous pensons.",ot:["~인 것 (직접)","de 관계","à+관계 (선행사 한정)","ce + à quoi (penser à) ← 정답"],fr:"Voilà ce à quoi nous pensons",tr:"바로 이것이 우리가 생각하는 것이다.",ipa:"/vwala sə a kwa nu pɑ̃sɔ̃/",
+ oi:["/kə/","/dɔ̃/","/okɛl/","/a kwa/"],
+ v:[["penser à","v","pɑ̃se","생각하다"],["quoi","pron","kwa","무엇"],["à quoi","pron","a kwa","~에 대해 (관계)"]]},
+{l:8,c:"의문 (사물 목적어)",q:"( )에 들어갈 알맞은 것은?\nQue veux-tu? = ( ) tu veux?",o:["Qui est-ce qui","Qui est-ce que","Qu'est-ce qui","Qu'est-ce que"],a:3,
+ w:"사물·목적어를 묻는 의문 → Qu'est-ce que.",ot:["사람·주어","사람·목적어","사물·주어","사물·목적어 (무엇을) ← 정답"],fr:"Qu'est-ce que tu veux",tr:"너는 무엇을 원하니?",ipa:"/kɛs kə ty vø/",
+ oi:["/ki ɛs ki/","/ki ɛs kə/","/kɛs ki/","/kɛs kə/"],
+ v:[["vouloir","v","vulwaʁ","원하다"],["que","pron","kə","무엇을"]]},
+{l:8,c:"의문 (사물 주어)",q:"( )에 들어갈 알맞은 것은?\n\"무엇이 그렇게 나쁜 냄새가 나니?\" → ( ) sent si mauvais?",o:["Qui est-ce qui","Qui est-ce que","Qu'est-ce qui","Qu'est-ce que"],a:2,
+ w:"사물·주어를 묻는 의문 → Qu'est-ce qui.",ot:["사람·주어","사람·목적어","사물·주어 (무엇이) ← 정답","사물·목적어"],fr:"Qu'est-ce qui sent si mauvais",tr:"무엇이 그렇게 나쁜 냄새가 나니?",ipa:"/kɛs ki sɑ̃ si movɛ/",
+ oi:["/ki ɛs ki/","/ki ɛs kə/","/kɛs ki/","/kɛs kə/"],
+ v:[["sentir","v","sɑ̃tiʁ","냄새가 나다"],["mauvais","adj","movɛ","나쁜"],["si","adv","si","그렇게"]]},
+{l:8,c:"관계대명사 (dont)",q:"( )에 알맞은 것은?\nElle m'a présenté sa cousine ( ) elle est très fière.",o:["à qui","de qui","à quoi","dont"],a:3,
+ w:"être fier de qqn → de를 포함하는 관계대명사 dont.",ot:["~에게 (사람)","~의 (사람)","~에 (사물)","de 포함 관계대명사 ← 정답"],fr:"Elle m'a présenté sa cousine dont elle est très fière",tr:"그녀는 자기가 매우 자랑스러워하는 사촌을 내게 소개했다.",ipa:"/ɛl ma pʁezɑ̃te sa kuzin dɔ̃ ɛl ɛ tʁɛ fjɛʁ/",
+ oi:["/a ki/","/də ki/","/a kwa/","/dɔ̃/"],
+ v:[["présenter","v","pʁezɑ̃te","소개하다"],["cousine","f","kuzin","사촌 (여)"],["fier / fière","adj","fjɛʁ","자랑스러운"],["dont","pron","dɔ̃","~의 (de 관계)"]]},
+{l:8,c:"ce que (être 속사)",q:"( )에 들어갈 알맞은 것은?\n\"그는 예전과 다름이 없다.\" → Il reste ce ( ) il a toujours été.",o:["qui","qu'","à quoi","sur quoi"],a:1,
+ w:"être의 속사를 받는 중성 선행사 → ce que → ce qu'il a toujours été.",ot:["주격 관계","être 속사 받는 ce que ← 정답","à 관계","sur 관계"],fr:"Il reste ce qu'il a toujours été",tr:"그는 예전과 다름이 없다.",ipa:"/il ʁɛst sə kil a tuʒuʁ ete/",
+ oi:["/ki/","/kə/","/a kwa/","/syʁ kwa/"],
+ v:[["rester","v","ʁɛste","여전히 ~이다"],["que","pron","kə","~인 것 (관계)"],["toujours","adv","tuʒuʁ","늘"]]},
+{l:8,c:"관계대명사 (où, 장소)",q:"( )에 들어갈 알맞은 것은?\nLe restaurant ( ) on se retrouvera s'appelle Chez Victor.",o:["avec lequel","où","dont","dans quoi"],a:1,
+ w:"장소 선행사 + se retrouver → où.",ot:["~와 함께 (사물)","장소 선행사 où ← 정답","de 관계","(부자연)"],fr:"Le restaurant où on se retrouvera s'appelle Chez Victor",tr:"우리가 다시 만날 식당은 Chez Victor라고 한다.",ipa:"/lə ʁɛstoʁɑ̃ u ɔ̃ sə ʁətʁuvʁa sapɛl ʃe viktɔʁ/",
+ oi:["/avɛk ləkɛl/","/u/","/dɔ̃/","/dɑ̃ kwa/"],
+ v:[["restaurant","m","ʁɛstoʁɑ̃","식당"],["se retrouver","v","sə ʁətʁuve","(다시) 만나다"],["où","pron","u","~인 곳에서 (관계)"]]},
+{l:8,c:"관계대명사 (où, 시간)",q:"( )에 들어갈 알맞은 것은?\nIl neigeait le jour ( ) je l'ai rencontré.",o:["que","où","dont","auquel"],a:1,
+ w:"시간 선행사(le jour) → où.",ot:["목적격","시간 선행사 où ← 정답","de 관계","à+관계"],fr:"Il neigeait le jour où je l'ai rencontré",tr:"내가 그를 만난 날 눈이 오고 있었다.",ipa:"/il nɛʒɛ lə ʒuʁ u ʒə le ʁɑ̃kɔ̃tʁe/",
+ oi:["/kə/","/u/","/dɔ̃/","/okɛl/"],
+ v:[["neiger","v","nɛʒe","눈이 오다"],["rencontrer","v","ʁɑ̃kɔ̃tʁe","만나다"],["jour","m","ʒuʁ","날"],["où","pron","u","~인 때에 (관계)"]]},
+
+// ===== 9강 =====
+{l:9,c:"부정 (rien의 위치)",q:"다음 중 문법적으로 옳은 것은?",o:["Je n'ai pas vu rien.","Je n'ai pas rien vu.","Je n'ai vu rien.","Je n'ai rien vu."],a:3,
+ w:"rien은 조동사와 과거분사 사이 → Je n'ai rien vu. (pas와 병용 불가.)",fr:"Je n'ai rien vu",tr:"나는 아무것도 보지 못했다.",ipa:"/ʒə nɛ ʁjɛ̃ vy/",
+ oi:["/ʒə nɛ pa vy ʁjɛ̃/","/ʒə nɛ pa ʁjɛ̃ vy/","/ʒə nɛ vy ʁjɛ̃/","/ʒə nɛ ʁjɛ̃ vy/"],ot:["(어순 오류).","(pas+rien 중복 오류).","(어순 오류).","나는 아무것도 보지 못했다."],
+ v:[["voir","v","vwaʁ","보다"],["rien","pron","ʁjɛ̃","아무것도 (아니다)"]]},
+{l:9,c:"부정대명사 (Chacune)",q:"( )에 들어갈 알맞은 것은?\n( ) des épouses était accompagnée de son mari.",o:["Chacun","Chacune","Aucun","Aucune"],a:1,
+ w:"épouses(여성) + 'son mari(각자의 남편)'라 Chacune des épouses.",oi:["/ʃakœ̃/","/ʃakyn/","/okœ̃/","/okyn/"],ot:["각자 (남)","각자 (여, épouses) ← 정답","아무도 (남)","아무도 (여)"],fr:"Chacune des épouses était accompagnée de son mari",tr:"아내들 각각은 자기 남편을 동반하고 있었다.",ipa:"/ʃakyn de z‿epuz etɛ akɔ̃paɲe də sɔ̃ maʁi/",
+ v:[["accompagner","v","akɔ̃paɲe","동반하다"],["chacune","pron","ʃakyn","각각 (여)"],["épouse","f","epuz","아내"],["mari","m","maʁi","남편"]]},
+{l:9,c:"부정대명사 (Aucune … ne)",q:"( )에 들어갈 알맞은 것은?\n( ) d'elles n'a envie d'aller au cinéma.",o:["Aucun","Aucune","Personne","Nul"],a:1,
+ w:"elles(여성) + ne…aucune → Aucune d'elles n'a envie.",oi:["/okœ̃/","/okyn/","/pɛʁsɔn/","/nyl/"],ot:["아무도 (남)","아무도 (여, d'elles) ← 정답","아무도 (부자연)","아무도 (문어)"],fr:"Aucune d'elles n'a envie d'aller au cinéma",tr:"그녀들 중 누구도 영화 보러 가고 싶어 하지 않는다.",ipa:"/okyn dɛl na ɑ̃vi dale o sinema/",
+ v:[["avoir envie de","expr","avwaʁ ɑ̃vi","~하고 싶다"],["aller","v","ale","가다"],["aucune","pron","okyn","아무도 (여)"],["cinéma","m","sinema","영화관"]]},
+{l:9,c:"n'importe quoi vs laquelle",q:"( )에 들어가기에 알맞지 않은 것은?\nJ'aimerais vraiment essayer ( ) de ces chansons.",o:["n'importe quoi","quelques-unes","plusieurs","certaines"],a:0,
+ w:"n'importe quoi(아무거나)는 'de ces chansons'와 안 맞음 → n'importe laquelle라야.",oi:["/nɛ̃pɔʁt kwa/","/kɛlkəzyn/","/plyzjœʁ/","/sɛʁtɛn/"],ot:["아무거나 (de ces…와 안 맞음) ← 정답(부적합)","몇 개 (여)","여럿","몇몇 (여)"],fr:"essayer quelques-unes de ces chansons",tr:"이 노래들 중 몇 곡을 시도해 보다.",ipa:"/eseje kɛlkəzyn də se ʃɑ̃sɔ̃/",
+ v:[["essayer","v","eseje","시도하다"],["chanson","f","ʃɑ̃sɔ̃","노래"],["plusieurs","pron","plyzjœʁ","여럿"],["certaines","pron","sɛʁtɛn","몇몇 (여)"]]},
+{l:9,c:"l'une … l'autre (둘)",q:"밑줄 친 부분이 옳지 않은 것은?",o:["les unes chantent, {u}les autres{/u} dansent","ce que disent {u}les autres{/u}","l'une habite à Londres, {u}les autres{/u} habitent à Rome","Ils s'aiment les uns {u}les autres{/u}."],a:2,
+ w:"자매가 둘이면 l'une … l'autre → l'autre à Rome. (les autres는 셋 이상.)",fr:"l'une habite à Londres, l'autre à Rome",tr:"한 명은 런던에, 다른 한 명은 로마에 산다.",ipa:"/lyn abit a lɔ̃dʁ lotʁ a ʁɔm/",
+ oi:["/le z‿yn ʃɑ̃t le z‿otʁ dɑ̃s/","/sə kə diz le z‿otʁ/","/lyn abit a lɔ̃dʁ le z‿otʁ abit a ʁɔm/","/il sɛm le z‿œ̃ le z‿otʁ/"],ot:["어떤 이들은 노래하고 다른 이들은 춤춘다.","다른 사람들이 말하는 것.","한 명은 런던, 나머지는 로마에 산다 (자매 둘엔 les autres 오류).","그들은 서로 사랑한다."],
+ v:[["habiter","v","abite","살다"],["autre","pron","otʁ","다른 (사람)"],["chanter","v","ʃɑ̃te","노래하다"],["danser","v","dɑ̃se","춤추다"]]},
+{l:9,c:"avoir peur que + 접속법",q:"( )에 들어갈 알맞은 것은?\nJe crains qu'il pleuve. = J'ai ( ) qu'il pleuve.",o:["crainte","envie","soin","peur"],a:3,
+ w:"avoir peur que + 접속법 = craindre que.",oi:["/kʁɛ̃t/","/ɑ̃vi/","/swɛ̃/","/pœʁ/"],ot:["두려움 (avoir crainte que 부자연)","욕구","주의","두려움 (avoir peur que) ← 정답"],fr:"J'ai peur qu'il pleuve",tr:"나는 비가 올까 봐 두렵다.",ipa:"/ʒɛ pœʁ kil plœv/",
+ v:[["avoir peur que","expr","avwaʁ pœʁ","~할까 두렵다"],["craindre","v","kʁɛ̃dʁ","두려워하다"],["pleuvoir","v","pløvwaʁ","비가 오다"],["peur","f","pœʁ","두려움"]]},
+{l:9,c:"avoir l'air + 형용사",q:"( )에 들어갈 알맞은 것은?\nElle ( ) heureuse.",o:["a air","a l'air","a apparence","a l'apparence"],a:1,
+ w:"avoir l'air + 형용사 = ~해 보이다 → Elle a l'air heureuse.",oi:["/a ɛʁ/","/a lɛʁ/","/a apaʁɑ̃s/","/a lapaʁɑ̃s/"],ot:["(관사 누락)","~해 보이다 (avoir l'air) ← 정답","(관사 누락)","(부자연)"],fr:"Elle a l'air heureuse",tr:"그녀는 행복해 보인다.",ipa:"/ɛl a lɛʁ œʁøz/",
+ v:[["avoir l'air","expr","avwaʁ lɛʁ","~해 보이다"],["air","m","ɛʁ","모습"],["heureux / heureuse","adj","œʁø / œʁøz","행복한"]]},
+{l:9,c:"sortir 자동사 (être)",q:"밑줄 친 부분이 옳지 않은 것은?",o:["J'{u}ai sorti{/u} ce soir.","Je {u}suis sorti{/u} de chez moi.","La voiture {u}sera conduite{/u} par Paul.","Elle {u}s'est lavée{/u}."],a:0,
+ w:"sortir가 자동사(외출하다)면 être → Je suis sorti ce soir.",fr:"Je suis sorti ce soir",tr:"나는 오늘 저녁 외출했다.",ipa:"/ʒə sɥi sɔʁti sə swaʁ/",
+ oi:["/ʒe sɔʁti sə swaʁ/","/ʒə sɥi sɔʁti də ʃe mwa/","/la vwatyʁ səʁa kɔ̃dɥit paʁ pɔl/","/ɛl sɛ lave/"],ot:["나는 오늘 저녁 외출했다 (조동사 오류).","나는 집에서 나왔다.","그 차는 폴이 운전할 것이다.","그녀는 씻었다."],
+ v:[["sortir","v","sɔʁtiʁ","나가다"],["soir","m","swaʁ","저녁"],["voiture","f","vwatyʁ","자동차"],["se laver","v","sə lave","씻다"]]},
+{l:9,c:"대명동사 일치 (se perdre)",q:"( )에 들어갈 알맞은 것은?\nNous nous ( ) en forêt.",o:["avons perdu","avons perdus","sommes perdu","sommes perdus"],a:3,
+ w:"se perdre는 대명동사라 être + 주어 일치 → Nous nous sommes perdus.",oi:["/avɔ̃ pɛʁdy/","/avɔ̃ pɛʁdy/","/sɔm pɛʁdy/","/sɔm pɛʁdy/"],ot:["(avoir, 오류)","(avoir, 오류)","(일치 누락)","être + 주어 일치 (nous→perdus) ← 정답"],fr:"Nous nous sommes perdus en forêt",tr:"우리는 숲에서 길을 잃었다.",ipa:"/nu nu sɔm pɛʁdy ɑ̃ fɔʁɛ/",
+ v:[["se perdre","v","sə pɛʁdʁ","길을 잃다"],["forêt","f","fɔʁɛ","숲"],["en","prep","ɑ̃","~안에"]]},
+{l:9,c:"과거분사 일치 (se laver les mains)",q:"( ⓐ )와 ( ⓑ )에 들어갈 알맞은 것은?\nElles ( ⓐ ) sont ( ⓑ ) les mains.",o:["leur - lavé","leur - lavés","se - lavé","se - lavés"],a:2,
+ w:"se laver les mains: 재귀 se, 직접목적어(les mains)가 동사 뒤에 오면 과거분사 일치 안 함 → se sont lavé.",oi:["/lœʁ lave/","/lœʁ lave/","/sə lave/","/sə lave/"],ot:["(leur 오류)","(leur 오류)","재귀 se + 일치 안 함(뒤 목적어) ← 정답","(불필요 일치)"],fr:"Elles se sont lavé les mains",tr:"그녀들은 손을 씻었다.",ipa:"/ɛl sə sɔ̃ lave le mɛ̃/",
+ v:[["se laver","v","sə lave","씻다"],["main","f","mɛ̃","손"]]},
+
+// ===== 10강 =====
+{l:10,c:"비인칭 vs 인칭 il",q:"다음 밑줄 친 부분이 인칭대명사인 것은?",o:["{u}Il{/u} est arrivé un accident.","{u}Il{/u} tombe de la pluie.","{u}Il{/u} fait beau.","{u}Il{/u} est venu ce soir."],a:3,
+ w:"사고가 일어나다·비가 오다·날씨를 나타내는 il은 비인칭. 'Il est venu ce soir'의 il만 실제 인칭(진짜 주어).",fr:"Il est venu ce soir",tr:"그는 오늘 저녁 왔다.",ipa:"/il ɛ vəny sə swaʁ/",
+ oi:["/il ɛ t‿aʁive œ̃ n‿aksidɑ̃/","/il tɔ̃b də la plɥi/","/il fɛ bo/","/il ɛ vəny sə swaʁ/"],ot:["사고가 일어났다 (비인칭).","비가 내린다 (비인칭).","날씨가 좋다 (비인칭).","그가 오늘 저녁 왔다 (인칭)."],
+ v:[["venir","v","vəniʁ","오다"],["accident","m","aksidɑ̃","사고"],["pluie","f","plɥi","비"],["soir","m","swaʁ","저녁"]]},
+{l:10,c:"문어체 il est (= il y a)",q:"( ) 안에 들어갈 알맞은 것은?\nIl ( ) des gens qui s'aiment.",o:["est","sont","a","ont"],a:0,
+ w:"Il est des gens qui…는 문어체로 Il y a des gens qui…(~한 사람들이 있다).",oi:["/ɛ/","/sɔ̃/","/a/","/ɔ̃/"],ot:["Il est des gens=il y a (문어) ← 정답","(주어 il과 불일치)","Il a (부자연)","(불일치)"],fr:"Il est des gens qui s'aiment",tr:"서로 사랑하는 사람들이 있다.",ipa:"/il ɛ de ʒɑ̃ ki sɛm/",
+ v:[["il est (= il y a)","expr","il ɛ","~이 있다 (문어)"],["gens","m","ʒɑ̃","사람들"],["s'aimer","v","sɛme","서로 사랑하다"]]},
+{l:10,c:"passer 자동사 (être + 일치)",q:"( ) 안에 들어갈 알맞은 것은?\nElle ( ) chez elle hier soir.",o:["est passé","est passée","a passé","a passée"],a:1,
+ w:"passer가 '들르다'(이동·자동사)면 être + 일치 → Elle est passée.",oi:["/ɛ pase/","/ɛ pase/","/a pase/","/a pase/"],ot:["être (여성 일치 누락)","être+여성 일치 (Elle) ← 정답","avoir (자동사엔 오류)","(avoir+일치 오류)"],fr:"Elle est passée chez elle hier soir",tr:"그녀는 어젯밤 자기 집에 들렀다.",ipa:"/ɛl ɛ pase ʃe z‿ɛl jɛʁ swaʁ/",
+ v:[["passer","v","pɑse","들르다/지나가다"],["hier","adv","jɛʁ","어제"],["chez","prep","ʃe","~의 집에"]]},
+{l:10,c:"수동태 행위자 (par)",q:"밑줄 친 전치사 de의 사용이 가장 어색한 것은?",o:["Le ciel est couvert {u}de{/u} nuages.","Il est saisi {u}de{/u} peur.","Elle est aimée {u}de{/u} tous.","Le panneau a été renversé {u}du{/u} vent."],a:3,
+ w:"구체적 행위의 행위자는 par → renversé par le vent. (상태·감정은 de.)",fr:"Le panneau a été renversé par le vent",tr:"표지판이 바람에 쓰러졌다.",ipa:"/lə pano a ete ʁɑ̃vɛʁse paʁ lə vɑ̃/",
+ oi:["/lə sjɛl ɛ kuvɛʁ də nɥaʒ/","/il ɛ sɛzi də pœʁ/","/ɛl ɛ t‿eme də tus/","/lə pano a ete ʁɑ̃vɛʁse paʁ lə vɑ̃/"],ot:["하늘이 구름으로 덮여 있다.","그는 두려움에 사로잡혔다.","그녀는 모두에게 사랑받는다.","표지판이 바람에 쓰러졌다 (→ par le vent)."],
+ v:[["renverser","v","ʁɑ̃vɛʁse","쓰러뜨리다"],["panneau","m","pano","표지판"],["vent","m","vɑ̃","바람"],["par","prep","paʁ","~에 의해"]]},
+{l:10,c:"수동태 불가 (téléphoner à)",q:"다음 중 수동태 구문이 옳지 않은 것은?",o:["Sa mère {u}a été aidée{/u} par Antoine.","Vous serez pardonné.","Isabelle a été téléphonée par Antoine.","Vous serez bientôt obéi."],a:2,
+ w:"téléphoner à qqn은 간접목적어라 수동태 불가. (pardonner·obéir는 예외.)",fr:"Sa mère a été aidée par Antoine",tr:"그의 어머니는 앙투안에게 도움을 받았다.",ipa:"/sa mɛʁ a ete ede paʁ ɑ̃twan/",
+ oi:["/sa mɛʁ a ete ede paʁ ɑ̃twan/","/vu səʁe paʁdɔne/","/izabɛl a ete telefɔne paʁ ɑ̃twan/","/vu səʁe bjɛ̃to t‿ɔbei/"],ot:["그의 어머니는 앙투안에게 도움받았다.","당신은 용서받을 것이다.","이자벨이 앙투안의 전화를 받았다 (수동태 불가).","곧 당신 말을 따를 것이다."],
+ v:[["aider","v","ede","돕다"],["mère","f","mɛʁ","어머니"],["pardonner","v","paʁdɔne","용서하다"],["obéir","v","ɔbeiʁ","순종하다"]]},
+{l:10,c:"숙어 (se mettre à)",q:"밑줄 친 부분을 같은 의미로 대체할 수 있는 것은?\nIl {u}commence à{/u} tousser.",o:["commence par","cesse de","se met à","manque de"],a:2,
+ w:"commencer à = se mettre à (~하기 시작하다).",oi:["/kɔmɑ̃s paʁ/","/sɛs də/","/sə mɛ a/","/mɑ̃k də/"],ot:["~로 시작하다(순서)","그만두다","~하기 시작하다 (=commencer à) ← 정답","부족하다"],fr:"Il commence à tousser",tr:"그는 기침하기 시작한다.",ipa:"/il kɔmɑ̃s a tuse/",
+ v:[["commencer à","v","kɔmɑ̃se","시작하다"],["se mettre à","v","sə mɛtʁ a","~하기 시작하다"],["tousser","v","tuse","기침하다"],["cesser de","v","sese","그만두다"]]},
+{l:10,c:"숙어 (cesser de)",q:"다음을 프랑스어로 옮길 때 ( )에 들어갈 알맞은 것은?\n\"그는 담배를 끊었다.\" → Il ( ) fumer.",o:["a fini de","a cessé de","a manqué de","vient de"],a:1,
+ w:"끊었다/중단했다 = a cessé de fumer.",oi:["/a fini də/","/a sese də/","/a mɑ̃ke də/","/vjɛ̃ də/"],ot:["끝마쳤다","그만두었다 (담배 끊다) ← 정답","거의 ~할 뻔/부족했다","방금 ~했다"],fr:"Il a cessé de fumer",tr:"그는 담배를 끊었다.",ipa:"/il a sese də fyme/",
+ v:[["cesser de","v","sese","그만두다"],["fumer","v","fyme","담배 피우다"],["finir de","v","finiʁ","~을 끝내다"],["venir de","v","vəniʁ","방금 ~하다"]]},
+{l:10,c:"passer 타동사 (avoir)",q:"다음 중 밑줄 친 부분이 옳지 않은 것은?",o:["Je {u}suis passé{/u} Noël chez moi.","Je {u}suis sorti{/u} de chez moi.","La voiture {u}sera conduite{/u} par Paul.","Elle {u}s'est lavée{/u}."],a:0,
+ w:"passer Noël(시간을 보내다)은 타동사라 avoir → J'ai passé Noël chez moi.",fr:"J'ai passé Noël chez moi",tr:"나는 크리스마스를 집에서 보냈다.",ipa:"/ʒe pase nɔɛl ʃe mwa/",
+ oi:["/ʒə sɥi pase nɔɛl ʃe mwa/","/ʒə sɥi sɔʁti də ʃe mwa/","/la vwatyʁ səʁa kɔ̃dɥit paʁ pɔl/","/ɛl sɛ lave/"],ot:["나는 크리스마스를 집에서 보냈다 (조동사 오류).","나는 집에서 나왔다.","그 차는 폴이 운전할 것이다.","그녀는 씻었다."],
+ v:[["passer","v","pɑse","(시간을) 보내다"],["Noël","m","nɔɛl","크리스마스"],["conduire","v","kɔ̃dɥiʁ","운전하다"]]},
+{l:10,c:"dormir는 avoir",q:"다음 중 밑줄 친 부분이 문법적으로 옳지 않은 것은?",o:["Sa mère {u}a été aidée{/u} par Antoine.","Ils {u}se sont rencontrés{/u} au café.","Elle {u}est entrée{/u}.","Elle {u}est dormie{/u}."],a:3,
+ w:"dormir는 être를 쓰지 않음 → Elle a dormi (일치 없음).",fr:"Elle a dormi",tr:"그녀는 잤다.",ipa:"/ɛl a dɔʁmi/",
+ oi:["/sa mɛʁ a ete ede paʁ ɑ̃twan/","/il sə sɔ̃ ʁɑ̃kɔ̃tʁe o kafe/","/ɛl ɛ t‿ɑ̃tʁe/","/ɛl ɛ dɔʁmi/"],ot:["그의 어머니는 앙투안에게 도움받았다.","그들은 카페에서 만났다.","그녀는 들어갔다.","그녀는 잤다 (조동사 오류)."],
+ v:[["dormir","v","dɔʁmiʁ","자다"],["entrer","v","ɑ̃tʁe","들어가다"],["se rencontrer","v","sə ʁɑ̃kɔ̃tʁe","서로 만나다"]]},
+{l:10,c:"être en train de",q:"다음을 프랑스어로 옮길 때 ( )에 들어갈 알맞은 것은?\n\"그녀는 잠자는 중이다.\" → Elle ( ) dormir.",o:["a en train de","a en train à","est en train de","est en train à"],a:2,
+ w:"être en train de + 동사원형 = ~하는 중이다.",oi:["/a ɑ̃ tʁɛ̃ də/","/a ɑ̃ tʁɛ̃ a/","/ɛ ɑ̃ tʁɛ̃ də/","/ɛ ɑ̃ tʁɛ̃ a/"],ot:["(être 아님, 오류)","(오류)","~하는 중이다 (être en train de) ← 정답","(à 오류)"],fr:"Elle est en train de dormir",tr:"그녀는 자고 있는 중이다.",ipa:"/ɛl ɛ tɑ̃ tʁɛ̃ də dɔʁmiʁ/",
+ v:[["être en train de","expr","ɛtʁ ɑ̃ tʁɛ̃ də","~하는 중이다"],["dormir","v","dɔʁmiʁ","자다"]]},
+
+// ===== 11강 =====
+{l:11,c:"가정 (Si + 현재 → 미래)",q:"( ) 안에 들어갈 알맞은 것은?\nSi ( ), je vous écrirai.",o:["je réussis","je réussirai","je réussissais","j'avais réussi"],a:0,
+ w:"Si + 현재 → 주절 미래 → Si je réussis, je vous écrirai.",oi:["/ʒə ʁeysi/","/ʒə ʁeysiʁe/","/ʒə ʁeysisɛ/","/ʒavɛ ʁeysi/"],ot:["현재 (Si절) ← 정답","단순미래 (Si절 불가)","반과거","대과거"],fr:"Si je réussis, je vous écrirai",tr:"내가 성공하면 당신에게 편지하겠다.",ipa:"/si ʒə ʁeysi ʒə vu z‿ekʁiʁe/",
+ v:[["réussir","v","ʁeysiʁ","성공하다"],["écrire","v","ekʁiʁ","(편지를) 쓰다"],["si","conj","si","만약 ~라면"]]},
+{l:11,c:"반과거 vs 복합과거 (한정 횟수)",q:"다음 중 밑줄 친 부분의 시제가 옳지 않은 것은?",o:["Chaque dimanche, il {u}venait{/u} nous voir.","Il {u}venait{/u} nous voir tous les dimanches.","Autrefois, il {u}venait{/u} nous voir.","Il {u}venait{/u} nous voir trois fois cette semaine."],a:3,
+ w:"'이번 주에 세 번'은 한정된 완료 횟수라 복합과거 → il est venu … trois fois.",fr:"Il est venu nous voir trois fois cette semaine",tr:"그는 이번 주에 세 번 우리를 보러 왔다.",ipa:"/il ɛ vəny nu vwaʁ tʁwa fwa sɛt səmɛn/",
+ oi:["/ʃak dimɑ̃ʃ il vənɛ nu vwaʁ/","/il vənɛ nu vwaʁ tu le dimɑ̃ʃ/","/otʁəfwa il vənɛ nu vwaʁ/","/il vənɛ nu vwaʁ tʁwa fwa sɛt səmɛn/"],ot:["매주 일요일 그는 우리를 보러 오곤 했다.","그는 일요일마다 우리를 보러 오곤 했다.","예전에 그는 우리를 보러 오곤 했다.","그는 이번 주에 세 번 우리를 보러 왔다 (반과거 오류)."],
+ v:[["venir","v","vəniʁ","오다"],["semaine","f","səmɛn","주(週)"],["fois","f","fwa","번/회"],["autrefois","adv","otʁəfwa","예전에"]]},
+{l:11,c:"제안 (Si + 반과거)",q:"( ) 안에 들어갈 알맞은 것은?\nSi on ( ) un petit jeu? Qu'en dis-tu?",o:["fait","faisait","fera","fasse"],a:1,
+ w:"Si + 반과거 = 제안('~하는 게 어때?') → Si on faisait un petit jeu?",oi:["/fɛ/","/fəzɛ/","/fəʁa/","/fas/"],ot:["현재","반과거 (제안 Si on…?) ← 정답","미래","접속법"],fr:"Si on faisait un petit jeu",tr:"우리 게임 하나 할까? 어떻게 생각해?",ipa:"/si ɔ̃ fəzɛ œ̃ pəti ʒø/",
+ v:[["faire","v","fɛʁ","하다"],["jeu","m","ʒø","놀이/게임"],["petit","adj","pəti","작은"],["si","conj","si","~하면 어때 (제안)"]]},
+{l:11,c:"현재형 철자 (nettoyer)",q:"다음 중 직설법 현재의 변화가 옳지 않은 것은?",o:["je nettoie","ils nettoyent","tu paies","ils payent"],a:1,
+ w:"-oyer 동사는 y→i 필수 → ils nettoient. (-ayer인 payer는 paies/payent 둘 다 허용.)",oi:["/ʒə nɛtwa/","/il nɛtwa/","/ty pɛ/","/il pɛj/"],ot:["청소한다 (정상)","ils nettoient여야 함 (y→i) ← 오류","낸다 (paies 허용)","낸다 (payent 허용)"],fr:"ils nettoient",tr:"nettoyer 3인칭 복수 = ils nettoient.",ipa:"/il nɛtwa/",
+ v:[["nettoyer","v","nɛtwaje","청소하다"],["payer","v","peje","지불하다"]]},
+{l:11,c:"현재형 철자 (peler=è형)",q:"다음 중 직설법 현재의 변화가 옳지 않은 것은?",o:["j'appelle","je jette","je pelle","j'achète"],a:2,
+ w:"peler는 acheter형(è) → je pèle. (appeler·jeter는 자음 중복.)",oi:["/ʒapɛl/","/ʒə ʒɛt/","/ʒə pɛl/","/ʒaʃɛt/"],ot:["부른다 (정상)","던진다 (정상)","je pèle여야 함 (è) ← 오류","산다 (è, 정상)"],fr:"je pèle",tr:"peler 1인칭 = je pèle (è).",ipa:"/ʒə pɛl/",
+ v:[["peler","v","pəle","껍질을 벗기다"],["jeter","v","ʒəte","던지다"],["appeler","v","aple","부르다"],["acheter","v","aʃte","사다"]]},
+{l:11,c:"가정 (Si + 반과거 → 조건법)",q:"( ) 안에 들어갈 알맞은 것은?\nSi ( ) à sa place, je n'agirais pas ainsi.",o:["je suis","j'ai été","j'étais","je serai"],a:2,
+ w:"Si + 반과거 → 주절 조건법 → Si j'étais à sa place.",oi:["/ʒə sɥi/","/ʒe ete/","/ʒetɛ/","/ʒə səʁe/"],ot:["현재","복합과거","반과거 (Si절) ← 정답","단순미래"],fr:"Si j'étais à sa place, je n'agirais pas ainsi",tr:"내가 그의 입장이라면 그렇게 행동하지 않을 것이다.",ipa:"/si ʒetɛ a sa plas ʒə naʒiʁɛ pa ɛ̃si/",
+ v:[["être","v","ɛtʁ","~이다"],["agir","v","aʒiʁ","행동하다"],["place","f","plas","자리/입장"],["ainsi","adv","ɛ̃si","그렇게"]]},
+{l:11,c:"passer 자동사 (être)",q:"( ) 안에 들어갈 알맞은 것은?\nLe facteur ( ), et voilà votre courrier.",o:["passe","passait","a passé","est passé"],a:3,
+ w:"passer가 자동사(다녀가다)면 être → Le facteur est passé.",oi:["/pas/","/pasɛ/","/a pase/","/ɛ pase/"],ot:["현재","반과거","avoir (자동사엔 오류)","être (다녀가다) ← 정답"],fr:"Le facteur est passé, et voilà votre courrier",tr:"집배원이 다녀갔고, 여기 당신 우편물이 있다.",ipa:"/lə faktœʁ ɛ pase e vwala vɔtʁ kuʁje/",
+ v:[["passer","v","pɑse","다녀가다/지나가다"],["facteur","m","faktœʁ","집배원"],["courrier","m","kuʁje","우편물"]]},
+{l:11,c:"Si절에 현재",q:"다음 중 밑줄 친 시제의 사용이 옳지 않은 것은?",o:["On {u}a trouvé{/u} ce médicament l'année dernière.","Il {u}est mort{/u} en 1885.","Elle {u}est allée{/u} plusieurs fois au restaurant.","Si j'{u}ai eu{/u} le temps, je viendrai te voir."],a:3,
+ w:"Si절(가정)에는 미래·완료가 아니라 현재 → Si j'ai le temps, je viendrai.",fr:"Si j'ai le temps, je viendrai te voir",tr:"시간이 있으면 너를 보러 가겠다.",ipa:"/si ʒe lə tɑ̃ ʒə vjɛ̃dʁe tə vwaʁ/",
+ oi:["/ɔ̃ a tʁuve sə medikamɑ̃ lane dɛʁnjɛʁ/","/il ɛ mɔʁ ɑ̃ milɥisɑ̃katʁəvɛ̃sɛ̃k/","/ɛl ɛ t‿ale plyzjœʁ fwa o ʁɛstoʁɑ̃/","/si ʒe lə tɑ̃ ʒə vjɛ̃dʁe tə vwaʁ/"],ot:["작년에 이 약을 발견했다.","그는 1885년에 죽었다.","그녀는 식당에 여러 번 갔다.","시간이 있으면 보러 갈게 (Si절 시제 오류)."],
+ v:[["trouver","v","tʁuve","발견하다"],["mourir","v","muʁiʁ","죽다"],["temps","m","tɑ̃","시간"],["médicament","m","medikamɑ̃","약"]]},
+{l:11,c:"Si + 복합과거",q:"다음 문장을 프랑스어로 바꿀 때 ( )에 들어갈 알맞은 것은?\n\"숙제를 끝내지 않으면, 네 디저트는 없을 거야.\" → Si tu ( ) tes devoirs, tu n'auras pas de dessert.",o:["ne finissait pas","n'as pas fini","ne finiras pas","n'auras pas fini"],a:1,
+ w:"미래 주절보다 선행되는 완료 사건이라 전미래(auras fini) 대신, Si절엔 미래가 못 와서 현재 as로 → n'as pas fini.",oi:["/nə finisɛ pa/","/na pa fini/","/nə finiʁa pa/","/noʁa pa fini/"],ot:["반과거 (부적합)","복합과거 (Si절) ← 정답","미래 (Si절 불가)","전미래 (Si절 불가)"],fr:"Si tu n'as pas fini tes devoirs, tu n'auras pas de dessert",tr:"숙제를 끝내지 않으면 디저트는 없을 거야.",ipa:"/si ty na pa fini te dəvwaʁ ty noʁa pa də desɛʁ/",
+ v:[["finir","v","finiʁ","끝내다"],["devoirs","m","dəvwaʁ","숙제 (복수)"],["dessert","m","desɛʁ","후식"]]},
+{l:11,c:"확실성의 복합과거",q:"다음 문장의 밑줄 친 표현을 좀 더 확실성이 높은 사건으로 표현하기 위해서 사용될 수 있는 것은?\nSi tu avances, tu {u}mourras{/u}.",o:["es mort","étais mort","mourrais","serais mort"],a:0,
+ w:"복합과거는 미래 사건을 더 확실·단호하게 표현 → tu es mort(es mort=mourir의 복합과거).",oi:["/ɛ mɔʁ/","/etɛ mɔʁ/","/muʁɛ/","/səʁɛ mɔʁ/"],ot:["복합과거 (단호한 미래) ← 정답","대과거","조건법 현재","조건법 과거"],fr:"Si tu avances, tu es mort",tr:"움직이면 넌 죽은 목숨이다.",ipa:"/si ty avɑ̃s ty ɛ mɔʁ/",
+ v:[["avancer","v","avɑ̃se","앞으로 가다"],["mourir","v","muʁiʁ","죽다"]]},
+
+// ===== 12강 =====
+{l:12,c:"대과거 (과거보다 이전)",q:"( )에 들어갈 알맞은 것은?\nHier, j'ai rencontré mon collègue que ( ) il y a dix ans.",o:["je voyais","j'ai vu","j'aurais vu","j'avais vu"],a:3,
+ w:"만난 것(복합과거)보다 본 것이 더 이전 → 대과거 j'avais vu.",fr:"Hier, j'ai rencontré mon collègue que j'avais vu il y a dix ans",oi:["/ʒə vwajɛ/","/ʒe vy/","/ʒoʁɛ vy/","/ʒavɛ vy/"],ot:["반과거","복합과거","조건법 과거","대과거 (더 이전) ← 정답"],tr:"어제 나는 10년 전에 봤던 동료를 만났다.",ipa:"/jɛʁ ʒe ʁɑ̃kɔ̃tʁe mɔ̃ kɔlɛɡ kə ʒavɛ vy il i a di z‿ɑ̃/",
+ v:[["rencontrer","v","ʁɑ̃kɔ̃tʁe","만나다"],["voir","v","vwaʁ","보다"],["collègue","","kɔlɛɡ","동료"],["an","m","ɑ̃","해/년"],["hier","adv","jɛʁ","어제"]]},
+{l:12,c:"가정 (Si + 대과거 → 조건법 과거)",q:"( )에 들어갈 알맞은 것은?\nSi ( ) plus attentif, je ne serais pas tombé de l'arbre.",o:["j'étais","j'avais été","j'aurai été","j'aurais été"],a:1,
+ w:"주절이 조건법 과거(ne serais pas tombé)이므로 Si절은 대과거 → Si j'avais été.",oi:["/ʒetɛ/","/ʒavɛ ete/","/ʒoʁe ete/","/ʒoʁɛ ete/"],ot:["반과거","대과거 (Si절) ← 정답","전미래","조건법 과거 (주절용)"],fr:"Si j'avais été plus attentif, je ne serais pas tombé de l'arbre",tr:"내가 더 주의했더라면 나무에서 떨어지지 않았을 것이다.",ipa:"/si ʒavɛ ete ply z‿atɑ̃tif ʒə nə sʁɛ pa tɔ̃be də laʁbʁ/",
+ v:[["être","v","ɛtʁ","~이다"],["tomber","v","tɔ̃be","떨어지다"],["attentif / attentive","adj","atɑ̃tif","주의 깊은"],["arbre","m","aʁbʁ","나무"]]},
+{l:12,c:"단순미래 (fera)",q:"( )에 들어갈 알맞은 것은?\nDemain, il ( ) beau dans la plupart des régions de la France.",o:["faira","fera","fassera","fasserait"],a:1,
+ w:"faire의 단순미래 → il fera beau.",oi:["/fɛʁa/","/fəʁa/","/fasəʁa/","/fasəʁɛ/"],ot:["(오류 형태)","faire 단순미래 ← 정답","(오류)","(오류)"],fr:"Demain, il fera beau dans la plupart des régions",tr:"내일은 대부분 지역에서 날씨가 좋을 것이다.",ipa:"/dəmɛ̃ il fəʁa bo dɑ̃ la plypaʁ de ʁeʒjɔ̃/",
+ v:[["faire","v","fɛʁ","하다 (날씨: faire beau)"],["demain","adv","dəmɛ̃","내일"],["région","f","ʁeʒjɔ̃","지역"],["plupart","f","plypaʁ","대부분"]]},
+{l:12,c:"과거에서 본 미래 (조건법 현재)",q:"( )에 들어갈 알맞은 것은?\nJe croyais qu'elle ( ) le lendemain.",o:["vient","vienne","viendra","viendrait"],a:3,
+ w:"과거 주절(croyais) 뒤 '과거에서 본 미래'는 조건법 현재 → viendrait.",oi:["/vjɛ̃/","/vjɛn/","/vjɛ̃dʁa/","/vjɛ̃dʁɛ/"],ot:["현재","접속법","단순미래","조건법 현재 (과거에서 본 미래) ← 정답"],fr:"Je croyais qu'elle viendrait le lendemain",tr:"나는 그녀가 다음 날 올 거라고 생각했다.",ipa:"/ʒə kʁwajɛ kɛl vjɛ̃dʁɛ lə lɑ̃dmɛ̃/",
+ v:[["croire","v","kʁwaʁ","믿다/생각하다"],["venir","v","vəniʁ","오다"],["lendemain","m","lɑ̃dmɛ̃","다음 날"]]},
+{l:12,c:"대과거 (선행 원인)",q:"( )에 들어갈 알맞은 것은?\nIl ( ) toute la nuit : la rivière a débordé.",o:["pleuvait","avait plu","pleuvrait","aurait plu"],a:1,
+ w:"강이 넘친 것(복합과거)보다 비가 먼저 → 대과거 avait plu.",oi:["/pløvɛ/","/avɛ ply/","/pløvʁɛ/","/oʁɛ ply/"],ot:["반과거","대과거 (선행 원인) ← 정답","조건법 현재","조건법 과거"],fr:"Il avait plu toute la nuit",tr:"밤새 비가 내렸었다: 강이 범람했다.",ipa:"/il avɛ ply tut la nɥi/",
+ v:[["pleuvoir","v","pløvwaʁ","비가 오다"],["déborder","v","debɔʁde","범람하다"],["nuit","f","nɥi","밤"],["rivière","f","ʁivjɛʁ","강"]]},
+{l:12,c:"전미래 (quand절 선행 사건)",q:"( ) 안에 들어갈 알맞은 것은?\n\"나는 당신이 돌아오고 나서 외출하겠다.\" → Je sortirai quand vous ( ).",o:["rentrez","êtes rentré","rentrerez","serez rentré"],a:3,
+ w:"미래 주절(sortirai) + quand절의 선행 완료 사건 → 전미래 serez rentré.",oi:["/ʁɑ̃tʁe/","/ɛt ʁɑ̃tʁe/","/ʁɑ̃tʁəʁe/","/səʁe ʁɑ̃tʁe/"],ot:["현재","복합과거","단순미래","전미래 (선행 완료) ← 정답"],fr:"Je sortirai quand vous serez rentré",tr:"당신이 돌아오면(돌아오고 나서) 나는 외출하겠다.",ipa:"/ʒə sɔʁtiʁe kɑ̃ vu sʁe ʁɑ̃tʁe/",
+ v:[["sortir","v","sɔʁtiʁ","나가다/외출하다"],["rentrer","v","ʁɑ̃tʁe","돌아오다"],["quand","conj","kɑ̃","~할 때"]]},
+{l:12,c:"Si + 대과거 → 조건법 과거",q:"( ) 안에 들어갈 알맞은 것은?\nSi j'avais bien travaillé, je(j') ( ) à l'examen.",o:["réussirai","aurais réussi","avais réussi","aurai réussi"],a:1,
+ w:"Si + 대과거(avais travaillé) → 주절 조건법 과거 → j'aurais réussi.",oi:["/ʁeysiʁe/","/oʁɛ ʁeysi/","/avɛ ʁeysi/","/oʁe ʁeysi/"],ot:["단순미래","조건법 과거 (주절) ← 정답","대과거","전미래"],fr:"j'aurais réussi à l'examen",tr:"공부를 열심히 했더라면 시험에 합격했을 것이다.",ipa:"/ʒoʁɛ ʁeysi a lɛɡzamɛ̃/",
+ v:[["réussir à","v","ʁeysiʁ","합격하다"],["travailler","v","tʁavaje","공부하다/일하다"],["examen","m","ɛɡzamɛ̃","시험"]]},
+{l:12,c:"명령 대용 (조건법 불가)",q:"위와 같은 의미로 사용될 수 없는 것은?\n\"내 책을 돌려주십시오.\"",o:["Rendez-moi mon livre.","Vous allez me rendre mon livre.","Vous me rendrez mon livre.","Vous me rendriez mon livre."],a:3,
+ w:"명령법·근접미래·단순미래는 명령 대용 가능하나, 조건법(rendriez)은 단정적 명령이 못 됨.",fr:"Rendez-moi mon livre",tr:"내 책을 돌려주세요.",ipa:"/ʁɑ̃de-mwa mɔ̃ livʁ/",
+ oi:["/ʁɑ̃de-mwa mɔ̃ livʁ/","/vu z‿ale mə ʁɑ̃dʁ mɔ̃ livʁ/","/vu mə ʁɑ̃dʁe mɔ̃ livʁ/","/vu mə ʁɑ̃dʁije mɔ̃ livʁ/"],ot:["내 책을 돌려주세요 (명령법).","내 책을 돌려줄 거죠 (근접미래).","내 책을 돌려줄 거죠 (단순미래).","내 책을 돌려주시겠어요? (조건법, 단정 명령 불가)."],
+ v:[["rendre","v","ʁɑ̃dʁ","돌려주다"],["livre","m","livʁ","책"],["aller (+ inf)","v","ale","~할 것이다 (근접미래)"],["moi","pron","mwa","나에게"]]},
+{l:12,c:"전미래의 추측",q:"위의 문장과 가장 가까운 의미로 사용될 수 있는 것은?\nPeut-être, il s'est égaré en ville.",o:["Il s'égare en ville.","Il s'égarait en ville.","Il se sera égaré en ville.","Il s'était égaré en ville."],a:2,
+ w:"과거 사건의 추측은 전미래 → Il se sera égaré en ville.(아마 길을 잃었을 것이다.)",fr:"Il se sera égaré en ville",tr:"그는 아마 시내에서 길을 잃었을 것이다.",ipa:"/il sə sʁa eɡaʁe ɑ̃ vil/",
+ oi:["/il seɡaʁ ɑ̃ vil/","/il seɡaʁɛ ɑ̃ vil/","/il sə sʁa eɡaʁe ɑ̃ vil/","/il setɛ eɡaʁe ɑ̃ vil/"],ot:["그는 시내에서 길을 잃는다 (현재).","그는 시내에서 길을 잃곤 했다 (반과거).","아마 시내에서 길을 잃었을 것이다 (전미래 추측).","그는 시내에서 길을 잃었었다 (대과거)."],
+ v:[["s'égarer","v","seɡaʁe","길을 잃다"],["ville","f","vil","도시/시내"],["peut-être","adv","pø-tɛtʁ","아마"]]},
+{l:12,c:"대과거 (que j'avais vu)",q:"( )에 들어갈 알맞은 것은?\nHier, j'ai rencontré mon ami que je(j') ( ) il y a dix ans.",o:["ai vu","voyais","avais vu","aurais vu"],a:2,
+ w:"만난 것(복합과거)보다 본 것이 더 이전 → 대과거 j'avais vu.",fr:"Hier, j'ai rencontré mon ami que j'avais vu il y a dix ans",oi:["/e vy/","/vwajɛ/","/avɛ vy/","/oʁɛ vy/"],ot:["복합과거","반과거","대과거 (더 이전) ← 정답","조건법 과거"],tr:"어제 나는 10년 전에 봤던 친구를 만났다.",ipa:"/jɛʁ ʒe ʁɑ̃kɔ̃tʁe mɔ̃ n‿ami kə ʒavɛ vy il i a di z‿ɑ̃/",
+ v:[["rencontrer","v","ʁɑ̃kɔ̃tʁe","만나다"],["voir","v","vwaʁ","보다"],["ami","m","ami","친구"],["an","m","ɑ̃","해/년"]]}
+,
+// ========== 기초어휘와발음 (course: vocab) ==========
+// ----- 1강 : 개관·철자·정서법 -----
+{course:"vocab",l:1,c:"프랑스어 개관",q:"다음 중 프랑스어의 특징이 아닌 것은?",o:["표음 문자로서 발음과 정서법이 정확히 일치한다.","26개의 알파벳 철자를 사용한다.","유엔이 채택한 6개의 공식언어에 포함된다.","지역 방언의 영향으로 사투리 프랑스어가 존재한다."],a:0,
+ w:"프랑스어는 표음 문자이지만 발음과 정서법이 정확히 일치하지는 않는다(묵음 자음·복합 철자 등). 26자 알파벳·유엔 공식언어·사투리 존재는 옳은 설명."},
+{course:"vocab",l:1,c:"알파벳 이름",q:"다음 중 프랑스어 알파벳과 발음이 옳지 않게 짝지어진 것은?",o:["Y [이그헥]","J [줴]","Q [뀌]","H [아쉬]"],oi:["/iɡʁɛk/","/ʒi/","/ky/","/aʃ/"],a:1,
+ w:"J의 이름은 [지/ʒi]이며 '줴'가 아니다. Y=이그헥(i grec), Q=뀌, H=아쉬는 정상."},
+{course:"vocab",l:1,c:"트레마(¨)",q:"Noël에서 트레마 '¨'의 기능은?",o:["복합모음으로 간주해 '뇔'로 발음하라는 뜻","e를 폐음 [e]로 발음하라는 표시","모음을 강하고 길게 발음하라는 표시","앞 모음과 분리해 '노-엘'처럼 발음하라는 표시"],a:3,
+ w:"트레마(¨)는 앞 모음과 분리해 따로 발음하라는 표시. Noël은 oe를 분리해 [nɔɛl].",
+ v:[["Noël","m","nɔɛl","크리스마스"]]},
+
+// ----- 2강 : 연음·운율 -----
+{course:"vocab",l:2,c:"리에종 vs 앙쉔망",q:"다음 중 단어를 연결해 읽을 때 연결 방식의 성격이 다른 하나는?",o:["mal à la tête","mes amis","bonne année","cher ami"],oi:["/mal a la tɛt/","/me z‿ami/","/bɔn ane/","/ʃɛʁ ami/"],a:1,
+ w:"mes amis만 '메자미'로 리에종(묵음 s가 [z]로 부활). mal à la tête·bonne année·cher ami는 이미 발음되는 자음을 잇는 앙쉔망.",
+ v:[["mes amis","","mez‿ami","내 친구들 (리에종)"],["cher ami","","ʃɛʁ‿ami","친애하는 친구 (앙쉔망)"],["année","f","ane","해/년"]]},
+{course:"vocab",l:2,c:"리듬군",q:"다음 중 리듬군이 잘못 표시된 것은?",o:["Marie / mange une pomme / sur un banc.","Je / mange une pomme / sur un banc.","Bonjour / Madame.","Bonjour Madame /."],a:1,
+ w:"주어가 Je 같은 대명사이면 동사와 한 리듬군 → 'Je mange / une pomme / sur un banc.'"},
+{course:"vocab",l:2,c:"억양 (의문문)",q:"의문사가 없는 의문문 'Ils vont au cinéma?'의 억양은?",o:["2-3-1 억양으로 말한다","4-1 하강조로 말한다","문장 끝을 많이 올리는 상승조이다","4로 시작해 2로 내리다가 끝을 살짝만 올린다"],a:2,
+ w:"의문사가 없는 의문문은 2-4 상승조로 문장 끝을 많이 올린다."},
+{course:"vocab",l:2,c:"억양 (상승조)",q:"다음 중 문장의 마지막을 가장 높이 올려 읽어야 하는 문장은?",o:["C'est le grand jour de la foire à l'emploi.","Tu vas au marché?","Samedi matin, il va à la poste.","Est-ce que tu vas au marché?"],oi:["/sɛ lə ɡʁɑ̃ ʒuʁ də la fwaʁ a lɑ̃plwa/","/ty va o maʁʃe/","/samdi matɛ̃ il va a la pɔst/","/ɛs kə ty va o maʁʃe/"],a:1,
+ w:"평서문을 그대로 의문문으로 만드는 Tu vas au marché?에서 끝을 가장 높이 올린다. Est-ce que tu vas au marché?도 올리지만 그보다 살짝만 올려도 된다."},
+{course:"vocab",l:2,c:"발음-철자 짝",q:"다음 중 발음과 철자가 알맞게 짝지어지지 않은 것은?",o:["[lətɑ̃, sɛdlaʀʒɑ̃] : Le temps, c'est de l'argent.","[kɔmɑ̃tale-vu?] : Comment allez-vous?","[bɔnʃɑ̃ːs!] : Bonsoir!","[o ʀəvwaːʀ!] : Au revoir!"],a:2,
+ w:"[bɔnʃɑ̃ːs!]는 Bonne chance!(행운을 빌어요)의 발음. Bonsoir!는 [bɔ̃swaːʀ].",
+ v:[["Bonne chance !","","bɔn ʃɑ̃s","행운을 빌어요"],["Bonsoir !","","bɔ̃swaʁ","안녕하세요 (저녁)"]]},
+
+// ----- 3강 : 모음 분류·개구도 -----
+{course:"vocab",l:3,c:"모음 분류 기준",q:"다음 중 프랑스어 모음의 분류 기준이 아닌 것은?",o:["개구도","혀의 위치","입술 모양","성대의 진동"],a:3,
+ w:"성대의 진동은 자음(유성/무성) 구별 기준. 모음은 개구도·혀 위치·입술 모양으로 분류."},
+{course:"vocab",l:3,c:"원순/평순 모음",q:"다음 중 입술을 둥글게 하는 원순모음이 아닌 것은?",o:["[u]","[e]","[ə]","[ø]"],a:1,
+ w:"[e]는 '에'로 입술을 평평하게 하는 평순모음. {u}·[ə]·[ø]는 원순모음."},
+{course:"vocab",l:3,c:"개구도 (가장 큰)",q:"다음 중 입을 가장 많이 벌리고 발음하는 모음은?",o:["[e]","[ɛ]","[ə]","[a]"],a:3,
+ w:"[a]'아'에서 입이 가장 많이 벌어진다. [e]'에' < [ɛ]'애' < [a]'아'."},
+{course:"vocab",l:3,c:"개구도 (가장 큰)",q:"다음 중 입을 가장 많이 벌리고 발음하는 모음은?",o:["[e]","[o]","[œ]","[ø]"],a:2,
+ w:"[œ]'왜'에서 입이 가장 많이 벌어진다. [e]·[o]·[ø]는 비슷하게 조금 벌리는 반폐모음."},
+{course:"vocab",l:3,c:"개구도 (가장 큰)",q:"다음 중 입을 가장 많이 벌리고 발음하는 모음은?",o:["[e]","[i]","[y]","[u]"],a:0,
+ w:"[e]'에'에서 입이 가장 많이 벌어진다. [i]·[y]·{u}는 가장 조금 벌리는 폐모음."},
+
+// ----- 4강 : 구강 모음 식별 -----
+{course:"vocab",l:4,c:"[ə] 생략",q:"다음 중 [ə] 발음이 생략되는 경우는?",o:["le monde","sur le lit","sous le banc","pomme de terre"],oi:["/lə mɔ̃d/","/syʁ lə li/","/su lə bɑ̃/","/pɔm də tɛʁ/"],a:2,
+ w:"sous le banc은 [쑬벙]으로 [ə]가 생략된다. le monde·sur le lit·pomme de terre는 [ə]를 발음.",
+ v:[["banc","m","bɑ̃","벤치"],["monde","m","mɔ̃d","세상"]]},
+{course:"vocab",l:4,c:"é/er/ez vs è",q:"다음 중 밑줄 친 부분의 발음이 다른 하나는?",o:["caf{u}é{/u}","boulang{u}er{/u}","n{u}ez{/u}","fr{u}è{/u}re"],oi:["/kafe/","/bulɑ̃ʒe/","/ne/","/fʁɛʁ/"],a:3,
+ w:"è는 [ɛ](frère). café·boulanger·nez는 모두 [e].",
+ v:[["café","m","kafe","커피/카페"],["boulanger","m","bulɑ̃ʒe","빵집 주인"],["nez","m","ne","코"],["frère","m","fʁɛʁ","형제"]]},
+{course:"vocab",l:4,c:"단어-발음 짝",q:"다음 중 단어와 발음이 잘못 짝지어진 것은?",o:["voilà [vwala] : 저기 ~이 있다","mais [mais] : 그러나","bâtiment [bɑtimɑ̃] : 건물","aimer [ɛme] : 사랑하다"],a:1,
+ w:"mais는 [mɛ]'매'. [mais]'마이쓰'는 maïs(옥수수)의 발음.",
+ v:[["mais","conj","mɛ","그러나"],["maïs","m","mais","옥수수"],["bâtiment","m","bɑtimɑ̃","건물"],["aimer","v","eme","사랑하다"]]},
+{course:"vocab",l:4,c:"œu [ø] vs [œ]",q:"다음 중 밑줄 친 부분의 발음이 다른 하나는?",o:["amour{u}eu{/u}se","d{u}eu{/u}x","{u}œu{/u}f","{u}œu{/u}fs"],oi:["/amuʁøz/","/dø/","/œf/","/ø/"],a:2,
+ w:"œuf는 [œf]'왜프'로 [œ]. amoureuse·deux·œufs는 모두 [ø].",
+ v:[["œuf","m","œf","달걀 (단수)"],["œufs","m","ø","달걀 (복수)"],["deux","num","dø","둘"]]},
+{course:"vocab",l:4,c:"[œ] 식별",q:"다음 중 [œ] 발음이 들어있는 표현은?",o:["deux heures (2시)","Je veux des œufs.","le fameux jeu","crayon bleu"],oi:["/dø z‿œʁ/","/ʒə vø de z‿ø/","/lə famø ʒø/","/kʁɛjɔ̃ blø/"],a:0,
+ w:"heures에만 [œ] → deux heures [døzœːʀ]. veux·œufs·fameux·jeu·bleu는 [ø].",
+ v:[["heure","f","œʁ","시간"],["jeu","m","ʒø","게임"],["bleu","adj","blø","파란"]]},
+{course:"vocab",l:4,c:"[i] 개수",q:"Il y a deux livres sur le lit.에서 [i]가 발음되는 단어의 수는?",o:["2개","3개","4개","5개"],a:2,
+ w:"Il, y, livres, lit = 4개에서 [i] 발음.",fr:"Il y a deux livres sur le lit",tr:"침대 위에 책 두 권이 있다.",ipa:"/il i a dø livʁ syʁ lə li/",
+ v:[["livre","m","livʁ","책"],["lit","m","li","침대"]]},
+{course:"vocab",l:4,c:"[y] 식별",q:"다음 중 발음기호 [y]가 발음되는 단어는?",o:["y","où","bleu","rue"],oi:["/i/","/u/","/blø/","/ʁy/"],a:3,
+ w:"rue [ʀy]'휘'에서 [y]. y=[i], où={u}, bleu=[blø].",
+ v:[["rue","f","ʁy","거리"],["où","adv","u","어디"]]},
+
+// ----- 5강 : 비(강)모음 -----
+{course:"vocab",l:5,c:"[ɛ̃] 식별",q:"다음 중 [ɛ̃]이 발음되는 단어는?",o:["bain 목욕","banc 벤치","aimer 사랑하다","ensemble 함께"],oi:["/bɛ̃/","/bɑ̃/","/eme/","/ɑ̃sɑ̃bl/"],a:0,
+ w:"bain [bɛ̃]'방'. banc [bɑ̃], aimer [ɛme], ensemble [ɑ̃sɑ̃ːbl].",
+ v:[["bain","m","bɛ̃","목욕"],["banc","m","bɑ̃","벤치"],["ensemble","adv","ɑ̃sɑ̃bl","함께"]]},
+{course:"vocab",l:5,c:"[ɔ̃] 식별",q:"다음 중 [ɔ̃]이 발음되는 것은?",o:["faim 배고픔","bonne 좋은(여성형)","mon ami 내 친구","maison 집"],oi:["/fɛ̃/","/bɔn/","/mɔ̃ n‿ami/","/mɛzɔ̃/"],a:3,
+ w:"maison [mɛzɔ̃]에서만 [ɔ̃]. faim [fɛ̃], bonne [bɔn], mon ami [mɔnami](리에종으로 비모음 소멸).",
+ v:[["maison","f","mɛzɔ̃","집"],["faim","f","fɛ̃","배고픔"],["mon ami","","mɔ̃n‿ami","내 친구"]]},
+{course:"vocab",l:5,c:"비모음 없음",q:"다음 중 비(강)모음이 발음되지 않는 단어는?",o:["tante 숙모","oncle 삼촌","chant 노래","bonne 좋은(여성형)"],oi:["/tɑ̃t/","/ɔ̃kl/","/ʃɑ̃/","/bɔn/"],a:3,
+ w:"bonne [bɔn]은 n이 두 개라 비모음 없음. tante [tɑ̃ːt], oncle [ɔ̃ːkl], chant [ʃɑ̃].",
+ v:[["tante","f","tɑ̃t","이모/숙모"],["oncle","m","ɔ̃kl","삼촌"],["bonne","adj","bɔn","좋은 (여)"]]},
+{course:"vocab",l:5,c:"비모음 식별",q:"다음 중 비(강)모음의 발음이 나머지 셋과 다른 것은?",o:["distance","empire","enfant","teint"],oi:["/distɑ̃s/","/ɑ̃piʁ/","/ɑ̃fɑ̃/","/tɛ̃/"],a:3,
+ w:"teint은 [ɛ̃], distance·empire·enfant은 [ɑ̃].",
+ v:[["teint","m","tɛ̃","안색"],["enfant","","ɑ̃fɑ̃","아이"]]},
+
+// ----- 6강 : 반모음 -----
+{course:"vocab",l:6,c:"[j] 식별",q:"다음 중 반모음 [j]가 발음되는 단어는?",o:["je 나는","mille 천","yeux 눈","fils 아들"],oi:["/ʒə/","/mil/","/jø/","/fis/"],a:2,
+ w:"yeux [jø]'이외'에 [j]. je [ʒə], mille [mil], fils [fis].",
+ v:[["yeux","m","jø","눈 (복수)"],["fils","m","fis","아들"],["mille","num","mil","천"]]},
+{course:"vocab",l:6,c:"[ɥ] 식별",q:"다음 중 [ɥ]이 발음되는 것은?",o:["huit 8","pourquoi 왜","oui 네","nu 벌거벗은"],oi:["/ɥit/","/puʁkwa/","/wi/","/ny/"],a:0,
+ w:"huit [ɥit]에 [ɥ]. pourquoi [puʀkwa], oui [wi], nu [ny].",
+ v:[["huit","num","ɥit","8"],["oui","adv","wi","네"],["nu","adj","ny","벌거벗은"]]},
+{course:"vocab",l:6,c:"반모음 없음",q:"다음 중 반모음이 발음되지 않는 단어는?",o:["ouest 서쪽","lui 그","œil 눈","œuf 달걀"],oi:["/wɛst/","/lɥi/","/œj/","/œf/"],a:3,
+ w:"œuf [œf]에는 반모음 없음. ouest [wɛst]([w]), lui [lɥi]([ɥ]), œil [œj]([j]).",
+ v:[["œuf","m","œf","달걀"],["œil","m","œj","눈"],["lui","pron","lɥi","그"],["ouest","m","wɛst","서쪽"]]},
+
+// ----- 7강 : 자음 분류·철자-발음 -----
+{course:"vocab",l:7,c:"자음 분류 기준",q:"자음의 분류 기준이 아닌 것은?",o:["조음위치","조음방법","입술모양","성대진동"],a:2,
+ w:"입술모양은 모음의 분류 기준. 자음은 조음위치·조음방법·성대진동으로 분류."},
+{course:"vocab",l:7,c:"유음 h / 무음 h",q:"다음 중 유음 h가 아닌 것은?",o:["huit","histoire","haut","héros"],oi:["/ɥit/","/istwaʁ/","/o/","/eʁo/"],a:1,
+ w:"histoire는 무음 h(l'histoire). huit·haut·héros는 유음 h(l' 결합·리에종 막힘).",
+ v:[["histoire","f","istwaʁ","역사/이야기 (무음 h)"],["héros","m","eʁo","영웅 (유음 h)"],["haut","adj","o","높은"]]},
+{course:"vocab",l:7,c:"철자-IPA (th)",q:"다음 중 철자와 발음기호가 잘못 짝지어진 것은?",o:["pharmacie [faʀmasi]","chaussure [ʃosyːʀ]","shampo(o)ing [ʃɑ̃pwɛ̃]","thé [de]"],a:3,
+ w:"t는 h를 만나도 [t] 유지 → thé [te]. (T+H=[t], [θ]/[ð] 아님.)",
+ v:[["thé","m","te","차"],["pharmacie","f","faʁmasi","약국"],["chaussure","f","ʃosyʁ","신발"]]},
+{course:"vocab",l:7,c:"[v] 철자",q:"다음 중 [v]로 발음될 수 없는 철자는?",o:["v","w","b","f"],oi:["/ve/","/dublə ve/","/be/","/ɛf/"],a:2,
+ w:"b는 [v]로 발음되지 않음. v(veau)·w(wagon)·f(neuf ans, 리에종)에서 [v]."},
+{course:"vocab",l:7,c:"[f] 식별",q:"다음 중 [f]가 발음되지 않는 단어는?",o:["bœuf","œufs","difficile","pharmacie"],oi:["/bœf/","/ø/","/difisil/","/faʁmasi/"],a:1,
+ w:"œufs(복수)는 [ø]로 f 묵음. 단수 œuf [œf]는 f 발음.",
+ v:[["bœuf","m","bœf","소"],["œufs","m","ø","달걀 (복수, f 묵음)"],["difficile","adj","difisil","어려운"]]},
+{course:"vocab",l:7,c:"[m] 식별",q:"다음 중 [m]이 발음되는 단어는?",o:["temps","sympa","impôt","femme"],oi:["/tɑ̃/","/sɛ̃pa/","/ɛ̃po/","/fam/"],a:3,
+ w:"femme [fam]에서만 m 발음. temps [tɑ̃], sympa [sɛ̃pa], impôt [ɛ̃po](m이 비모음화).",
+ v:[["femme","f","fam","여자/아내"],["temps","m","tɑ̃","시간/날씨"],["impôt","m","ɛ̃po","세금"]]},
+
+// ----- 8강 : 개별 자음 규칙 -----
+{course:"vocab",l:8,c:"[t] 묵음",q:"다음 표현 중 [t]가 발음되지 않는 것은?",o:["goût","content","thé","quand elle"],oi:["/ɡu/","/kɔ̃tɑ̃/","/te/","/kɑ̃ t‿ɛl/"],a:0,
+ w:"goût [ɡu]는 어말 t 묵음. content(리에종 시 t), thé [te], quand elle(t로 리에종).",
+ v:[["goût","m","ɡu","맛"],["content","adj","kɔ̃tɑ̃","만족한"],["thé","m","te","차"]]},
+{course:"vocab",l:8,c:"c=[k]/[s]",q:"다음 중 철자 c가 [k]로 발음되지 않는 것은?",o:["café","cidre","conte","cuisine"],oi:["/kafe/","/sidʁ/","/kɔ̃t/","/kɥizin/"],a:1,
+ w:"cidre [sidʀ]. c는 a/o/u 앞에서만 [k], e/i 앞에서는 [s].",
+ v:[["cidre","m","sidʁ","사과주"],["café","m","kafe","커피"],["cuisine","f","kɥizin","부엌/요리"]]},
+{course:"vocab",l:8,c:"g=[g]/[ʒ]",q:"다음 중 [g]가 발음되지 않는 단어는?",o:["guerre","gare","examen","rouge"],oi:["/ɡɛʁ/","/ɡaʁ/","/ɛɡzamɛ̃/","/ʁuʒ/"],a:3,
+ w:"rouge [ʀuːʒ]. g는 a/o/u 앞에서만 [g], e/i 앞에서는 [ʒ].",
+ v:[["rouge","adj","ʁuʒ","빨간"],["guerre","f","ɡɛʁ","전쟁"],["gare","f","ɡaʁ","역"]]},
+{course:"vocab",l:8,c:"s=[s]/[z]",q:"다음 중 [s]가 발음되지 않는 것은?",o:["scène","visage","nation","dix"],oi:["/sɛn/","/vizaʒ/","/nasjɔ̃/","/dis/"],a:1,
+ w:"visage [vizaʒ]에서 s는 모음 사이라 [z].",
+ v:[["visage","m","vizaʒ","얼굴 (s=z)"],["scène","f","sɛn","무대"],["nation","f","nasjɔ̃","국가"]]},
+{course:"vocab",l:8,c:"gn=[ɲ] 예외",q:"다음 중 gn이 [ɲ]로 발음되지 않는 단어는?",o:["gagner","cognition","signer","montagne"],oi:["/ɡaɲe/","/kɔɡnisjɔ̃/","/siɲe/","/mɔ̃taɲ/"],a:1,
+ w:"cognition [kɔgnisjɔ̃]은 gn을 [gn]으로 읽는 예외.",
+ v:[["montagne","f","mɔ̃taɲ","산"],["gagner","v","ɡaɲe","이기다/벌다"],["cognition","f","kɔɡnisjɔ̃","인지 (예외)"]]},
+{course:"vocab",l:8,c:"[n] 리에종",q:"다음 중 [n]이 발음되지 않는 표현은?",o:["une amie","son chien","mon école","ton adresse"],oi:["/yn ami/","/sɔ̃ ʃjɛ̃/","/mɔ̃ n‿ekɔl/","/tɔ̃ n‿adʁɛs/"],a:1,
+ w:"son chien은 리에종이 없어 [sɔ̃ ʃiɛ̃] → [n] 미발음. une amie·mon école·ton adresse는 리에종으로 [n] 발음.",
+ v:[["chien","m","ʃjɛ̃","개"],["école","f","ekɔl","학교"],["adresse","f","adʁɛs","주소"]]},
+{course:"vocab",l:8,c:"g 발음 구별",q:"다음 중 g의 발음이 나머지 셋과 다른 것은?",o:["gîte","girafe","gens","garçon"],oi:["/ʒit/","/ʒiʁaf/","/ʒɑ̃/","/ɡaʁsɔ̃/"],a:3,
+ w:"garçon의 g는 [g](a 앞). gîte·girafe·gens의 g는 [ʒ](i, e 앞).",
+ v:[["garçon","m","ɡaʁsɔ̃","소년 (g=ɡ)"],["girafe","f","ʒiʁaf","기린"],["gens","m","ʒɑ̃","사람들"]]},
+{course:"vocab",l:8,c:"ch=[ʃ] 예외",q:"다음 중 [ʃ]가 발음되지 않는 단어는?",o:["champignon","chrétien","chanson","cheveu"],oi:["/ʃɑ̃piɲɔ̃/","/kʁetjɛ̃/","/ʃɑ̃sɔ̃/","/ʃəvø/"],a:1,
+ w:"chrétien [kʀetjɛ̃]은 ch가 [k]로 나는 예외.",
+ v:[["chrétien","","kʁetjɛ̃","기독교인 (ch=k)"],["champignon","m","ʃɑ̃piɲɔ̃","버섯"],["chanson","f","ʃɑ̃sɔ̃","노래"],["cheveu","m","ʃəvø","머리카락"]]},
+{course:"vocab",l:8,c:"어말 l 묵음",q:"다음 중 [l]이 발음되지 않는 단어는?",o:["tranquille","outil","exil","mille"],oi:["/tʁɑ̃kil/","/uti/","/ɛɡzil/","/mil/"],a:1,
+ w:"outil [uti]는 어말 l 묵음. tranquille·mille·exil은 [l] 발음.",
+ v:[["outil","m","uti","연장 (l 묵음)"],["tranquille","adj","tʁɑ̃kil","조용한"],["mille","num","mil","천"]]},
+{course:"vocab",l:8,c:"-er의 r 묵음",q:"다음 중 r의 발음이 나머지 셋과 다른 것은?",o:["cacher","heureux","voiture","cher"],oi:["/kaʃe/","/øʁø/","/vwatyʁ/","/ʃɛʁ/"],a:0,
+ w:"cacher처럼 -er로 끝나는 1군 동사의 r은 묵음. heureux·voiture·cher은 [ʀ] 발음.",
+ v:[["cacher","v","kaʃe","숨기다 (-er r 묵음)"],["heureux","adj","øʁø","행복한"],["voiture","f","vwatyʁ","자동차"],["cher","adj","ʃɛʁ","비싼/친애하는"]]},
+
+// ----- 9강 : 철자별 발음 종합 -----
+{course:"vocab",l:9,c:"ti=[si]/[ti]",q:"다음 중 철자 ti의 발음이 나머지 셋과 다른 것은?",o:["diplomatie","question","partie","amitié"],oi:["/diplɔmasi/","/kɛstjɔ̃/","/paʁti/","/amitje/"],a:0,
+ w:"diplomatie는 ti가 [si]. question·partie·amitié는 [ti].",
+ v:[["diplomatie","f","diplɔmasi","외교 (ti=si)"],["question","f","kɛstjɔ̃","질문"],["partie","f","paʁti","부분"],["amitié","f","amitje","우정"]]},
+{course:"vocab",l:9,c:"x=[gz]/[z]",q:"다음 중 철자 x의 발음이 나머지 셋과 다른 것은?",o:["examen","exotique","exemple","deuxième"],oi:["/ɛɡzamɛ̃/","/ɛɡzɔtik/","/ɛɡzɑ̃pl/","/døzjɛm/"],a:3,
+ w:"deuxième에서 x는 [z]. examen·exotique·exemple의 x는 [gz].",
+ v:[["deuxième","adj","døzjɛm","두 번째 (x=z)"],["exemple","m","ɛɡzɑ̃pl","예"],["examen","m","ɛɡzamɛ̃","시험"]]},
+{course:"vocab",l:9,c:"어말 -il",q:"다음 중 철자 -il의 발음이 다른 하나는?",o:["avril","fusil","outil","gentil"],oi:["/avʁil/","/fyzi/","/uti/","/ʒɑ̃ti/"],a:0,
+ w:"avril은 어말 l 발음 [avʀil]. fusil·outil·gentil은 어말 l 묵음.",
+ v:[["avril","m","avʁil","4월 (l 발음)"],["fusil","m","fyzi","총 (l 묵음)"],["gentil","adj","ʒɑ̃ti","친절한"]]},
+{course:"vocab",l:9,c:"[jɛ̃] 식별",q:"다음 중 [jɛ̃] 발음이 있는 단어는?",o:["coréen","juin","parisien","syndicat"],oi:["/kɔʁeɛ̃/","/ʒɥɛ̃/","/paʁizjɛ̃/","/sɛ̃dika/"],a:2,
+ w:"parisien [paʀizjɛ̃]에 [jɛ̃]. coréen [kɔʀeɛ̃], juin [ʒɥɛ̃], syndicat [sɛ̃dika].",
+ v:[["parisien","","paʁizjɛ̃","파리 사람"],["coréen","","kɔʁeɛ̃","한국인"],["juin","m","ʒɥɛ̃","6월"]]},
+{course:"vocab",l:9,c:"ch=[ʃ]/[k]",q:"다음 중 ch 철자의 발음이 다른 하나는?",o:["chaos","écho","orchestre","charité"],oi:["/kao/","/eko/","/ɔʁkɛstʁ/","/ʃaʁite/"],a:3,
+ w:"charité는 ch가 [ʃ]. chaos·écho·orchestre는 [k](그리스어 유래).",
+ v:[["charité","f","ʃaʁite","자비 (ch=ʃ)"],["chaos","m","kao","혼돈 (ch=k)"],["orchestre","m","ɔʁkɛstʁ","오케스트라"]]},
+{course:"vocab",l:9,c:"s=[s]/[z]",q:"다음 중 철자 s의 발음이 다른 하나는?",o:["musique","sensible","soleil","parasol"],oi:["/myzik/","/sɑ̃sibl/","/sɔlɛj/","/paʁasɔl/"],a:0,
+ w:"musique는 s가 모음 사이라 [z] [myzik]. sensible·soleil·parasol은 [s].",
+ v:[["musique","f","myzik","음악 (s=z)"],["soleil","m","sɔlɛj","태양"],["parasol","m","paʁasɔl","파라솔"]]},
+{course:"vocab",l:9,c:"[œ] 개수",q:"다음 문장에 [œ] 발음이 몇 번 있는가?\nLes œufs peuvent peut-être nourrir leur sœur.",o:["2번","3번","4번","5번"],a:1,
+ w:"peuvent, leur, sœur = 3번. (œufs=[ø], peut-être=[ø]는 [œ] 아님.)",fr:"Les œufs peuvent peut-être nourrir leur sœur",tr:"달걀이 어쩌면 그들의 누이를 먹여 살릴 수 있을지도 모른다.",ipa:"/le zø pœv pø-tɛtʁ nuʁiʁ lœʁ sœʁ/",
+ v:[["œuf","m","œf","달걀"],["sœur","f","sœʁ","누이"],["nourrir","v","nuʁiʁ","먹여 살리다"]]}
+,
+// ========== 프랑스어회화1 (course: conv1) — 문제은행 ==========
+// ----- 1강 인사·안부 -----
+{course:"conv1",l:1,c:"작별 인사",q:"다음 인사말 중 동일한 상황에서 사용하기에 적절하지 않은 것은?",o:["Au revoir.","À bientôt !","À la prochaine !","À tout à l'heure !"],a:3,
+ w:"À tout à l'heure!는 같은 날 잠시 후 다시 만날 때만 쓴다. Au revoir·À bientôt·À la prochaine는 시점이 정해지지 않은 일반적 작별에도 가능.",fr:"À tout à l'heure !",tr:"이따 봐요 (같은 날).",ipa:"/a tu t‿a lœʁ/",
+ oi:["/o ʁəvwaʁ/","/a bjɛ̃to/","/a la pʁɔʃɛn/","/a tu t‿a lœʁ/"],ot:["안녕히 가세요 (일반 작별).","곧 또 봐요.","다음에 또 봐요.","이따 봐요 (같은 날만)."],
+ v:[["au revoir","expr","o ʁəvwaʁ","안녕히 가세요"],["à bientôt","expr","a bjɛ̃to","곧 또 봐요"]]},
+{course:"conv1",l:1,c:"안부 묻기",q:"빈칸에 들어갈 동사로 알맞은 것은?\nA : Comment ( )-vous ? B : Très bien, merci ! Et vous ?",o:["allez","avez","êtes","faites"],a:0,
+ w:"Comment allez-vous ? = 어떻게 지내세요? (aller로 안부를 묻는다.)",fr:"Comment allez-vous ?",tr:"어떻게 지내세요?",ipa:"/kɔmɑ̃ tale-vu/",
+ v:[["aller","v","ale","가다/(안부)지내다"]]},
+{course:"conv1",l:1,c:"오랜만 표현",q:"빈칸에 들어갈 동사로 알맞은 것은?\nÇa ( ) longtemps. (오랜만이에요.)",o:["a","est","fait","va"],a:2,
+ w:"Ça fait longtemps. = 오랜만이에요. (Ça fait + 기간.)",fr:"Ça fait longtemps",tr:"오랜만이에요.",ipa:"/sa fɛ lɔ̃tɑ̃/",
+ v:[["faire","v","fɛʁ","하다"],["longtemps","adv","lɔ̃tɑ̃","오랫동안"]]},
+
+// ----- 2강 감사·사과 -----
+{course:"conv1",l:2,c:"remercier pour",q:"빈칸에 들어갈 전치사로 알맞은 것은?\nJe vous remercie ( ) votre invitation.",o:["à","de","pour","sur"],a:2,
+ w:"remercier qqn pour + 명사(구체적 호의) → pour votre invitation. (de도 문법적으로 가능하나 명사엔 pour가 자연스럽다.)",fr:"Je vous remercie pour votre invitation",tr:"초대해 주셔서 감사합니다.",ipa:"/ʒə vu ʁəmɛʁsi puʁ vɔtʁ ɛ̃vitasjɔ̃/",
+ v:[["remercier","v","ʁəmɛʁsje","감사하다"],["invitation","f","ɛ̃vitasjɔ̃","초대"]]},
+{course:"conv1",l:2,c:"감사 응답",q:"빈칸에 들어갈 표현으로 적절하지 않은 것은?\nA : Je vous remercie pour votre aide. B : ( )",o:["De rien !","Avec plaisir !","Pas de souci !","Je vous en prie !"],a:2,
+ w:"De rien/Je vous en prie/Avec plaisir는 감사 응답. Pas de souci!('걱정 마세요')는 걱정·사과를 안심시키는 말이라 감사 응답엔 어색.",fr:"Pas de souci !",tr:"걱정 마세요 (감사 응답엔 부적절).",ipa:"/pa də susi/",
+ oi:["/də ʁjɛ̃/","/avɛk plɛziʁ/","/pa də susi/","/ʒə vu z‿ɑ̃ pʁi/"],ot:["천만에요.","기꺼이요.","걱정 마세요 (감사 응답엔 어색).","천만에요."],
+ v:[["de rien","expr","də ʁjɛ̃","천만에요"],["avec plaisir","expr","avɛk plɛziʁ","기꺼이"]]},
+{course:"conv1",l:2,c:"Désolé de",q:"빈칸에 들어갈 전치사로 알맞은 것은?\nDésolé(e) ( ) vous déranger.",o:["à","de","pour","sur"],a:1,
+ w:"Désolé de + 동사원형 → Désolé de vous déranger.(폐를 끼쳐 죄송합니다.)",fr:"Désolé de vous déranger",tr:"방해해서 죄송합니다.",ipa:"/dezɔle də vu deʁɑ̃ʒe/",
+ v:[["déranger","v","deʁɑ̃ʒe","방해하다"],["désolé","adj","dezɔle","미안한"]]},
+{course:"conv1",l:2,c:"사과 응답",q:"빈칸에 들어갈 표현으로 적절하지 않은 것은?\nA : Toutes mes excuses, Madame. B : ( )",o:["C'est pas grave.","Je vous en prie.","Pas de problème.","Rien de spécial."],a:3,
+ w:"C'est pas grave/Je vous en prie/Pas de problème는 사과 응답. Rien de spécial(별일 없어요)은 안부 답이라 부적절.",fr:"Rien de spécial.",tr:"별일 없어요 (사과 응답엔 부적절).",ipa:"/ʁjɛ̃ də spesjal/",
+ oi:["/sɛ pa ɡʁav/","/ʒə vu z‿ɑ̃ pʁi/","/pa də pʁɔblɛm/","/ʁjɛ̃ də spesjal/"],ot:["괜찮아요.","괜찮습니다.","문제없어요.","별일 없어요 (사과 응답엔 부적절)."],
+ v:[["grave","adj","ɡʁav","심각한"],["problème","m","pʁɔblɛm","문제"]]},
+
+// ----- 3강 자기소개 -----
+{course:"conv1",l:3,c:"만나서 반가워요",q:"빈칸에 들어갈 동사로 알맞은 것은?\nJe suis ravi de vous ( ). (만나서 반가워요.)",o:["avoir","connaître","prendre","savoir"],a:1,
+ w:"Je suis ravi de vous connaître. (처음 만난 사람에게 connaître.)",fr:"Je suis ravi de vous connaître",tr:"만나서 반갑습니다.",ipa:"/ʒə sɥi ʁavi də vu kɔnɛtʁ/",
+ v:[["ravi","adj","ʁavi","아주 기쁜"],["connaître","v","kɔnɛtʁ","알다/처음 만나다"]]},
+{course:"conv1",l:3,c:"이름 묻기",q:"다음 한국어 표현을 프랑스어로 바르게 옮긴 것은?\n\"이름이 어떻게 되세요?\"",o:["Comment vous appelez ?","Comment appelez-vous ?","Comment s'appelez-vous ?","Comment vous appelez-vous ?"],a:3,
+ w:"대명동사 s'appeler의 도치 → Comment vous appelez-vous ?",fr:"Comment vous appelez-vous ?",tr:"이름이 어떻게 되세요?",ipa:"/kɔmɑ̃ vu z‿aple-vu/",
+ oi:["/kɔmɑ̃ vu z‿aple/","/kɔmɑ̃ aple-vu/","/kɔmɑ̃ saple-vu/","/kɔmɑ̃ vu z‿aple-vu/"],ot:["이름이 뭐예요? (불완전).","이름이 뭐예요? (재귀 누락).","이름이 뭐예요? (인칭 오류).","이름이 어떻게 되세요?"],
+ v:[["s'appeler","v","saple","이름이 ~이다"]]},
+{course:"conv1",l:3,c:"국적/출신 묻기",q:"다음 대화에서 괄호 안에 들어갈 질문으로 적절하지 않은 것은?\nA : ( ) B : Moi, je suis française.",o:["De quel pays êtes-vous ?","D'où venez-vous ?","Quelle est votre nationalité ?","Où habitez-vous ?"],a:3,
+ w:"Où habitez-vous?는 사는 곳을 묻는 질문이라 'je suis française(국적)'와 호응하지 않는다.",fr:"Quelle est votre nationalité ?",tr:"국적이 어떻게 되세요?",ipa:"/kɛl ɛ vɔtʁ nasjɔnalite/",
+ oi:["/də kɛl pɛi ɛt-vu/","/du vəne-vu/","/kɛl ɛ vɔtʁ nasjɔnalite/","/u abite-vu/"],ot:["어느 나라 분이세요?","어디 출신이세요?","국적이 어떻게 되세요?","어디 사세요? (국적 답과 안 맞음)."],
+ v:[["pays","m","pɛi","나라"],["nationalité","f","nasjɔnalite","국적"]]},
+{course:"conv1",l:3,c:"직업 묻기",q:"빈칸에 들어갈 동사로 알맞은 것은?\nA : Qu'est-ce que vous ( ) dans la vie ? B : Moi, je suis acteur…",o:["avez","êtes","faites","tenez"],a:2,
+ w:"Qu'est-ce que vous faites dans la vie ? = 직업이 무엇입니까? (faire로 직업을 묻는다.)",fr:"Qu'est-ce que vous faites dans la vie ?",tr:"직업이 무엇입니까?",ipa:"/kɛs kə vu fɛt dɑ̃ la vi/",
+ v:[["faire","v","fɛʁ","하다"],["vie","f","vi","삶/인생"]]},
+{course:"conv1",l:3,c:"Quel + 명사",q:"다음 괄호 안에 들어갈 단어로 알맞은 것은?\n( ) est votre numéro de téléphone ?",o:["Combien","Comment","Quel","Quoi"],a:2,
+ w:"numéro(남성)에 일치하는 의문형용사 Quel.",fr:"Quel est votre numéro de téléphone ?",tr:"전화번호가 어떻게 되세요?",ipa:"/kɛl ɛ vɔtʁ nymeʁo də telefɔn/",
+ v:[["numéro","m","nymeʁo","번호"],["téléphone","m","telefɔn","전화"]]},
+
+// ----- 4강 공항·호텔·택시 -----
+{course:"conv1",l:4,c:"짐 부치기",q:"빈칸에 들어갈 동사로 알맞은 것은?\nJe voudrais ( ) ma valise. (가방을 부치고 싶은데요.)",o:["enregistrer","envoyer","passer","poster"],a:0,
+ w:"enregistrer ma valise = 짐을 부치다(체크인). (envoyer/poster는 우편 발송.)",fr:"Je voudrais enregistrer ma valise",tr:"가방을 부치고 싶은데요.",ipa:"/ʒə vudʁɛ ɑ̃ʁeʒistʁe ma valiz/",
+ v:[["enregistrer","v","ɑ̃ʁeʒistʁe","(짐을) 부치다"],["valise","f","valiz","여행 가방"]]},
+{course:"conv1",l:4,c:"짐 도착 (arriver 일치)",q:"빈칸에 들어갈 동사 형태로 알맞은 것은?\nMes bagages ne sont pas ( ) ! (제 짐이 안 왔어요!)",o:["arrivé","arrivés","venu","venus"],a:1,
+ w:"bagages는 남성 복수, arriver는 être+주어 일치 → ne sont pas arrivés.",fr:"Mes bagages ne sont pas arrivés !",tr:"제 짐이 안 왔어요!",ipa:"/me baɡaʒ nə sɔ̃ pa z‿aʁive/",
+ v:[["bagages","m","baɡaʒ","짐 (복수)"],["arriver","v","aʁive","도착하다"]]},
+{course:"conv1",l:4,c:"호텔 방 (pour)",q:"다음 대화에서 빈칸에 들어갈 전치사로 알맞은 것은?\nA : Y a-t-il encore des chambres ( ) ce soir ?",o:["à","de","pour","sur"],a:2,
+ w:"des chambres pour ce soir = 오늘 밤 묵을 방 (기간·목적의 pour).",fr:"Y a-t-il des chambres pour ce soir ?",tr:"오늘 밤 묵을 방이 있나요?",ipa:"/ja t‿il de ʃɑ̃bʁ puʁ sə swaʁ/",
+ v:[["chambre","f","ʃɑ̃bʁ","방"],["soir","m","swaʁ","저녁"]]},
+{course:"conv1",l:4,c:"짐 보관 (garder)",q:"빈칸에 들어갈 동사로 알맞은 것은?\nVous pourriez ( ) mes bagages ? (짐을 보관해 주실 수 있나요?)",o:["avoir","chercher","garder","laisser"],a:2,
+ w:"garder mes bagages = 짐을 보관하다. (laisser=두고 가다, chercher=찾다.)",fr:"Vous pourriez garder mes bagages ?",tr:"짐을 보관해 주실 수 있나요?",ipa:"/vu puʁje ɡaʁde me baɡaʒ/",
+ v:[["garder","v","ɡaʁde","보관하다/지키다"],["pouvoir","v","puvwaʁ","~할 수 있다"]]},
+{course:"conv1",l:4,c:"택시 정차 (Arrêtez-vous)",q:"빈칸에 들어갈 표현으로 알맞은 것은?\n( ) ici, s'il vous plaît. (여기 세워 주세요.)",o:["Arrêtez","Arrêtez-en","Arrêtez-moi","Arrêtez-vous"],a:3,
+ w:"Arrêtez-vous ici = (차를) 세워 주세요. ⚠ Arrêtez-moi는 '저를 체포·제지하세요'라 뜻이 다름.",fr:"Arrêtez-vous ici, s'il vous plaît",tr:"여기 세워 주세요.",ipa:"/aʁete-vu z‿isi sil vu plɛ/",
+ v:[["s'arrêter","v","saʁete","멈추다/서다"]]},
+
+// ----- 5강 쇼핑① 매장 -----
+{course:"conv1",l:5,c:"매장 코너 (rayon)",q:"빈칸에 들어갈 표현으로 알맞은 것은?\n고객 : Où se trouve ( ) chaussures, s'il vous plaît ?",o:["le magasin","la boutique","l'espace","le rayon"],a:3,
+ w:"le rayon (chaussures) = (백화점) 신발 매장·코너.",fr:"Où se trouve le rayon chaussures ?",tr:"신발 코너가 어디인가요?",ipa:"/u sə tʁuv lə ʁɛjɔ̃ ʃosyʁ/",
+ v:[["rayon","m","ʁɛjɔ̃","매장 코너"],["chaussure","f","ʃosyʁ","신발"]]},
+{course:"conv1",l:5,c:"입어 보다 (essayer)",q:"다음 대화에서 빈칸에 들어갈 동사로 알맞은 것은?\n고객 : Est-ce que je peux ( ) cette jupe ?",o:["avoir","essayer","mettre","prendre"],a:1,
+ w:"essayer cette jupe = (옷을) 입어 보다. 점원이 cabine(탈의실)을 안내하는 흐름.",fr:"Est-ce que je peux essayer cette jupe ?",tr:"이 치마를 입어 봐도 될까요?",ipa:"/ɛs kə ʒə pø eseje sɛt ʒyp/",
+ v:[["essayer","v","eseje","입어 보다/시도하다"],["jupe","f","ʒyp","치마"]]},
+{course:"conv1",l:5,c:"사이즈 (faire du)",q:"다음 대화에서 빈칸에 들어갈 단어로 알맞은 것은?\n점원 : Quelle taille faites-vous ? 고객 : Je fais ( ) 38.",o:["au","du","en","sur"],a:1,
+ w:"Je fais du 38. (옷·신발 사이즈는 faire du + 숫자.)",fr:"Je fais du 38",tr:"저는 38 사이즈를 입어요.",ipa:"/ʒə fɛ dy tʁɑ̃t ɥit/",
+ v:[["taille","f","taj","치수/사이즈"],["faire","v","fɛʁ","하다"]]},
+{course:"conv1",l:5,c:"색상 (en)",q:"다음 대화에서 빈칸에 들어갈 전치사로 알맞은 것은?\n고객 : Avez-vous ce sac ( ) rouge ?",o:["à","de","comme","en"],a:3,
+ w:"ce sac en rouge = 빨간색으로 된 이 가방. (색·소재는 전치사 en.)",fr:"Avez-vous ce sac en rouge ?",tr:"이 가방 빨간색으로 있나요?",ipa:"/ave-vu sə sak ɑ̃ ʁuʒ/",
+ v:[["sac","m","sak","가방"],["rouge","adj","ʁuʒ","빨간"]]},
+{course:"conv1",l:5,c:"penser de → en",q:"다음 대화에서 빈칸에 들어갈 단어로 알맞은 것은?\n점원 : Qu'est-ce que vous ( ) pensez ?",o:["me","le","en","y"],a:2,
+ w:"penser de → 중성대명사 en → Qu'est-ce que vous en pensez ?(그것에 대해 어떻게 생각하세요?)",fr:"Qu'est-ce que vous en pensez ?",tr:"그것에 대해 어떻게 생각하세요?",ipa:"/kɛs kə vu z‿ɑ̃ pɑ̃se/",
+ v:[["penser de","v","pɑ̃se","~에 대해 생각하다"],["en","pron","ɑ̃","그것에 대해"]]},
+
+// ----- 6강 쇼핑② 가격·계산 -----
+{course:"conv1",l:6,c:"새 제품 (neuf)",q:"빈칸에 들어갈 표현으로 알맞은 것은?\n고객 : Oui, je prends ça. Vous en avez un ( ) ?",o:["neuf","neuve","nouveau","nouvel"],a:0,
+ w:"chemisier는 남성, un neuf = (미사용의) 새 제품. (neuve는 여성형, nouvel은 위치상 부적합.)",fr:"Vous en avez un neuf ?",tr:"새것으로 있나요?",ipa:"/vu z‿ɑ̃ n‿ave œ̃ nœf/",
+ v:[["neuf","adj","nœf","새것의/미사용의"],["chemisier","m","ʃəmizje","블라우스"]]},
+{course:"conv1",l:6,c:"가격 (coûter 일치)",q:"다음 대화에서 빈칸에 들어갈 동사 형태로 알맞은 것은?\n고객 : C'est combien, ces chaussures ? 점원 : Elles ( ) cent vingt euros.",o:["coûte","coûtent","paie","paient"],a:1,
+ w:"주어 chaussures(복수) → coûtent. Elles coûtent cent vingt euros.",fr:"Elles coûtent cent vingt euros",tr:"이 신발은 120유로입니다.",ipa:"/ɛl kut sɑ̃ vɛ̃ t‿øʁo/",
+ v:[["coûter","v","kute","(값이) 나가다"],["euro","m","øʁo","유로"]]},
+{course:"conv1",l:6,c:"할인 표현 (예외)",q:"다음 대화에서 빈칸에 들어갈 단어로 적절하지 않은 것은?\n고객 : Cet article est en ( ) ? 점원 : Oui, c'est à prix réduit de 30 %.",o:["solde","location","promotion","réduction"],a:1,
+ w:"en location = 임대 중이라 '30% 할인' 맥락에 부적절. en solde/promotion/réduction은 모두 할인 중.",fr:"Cet article est en solde ?",tr:"이 상품 할인 중인가요?",ipa:"/sɛt aʁtikl ɛ t‿ɑ̃ sɔld/",
+ v:[["solde","m","sɔld","세일"],["location","f","lɔkasjɔ̃","임대"]]},
+{course:"conv1",l:6,c:"결제 (payer avec)",q:"다음 대화에서 빈칸에 들어갈 전치사로 알맞은 것은?\n점원 : Comment réglez-vous ? 고객 : Je vais payer ( ) une carte de crédit.",o:["à","avec","comme","en"],a:1,
+ w:"관사 붙은 une carte de crédit 앞에서는 avec → payer avec une carte de crédit. (무관사면 par carte.)",fr:"Je vais payer avec une carte de crédit",tr:"신용카드로 낼게요.",ipa:"/ʒə vɛ peje avɛk yn kaʁt də kʁedi/",
+ v:[["payer","v","peje","지불하다"],["carte de crédit","f","kaʁt də kʁedi","신용카드"]]},
+{course:"conv1",l:6,c:"구경만 (Je regarde)",q:"다음 대화에서 빈칸에 들어갈 단어로 알맞은 것은?\n점원 : On s'occupe de vous, Madame ? 고객 : Je ( ) juste, merci.",o:["cherche","tourne","regarde","visite"],a:2,
+ w:"Je regarde juste. = 그냥 구경만 할게요.",fr:"Je regarde juste, merci",tr:"그냥 구경만 할게요, 감사합니다.",ipa:"/ʒə ʁəɡaʁd ʒyst mɛʁsi/",
+ v:[["regarder","v","ʁəɡaʁde","보다/구경하다"],["juste","adv","ʒyst","단지"]]},
+
+// ----- 7강 카페·식당① 입장·주문 -----
+{course:"conv1",l:7,c:"종업원 부르기",q:"다음 대화에서 빈칸에 들어갈 표현으로 알맞은 것은?\n고객 : Monsieur, ( ) ! 종업원 : J'arrive tout de suite !",o:["je t'en prie","je vous en prie","s'il te plaît","s'il vous plaît"],a:3,
+ w:"종업원을 정중히 부르는 말은 S'il vous plaît ! (존댓말 vous.)",fr:"Monsieur, s'il vous plaît !",tr:"여기요(저기요)!",ipa:"/məsjø sil vu plɛ/",
+ v:[["s'il vous plaît","expr","sil vu plɛ","부탁합니다/여기요"]]},
+{course:"conv1",l:7,c:"예약 (faire une réservation)",q:"다음 대화에서 빈칸에 들어갈 동사로 알맞은 것은?\n고객 : Je voudrais ( ) une réservation. C'est possible ?",o:["aller","être","faire","mettre"],a:2,
+ w:"faire une réservation = 예약하다.",fr:"Je voudrais faire une réservation",tr:"예약을 하고 싶은데요.",ipa:"/ʒə vudʁɛ fɛʁ yn ʁezɛʁvasjɔ̃/",
+ v:[["réservation","f","ʁezɛʁvasjɔ̃","예약"],["faire","v","fɛʁ","하다"]]},
+{course:"conv1",l:7,c:"자리 (en terrasse)",q:"다음 대화에서 빈칸에 들어갈 전치사로 알맞은 것은?\n종업원 : ( ) terrasse ou à l'intérieur ?",o:["De","Comme","En","Pour"],a:2,
+ w:"En terrasse = 테라스에서. (장소 en terrasse ↔ à l'intérieur.)",fr:"En terrasse ou à l'intérieur ?",tr:"테라스로 하시겠어요, 안쪽으로 하시겠어요?",ipa:"/ɑ̃ teʁas u a lɛ̃teʁjœʁ/",
+ v:[["terrasse","f","teʁas","테라스"],["intérieur","m","ɛ̃teʁjœʁ","내부"]]},
+{course:"conv1",l:7,c:"Quelle + 여성명사",q:"다음 대화에서 빈칸에 들어갈 단어로 알맞은 것은?\n고객 : ( ) est la spécialité de la maison ?",o:["Que","Quoi","Quel","Quelle"],a:3,
+ w:"spécialité(여성)에 일치 → Quelle est la spécialité… ?",fr:"Quelle est la spécialité de la maison ?",tr:"이 집의 대표 메뉴가 뭔가요?",ipa:"/kɛl ɛ la spesjalite də la mɛzɔ̃/",
+ v:[["spécialité","f","spesjalite","대표 요리/특선"],["maison","f","mɛzɔ̃","집/가게"]]},
+{course:"conv1",l:7,c:"à la place de",q:"다음 대화에서 빈칸에 들어갈 단어로 알맞은 것은?\n고객 : …des frites à la ( ) de riz sauté ?",o:["carte","menu","lieu","place"],a:3,
+ w:"à la place de = ~대신에 → des frites à la place de riz sauté.(볶음밥 대신 감자튀김.)",fr:"des frites à la place de riz sauté",tr:"볶음밥 대신 감자튀김.",ipa:"/de fʁit a la plas də ʁi sote/",
+ v:[["place","f","plas","자리 (à la place de=대신)"],["frites","f","fʁit","감자튀김"]]},
+
+// ----- 8강 식당② 메뉴·주문·계산 -----
+{course:"conv1",l:8,c:"고기 굽기",q:"다음 대화에서 빈칸에 들어갈 표현으로 적절하지 않은 것은?\n종업원 : Quelle cuisson pour la viande ? 고객 : ( ), s'il vous plaît.",o:["Bleue","Rouge","À point","Bien cuite"],a:1,
+ w:"굽기는 bleue–saignante(레어)–à point(미디엄)–bien cuite(웰던). Rouge는 정식 굽기 표현이 아니다.",fr:"À point, s'il vous plaît",tr:"미디엄으로 해 주세요.",ipa:"/a pwɛ̃ sil vu plɛ/",
+ v:[["cuisson","f","kɥisɔ̃","굽기 정도"],["viande","f","vjɑ̃d","고기"]]},
+{course:"conv1",l:8,c:"à la carte",q:"다음 대화에서 빈칸에 들어갈 표현으로 알맞은 것은?\n고객 : Pour moi, ce sera ( ). Je prendrai un saumon grillé.",o:["à la carte","en carte","au menu","par menu"],a:0,
+ w:"à la carte = 일품요리로(개별 선택). 특정 단품을 고르는 흐름과 맞다. (au menu는 정식 코스.)",fr:"Pour moi, ce sera à la carte",tr:"저는 일품요리로 할게요.",ipa:"/puʁ mwa sə səʁa a la kaʁt/",
+ v:[["carte","f","kaʁt","메뉴판 (à la carte=일품)"],["saumon","m","somɔ̃","연어"]]},
+{course:"conv1",l:8,c:"추천 (recommander)",q:"다음 대화에서 빈칸에 들어갈 동사 형태로 알맞은 것은?\n고객 : Qu'est-ce que vous nous ( ) comme vin ?",o:["commandez","commandons","recommandez","recommandons"],a:2,
+ w:"손님이 추천을 묻고 종업원이 추천하는 흐름 → recommandez (vous 일치).",fr:"Qu'est-ce que vous nous recommandez comme vin ?",tr:"와인은 뭘 추천하시나요?",ipa:"/kɛs kə vu nu ʁəkɔmɑ̃de kɔm vɛ̃/",
+ v:[["recommander","v","ʁəkɔmɑ̃de","추천하다"],["vin","m","vɛ̃","포도주"]]},
+{course:"conv1",l:8,c:"메뉴 보유 (avoir)",q:"다음 대화에서 빈칸에 들어갈 동사로 알맞은 것은?\n고객 : Qu'est-ce que vous ( ) comme dessert ? 점원 : Nous avons des tartes…",o:["avez","faites","prenez","voulez"],a:0,
+ w:"종업원이 Nous avons…로 답하므로 질문도 Qu'est-ce que vous avez comme dessert ?",fr:"Qu'est-ce que vous avez comme dessert ?",tr:"디저트는 어떤 게 있나요?",ipa:"/kɛs kə vu z‿ave kɔm desɛʁ/",
+ v:[["avoir","v","avwaʁ","가지다"],["dessert","m","desɛʁ","후식"]]},
+{course:"conv1",l:8,c:"한턱 (inviter/offrir/payer)",q:"다음 대화에서 빈칸에 들어갈 동사로 적절하지 않은 것은?\nC'est moi qui vous ( ). (제가 낼게요.)",o:["achète","invite","offre","paye"],a:0,
+ w:"'제가 낼게요'는 invite/offre/paie. achète(사다)는 'vous achète(당신을 사다)'가 되어 부적절.",fr:"C'est moi qui vous invite",tr:"제가 낼게요.",ipa:"/sɛ mwa ki vu z‿ɛ̃vit/",
+ v:[["inviter","v","ɛ̃vite","초대하다/한턱내다"],["offrir","v","ɔfʁiʁ","대접하다"]]},
+
+// ----- 9강 장보기 -----
+{course:"conv1",l:9,c:"faire les courses",q:"빈칸에 들어갈 단어로 적절하지 않은 것은?\nLe frigo est presque vide, je dois faire ( ) courses.",o:["des","ces","les","quelques"],a:1,
+ w:"faire les/des courses = 장을 보다. quelques courses도 가능. ces courses는 가리킬 대상이 없어 부적절.",fr:"Je dois faire les courses",tr:"장을 봐야 해요.",ipa:"/ʒə dwa fɛʁ le kuʁs/",
+ v:[["courses","f","kuʁs","장보기 (복수)"],["frigo","m","fʁiɡo","냉장고"]]},
+{course:"conv1",l:9,c:"용기 단위",q:"빈칸에 들어갈 단어를 바르게 연결한 것은?\nIl me faut une ( ⓐ ) de fraises et deux ( ⓑ ) de lait.",o:["ⓐ barquette ⓑ briques","ⓐ brique ⓑ barquettes","ⓐ barquette ⓑ packs","ⓐ pack ⓑ barquettes"],a:0,
+ w:"une barquette de fraises(딸기 한 팩) + deux briques de lait(우유 두 팩). brique=종이팩.",fr:"une barquette de fraises et deux briques de lait",tr:"딸기 한 팩과 우유 두 팩.",ipa:"/yn baʁkɛt də fʁɛz e dø bʁik də lɛ/",
+ v:[["barquette","f","baʁkɛt","(딸기 등) 팩"],["brique","f","bʁik","(우유) 종이팩"]]},
+{course:"conv1",l:9,c:"부정문 수량 (plus de)",q:"빈칸에 들어갈 단어로 알맞은 것은?\nVous n'avez plus ( ) chouquettes ?",o:["de","des","le","les"],a:0,
+ w:"ne … plus de → n'avez plus de chouquettes. (부정문에서 관사 → de.)",fr:"Vous n'avez plus de chouquettes ?",tr:"슈케트가 더 이상 없나요?",ipa:"/vu nave ply də ʃukɛt/",
+ v:[["chouquette","f","ʃukɛt","슈케트 (과자)"]]},
+{course:"conv1",l:9,c:"단가 (à combien)",q:"빈칸에 들어갈 표현으로 알맞은 것은?\nLes cerises, elles sont ( ) le kilo ?",o:["combien","à combien","de combien","en combien"],a:1,
+ w:"à combien le kilo ? = 1kg에 얼마예요?(단가를 묻는 à combien.)",fr:"Les cerises, elles sont à combien le kilo ?",tr:"체리는 1kg에 얼마예요?",ipa:"/le səʁiz ɛl sɔ̃ t‿a kɔ̃bjɛ̃ lə kilo/",
+ v:[["cerise","f","səʁiz","체리"],["kilo","m","kilo","킬로그램"]]},
+{course:"conv1",l:9,c:"합계 (Ça fait)",q:"빈칸에 들어갈 동사로 알맞은 것은?\nÇa ( ) combien en tout ?",o:["a","est","fait","va"],a:2,
+ w:"Ça fait combien en tout ? = 전부 얼마예요?(합계는 faire.)",fr:"Ça fait combien en tout ?",tr:"전부 얼마예요?",ipa:"/sa fɛ kɔ̃bjɛ̃ ɑ̃ tu/",
+ v:[["faire","v","fɛʁ","하다 (합계)"],["en tout","expr","ɑ̃ tu","전부"]]},
+
+// ----- 10강 제안·약속 -----
+{course:"conv1",l:10,c:"가능 여부 (être disponible)",q:"빈칸에 들어갈 동사로 알맞은 것은?\nA : ( )-vous disponible vendredi après-midi ? B : Oui, je suis libre.",o:["Allez","Avez","Êtes","Faites"],a:2,
+ w:"disponible(형용사) 앞에는 être → Êtes-vous disponible ?",fr:"Êtes-vous disponible vendredi après-midi ?",tr:"금요일 오후에 시간 되세요?",ipa:"/ɛt-vu disponibl vɑ̃dʁədi apʁɛ-midi/",
+ v:[["disponible","adj","disponibl","시간이 되는"],["libre","adj","libʁ","한가한"]]},
+{course:"conv1",l:10,c:"제안 (Si on + 반과거)",q:"빈칸에 들어갈 동사 형태로 가장 알맞은 것은?\nA : Si on ( ) voir un film ? B : Pourquoi pas !",o:["allez","allait","aille","va"],a:1,
+ w:"Si on + 반과거 ? = ~하는 게 어때?(제안) → Si on allait voir un film ?",fr:"Si on allait voir un film ?",tr:"영화 보러 갈까요?",ipa:"/si ɔ̃ alɛ vwaʁ œ̃ film/",
+ v:[["aller","v","ale","가다"],["film","m","film","영화"]]},
+{course:"conv1",l:10,c:"제안 (Ça vous dirait de)",q:"빈칸에 들어갈 동사 형태로 알맞은 것은?\nA : Ça vous ( ) d'aller voir une pièce de théâtre ?",o:["dis","dites","dirait","direz"],a:2,
+ w:"Ça vous dirait de + 동사원형 ? = ~하고 싶으세요?(조건법 dirait).",fr:"Ça vous dirait d'aller voir une pièce de théâtre ?",tr:"연극 보러 가실래요?",ipa:"/sa vu diʁɛ dale vwaʁ yn pjɛs də teatʁ/",
+ v:[["pièce de théâtre","f","pjɛs də teatʁ","연극"]]},
+{course:"conv1",l:10,c:"함께 가자 (venir)",q:"빈칸에 들어갈 동사로 알맞은 것은?\nA : …Voulez-vous ( ) avec moi ? B : Mais oui ! Super !",o:["aller","venir","faire","voir"],a:1,
+ w:"상대에게 함께 와 달라 → venir avec moi.(권유에 자연스럽다.)",fr:"Voulez-vous venir avec moi ?",tr:"저와 함께 가실래요?",ipa:"/vule-vu vəniʁ avɛk mwa/",
+ v:[["venir","v","vəniʁ","오다"],["exposition","f","ɛkspozisjɔ̃","전시회"]]},
+{course:"conv1",l:10,c:"거절 사유 vs 한가함",q:"빈칸에 들어갈 표현으로 적절하지 않은 것은?\nA : Vous ne voulez pas prendre un verre… ? B : Désolé(e), mais ( ).",o:["je suis pris(e)","j'ai déjà quelque chose","je n'ai pas le temps","je n'ai rien de prévu"],a:3,
+ w:"je suis pris(e)·j'ai déjà quelque chose·je n'ai pas le temps는 거절 사유. je n'ai rien de prévu(약속이 없다=한가하다)는 거절 이유로 부적절.",fr:"je n'ai rien de prévu",tr:"약속이 없어요 (=한가함, 거절 사유엔 부적절).",ipa:"/ʒə nɛ ʁjɛ̃ də pʁevy/",
+ oi:["/ʒə sɥi pʁi(z)/","/ʒe deʒa kɛlkə ʃoz/","/ʒə nɛ pa lə tɑ̃/","/ʒə nɛ ʁjɛ̃ də pʁevy/"],ot:["선약이 있어요.","이미 다른 일이 있어요.","시간이 없어요.","약속이 없어요 (거절 사유로 부적절)."],
+ v:[["prévu","adj","pʁevy","예정된"],["verre","m","vɛʁ","잔 (prendre un verre=한잔하다)"]]},
+
+// ----- 11강 식사 초대·작별 -----
+{course:"conv1",l:11,c:"se laver les mains",q:"빈칸에 들어갈 표현으로 알맞은 것은?\nExcusez-moi, est-ce que je peux ( ) ? (손을 씻을 수 있을까요?)",o:["me laver les mains","me laver mes mains","se laver les mains","se laver mes mains"],a:0,
+ w:"주어 je → 재귀 me. 신체부위는 정관사 les → me laver les mains. (se는 3인칭, mes mains는 중복 소유라 오답.)",fr:"est-ce que je peux me laver les mains ?",tr:"손을 씻을 수 있을까요?",ipa:"/ɛs kə ʒə pø mə lave le mɛ̃/",
+ v:[["se laver","v","sə lave","씻다"],["main","f","mɛ̃","손"]]},
+{course:"conv1",l:11,c:"부분관사 → en",q:"다음 대화에서 빈칸에 들어갈 표현으로 알맞은 것은?\nA : Du vin ? Vous ( ) voulez encore un peu ?",o:["le","la","en","y"],a:2,
+ w:"du vin(부분관사 명사)을 받는 중성대명사 en → Vous en voulez encore un peu ?",fr:"Vous en voulez encore un peu ?",tr:"좀 더 드실래요?",ipa:"/vu z‿ɑ̃ vule ɑ̃kɔʁ œ̃ pø/",
+ v:[["en","pron","ɑ̃","그것을 (부분관사 대용)"],["vin","m","vɛ̃","포도주"]]},
+{course:"conv1",l:11,c:"음식 거절",q:"다음 대화에서 빈칸에 들어갈 표현으로 적절하지 않은 것은?\nA : Qui veut du fromage ? B : Non merci. ( )",o:["J'ai assez faim.","J'ai très bien mangé.","Je suis rassasié(e).","Je n'ai plus faim."],a:0,
+ w:"J'ai assez faim(꽤 배고프다)은 거절 맥락과 모순. J'ai très bien mangé·Je suis rassasié·Je n'ai plus faim은 정중한 거절 사유.",fr:"J'ai assez faim.",tr:"꽤 배가 고파요 (거절 맥락엔 모순).",ipa:"/ʒe ase fɛ̃/",
+ oi:["/ʒe ase fɛ̃/","/ʒe tʁɛ bjɛ̃ mɑ̃ʒe/","/ʒə sɥi ʁasazje/","/ʒə nɛ ply fɛ̃/"],ot:["꽤 배고파요 (거절 맥락과 모순).","정말 잘 먹었어요.","배불러요.","이제 배 안 고파요."],
+ v:[["fromage","m","fʁɔmaʒ","치즈"],["rassasié","adj","ʁasazje","배부른"]]},
+{course:"conv1",l:11,c:"자리 뜨기 (y aller)",q:"다음 표현 중 문법적으로 적절하지 않은 것은?",o:["Je dois aller.","Il faut que j'y aille.","On ne va pas tarder.","Je vous laisse."],a:0,
+ w:"aller는 목적지·중성대명사 y가 필요 → Je dois y aller. 'Je dois aller.'만으로는 비문.",fr:"Je dois y aller",tr:"가 봐야겠어요.",ipa:"/ʒə dwa z‿i ale/",
+ oi:["/ʒə dwa z‿ale/","/il fo kə ʒi aj/","/ɔ̃ nə va pa taʁde/","/ʒə vu lɛs/"],ot:["가 봐야 해요 (y 누락 비문).","이만 가 봐야겠어요.","곧 일어날게요.","이만 실례할게요."],
+ v:[["y aller","expr","i ale","(그곳에) 가다"],["tarder","v","taʁde","지체하다"]]},
+{course:"conv1",l:11,c:"과거부정사 일치",q:"빈칸에 들어갈 동사 형태로 알맞은 것은?\nMerci d'( ), Madame !",o:["avoir venu","avoir venue","être venu","être venue"],a:3,
+ w:"venir는 être 과거부정사 → être venu(e). 청자가 Madame(여성)이라 일치 → être venue.",fr:"Merci d'être venue, Madame !",tr:"와 주셔서 감사합니다.",ipa:"/mɛʁsi dɛtʁ vəny madam/",
+ v:[["venir","v","vəniʁ","오다 (être 조동사)"]]},
+
+// ----- 12강 자기소개·취미 -----
+{course:"conv1",l:12,c:"자기소개 (me présenter)",q:"빈칸에 들어갈 동사 형태로 알맞은 것은?\nPermettez-moi de ( ). Je m'appelle Lee Yuna…",o:["présenter","me présenter","le présenter","se présenter"],a:1,
+ w:"Permettez-moi de me présenter. = 제 소개를 하겠습니다. (주어가 화자 je라 재귀 me.)",fr:"Permettez-moi de me présenter",tr:"제 소개를 하겠습니다.",ipa:"/pɛʁmete-mwa də mə pʁezɑ̃te/",
+ v:[["se présenter","v","sə pʁezɑ̃te","자기소개하다"],["permettre","v","pɛʁmɛtʁ","허락하다"]]},
+{course:"conv1",l:12,c:"가족 수 묻기",q:"빈칸에 들어갈 단어로 알맞은 것은?\nA : Vous êtes ( ) dans votre famille ? B : On est cinq…",o:["combien","comment","quoi","quel"],a:0,
+ w:"가족이 몇 명인지 → Vous êtes combien dans votre famille ?",fr:"Vous êtes combien dans votre famille ?",tr:"가족이 몇 명이세요?",ipa:"/vu z‿ɛt kɔ̃bjɛ̃ dɑ̃ vɔtʁ famij/",
+ v:[["combien","adv","kɔ̃bjɛ̃","몇/얼마"],["famille","f","famij","가족"]]},
+{course:"conv1",l:12,c:"운동 (faire de la)",q:"빈칸에 들어갈 단어로 알맞은 것은?\nA : Qu'est-ce que vous faites comme sport ? B : Je fais ( ) natation.",o:["de","de la","une","la"],a:1,
+ w:"natation(여성)을 하는 운동 → faire de la natation. (faire de la/du + 운동.)",fr:"Je fais de la natation",tr:"저는 수영을 해요.",ipa:"/ʒə fɛ də la natasjɔ̃/",
+ v:[["natation","f","natasjɔ̃","수영"],["sport","m","spɔʁ","운동"]]},
+{course:"conv1",l:12,c:"배우다 (apprendre)",q:"빈칸에 들어갈 동사로 알맞은 것은?\nB : J'aime beaucoup ( ) des langues étrangères.",o:["apprendre","prendre","faire","savoir"],a:0,
+ w:"apprendre des langues étrangères = 외국어를 배우다.",fr:"J'aime beaucoup apprendre des langues étrangères",tr:"저는 외국어 배우는 걸 아주 좋아해요.",ipa:"/ʒɛm boku apʁɑ̃dʁ de lɑ̃ɡ etʁɑ̃ʒɛʁ/",
+ v:[["apprendre","v","apʁɑ̃dʁ","배우다"],["langue","f","lɑ̃ɡ","언어"]]},
+{course:"conv1",l:12,c:"의미 묻기 (vouloir dire)",q:"빈칸에 들어갈 동사로 알맞은 것은?\nA : Qu'est-ce que ça ( ) dire le mot « vachement » ?",o:["va","fait","peut","veut"],a:3,
+ w:"Qu'est-ce que ça veut dire ? = 무슨 뜻이에요?(vouloir dire = 의미하다.)",fr:"Qu'est-ce que ça veut dire ?",tr:"무슨 뜻이에요?",ipa:"/kɛs kə sa vø diʁ/",
+ v:[["vouloir dire","expr","vulwaʁ diʁ","의미하다"],["mot","m","mo","단어"]]}
+,
+// ========== 프랑스어회화1 (course: conv1) — 2019 기출 PDF ==========
+{course:"conv1",l:10,c:"(기출) faire le pont",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"너네 징검다리 연휴는 다 쉬니?\"\nVous ( ) le pont ?",o:["avez","faites","prenez","mettez"],a:1,
+ w:"faire le pont = (공휴일 사이) 연휴로 쉬다 → Vous faites le pont ?",fr:"Vous faites le pont ?",tr:"너희 징검다리 연휴 다 쉬어?",ipa:"/vu fɛt lə pɔ̃/",
+ v:[["faire le pont","expr","fɛʁ lə pɔ̃","연휴로 쉬다"],["pont","m","pɔ̃","다리/연휴"]]},
+{course:"conv1",l:4,c:"(기출) mettre du temps",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"암스테르담에서 쾰른까지 가는 데 얼마나 걸리지?\"\nCombien de temps est-ce qu'on ( ) pour aller d'Amsterdam à Cologne ?",o:["a","fait","prend","met"],a:3,
+ w:"mettre + 시간 + pour + 동사원형 = ~하는 데 (시간이) 걸리다 → on met.",fr:"Combien de temps est-ce qu'on met pour aller à Cologne ?",tr:"쾰른까지 가는 데 얼마나 걸려?",ipa:"/kɔ̃bjɛ̃ də tɑ̃ ɛs kɔ̃ mɛ puʁ ale a kɔlɔɲ/",
+ v:[["mettre","v","mɛtʁ","(시간이) 걸리다"],["temps","m","tɑ̃","시간"]]},
+{course:"conv1",l:10,c:"(기출) conseiller de",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"며칠 휴가를 내시는 게 좋겠어요.\"\nJe vous ( ) de prendre quelques jours de congé.",o:["conseille","demandez","ordonne","remercie"],a:0,
+ w:"conseiller à qqn de + 동사원형 = ~하라고 권하다 → Je vous conseille de prendre…",fr:"Je vous conseille de prendre quelques jours de congé",tr:"며칠 휴가를 내시길 권해요.",ipa:"/ʒə vu kɔ̃sɛj də pʁɑ̃dʁ kɛlkə ʒuʁ də kɔ̃ʒe/",
+ v:[["conseiller","v","kɔ̃seje","권하다"],["congé","m","kɔ̃ʒe","휴가"]]},
+{course:"conv1",l:4,c:"(기출) loger",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"어디에서 묵을 거야? 호텔?\"\nOù est-ce que vous allez ( ) ?",o:["loger","louer","passer","stationner"],a:0,
+ w:"loger = 묵다/숙박하다. (louer=빌리다, stationner=주차하다.)",fr:"Où est-ce que vous allez loger ?",tr:"어디서 묵을 거예요?",ipa:"/u ɛs kə vu z‿ale lɔʒe/",
+ v:[["loger","v","lɔʒe","묵다"],["louer","v","lwe","빌리다"]]},
+{course:"conv1",l:4,c:"(기출) aller chercher qqn",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"저는 어머니를 모시러 툴루즈로 떠날 예정입니다.\"\nJe dois partir pour Toulouse ( ) ma mère.",o:["avoir","chercher","recevoir","trouver"],a:1,
+ w:"(aller/partir) chercher qqn = ~를 데리러 가다 → chercher ma mère.",fr:"Je dois partir pour Toulouse chercher ma mère",tr:"어머니를 모시러 툴루즈로 떠나야 해요.",ipa:"/ʒə dwa paʁtiʁ puʁ tuluz ʃɛʁʃe ma mɛʁ/",
+ v:[["chercher","v","ʃɛʁʃe","데리러 가다/찾다"],["mère","f","mɛʁ","어머니"]]},
+{course:"conv1",l:6,c:"(기출) se passer de",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"은행카드 없이 어떻게 사세요?\"\nComment vous pouvez vous ( ) de la carte bancaire ?",o:["faire","passer","servir","vivre"],a:1,
+ w:"se passer de qqch = ~없이 지내다 → vous passer de la carte bancaire.",fr:"Comment vous pouvez vous passer de la carte bancaire ?",tr:"은행카드 없이 어떻게 지내세요?",ipa:"/kɔmɑ̃ vu puve vu pase də la kaʁt bɑ̃kɛʁ/",
+ v:[["se passer de","v","sə pase","~없이 지내다"],["carte bancaire","f","kaʁt bɑ̃kɛʁ","은행 카드"]]},
+{course:"conv1",l:5,c:"(기출) plaire (plu)",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"그 영화 참 좋았어.\"\nCe film m'a beaucoup ( ).",o:["aime","aimé","plaît","plu"],a:3,
+ w:"plaire의 과거분사는 plu → Ce film m'a beaucoup plu.(그 영화가 마음에 들었다.)",fr:"Ce film m'a beaucoup plu",tr:"그 영화 참 좋았어.",ipa:"/sə film ma boku ply/",
+ v:[["plaire","v","plɛʁ","마음에 들다"],["film","m","film","영화"]]},
+{course:"conv1",l:4,c:"(기출) se trouver",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"뉘생조르주라고? 어디 있는 거야?\"\nNuits-Saint-Georges ? Ça ( ) où exactement ?",o:["est","se trouve","fait","va"],a:1,
+ w:"se trouver = (위치가) 있다 → Ça se trouve où ?",fr:"Ça se trouve où exactement ?",tr:"그게 정확히 어디 있는 거야?",ipa:"/sa sə tʁuv u ɛɡzaktəmɑ̃/",
+ v:[["se trouver","v","sə tʁuve","위치하다"],["exactement","adv","ɛɡzaktəmɑ̃","정확히"]]},
+{course:"conv1",l:4,c:"(기출) valoir le détour",q:"( ) 안에 들어갈 동사로 알맞은 것은?\n\"본은 가 볼 만하니?\"\nEst-ce que Beaune ( ) le détour ?",o:["a","fait","faut","vaut"],a:3,
+ w:"valoir le détour = 가 볼 만하다 → Beaune vaut le détour ?",fr:"Est-ce que Beaune vaut le détour ?",tr:"본은 가 볼 만하니?",ipa:"/ɛs kə bon vo lə detuʁ/",
+ v:[["valoir","v","valwaʁ","가치가 있다"],["détour","m","detuʁ","우회/들름"]]},
+{course:"conv1",l:10,c:"(기출) devoir (추측)",q:"( ) 안에 들어갈 동사 형태로 알맞은 것은?\n\"그들은 아마 늦을 것 같다.\"\nIls ( ) être en retard.",o:["devent","devont","doient","doivent"],a:3,
+ w:"devoir 3인칭 복수는 doivent. Ils doivent être en retard.(아마 늦는 모양이다 — 추측의 devoir.)",fr:"Ils doivent être en retard",tr:"그들은 아마 늦을 것 같다.",ipa:"/il dwav ɛtʁ ɑ̃ ʁətaʁ/",
+ v:[["devoir","v","dəvwaʁ","~임에 틀림없다/해야 하다"],["retard","m","ʁətaʁ","지각"]]},
+{course:"conv1",l:12,c:"(기출) suivre (passé composé)",q:"( ) 안에 들어갈 동사 형태로 알맞은 것은?\n\"유럽연합의 미래에 대한 토론 프로그램을 시청했니?\"\nTu ( ) le débat sur l'avenir de l'Union européenne ?",o:["as suit","es suit","as suivi","es suivi"],a:2,
+ w:"suivre는 avoir 조동사, 과거분사 suivi → Tu as suivi le débat ?",fr:"Tu as suivi le débat sur l'avenir de l'Union européenne ?",tr:"유럽연합의 미래에 대한 토론을 봤니?",ipa:"/ty a sɥivi lə deba syʁ lavniʁ də lynjɔ̃ øʁɔpeɛn/",
+ v:[["suivre","v","sɥivʁ","따라가다/시청하다"],["débat","m","deba","토론"]]},
+{course:"conv1",l:6,c:"(기출) devoir/faire (계산)",q:"( ⓐ )와 ( ⓑ )에 들어갈 동사가 올바르게 짝지어진 것은?\nSylvie : Je vous ( ⓐ ) combien ? / Le marchand : Ça ( ⓑ ) 8,30 euros.",o:["ⓐ dois ⓑ fait","ⓐ dois ⓑ va","ⓐ devez ⓑ fait","ⓐ devez ⓑ va"],a:0,
+ w:"손님: Je vous dois combien ?(얼마 드리면 되나요), 상인: Ça fait 8,30 euros.(8.30유로입니다.)",fr:"Je vous dois combien ? — Ça fait 8,30 euros",tr:"얼마 드리면 되나요? — 8.30유로입니다.",ipa:"/ʒə vu dwa kɔ̃bjɛ̃ sa fɛ ɥit øʁo tʁɑ̃t/",
+ v:[["devoir","v","dəvwaʁ","빚지다/지불해야 하다"],["marchand","m","maʁʃɑ̃","상인"]]},
+{course:"conv1",l:11,c:"(기출) passer la soirée",q:"( ⓐ ), ( ⓑ )에 들어갈 형태가 올바르게 짝지어진 것은?\nLisa : Cyril, qu'est-ce que tu ( ⓐ ) hier soir ? / Cyril : ( ⓑ ) toute la soirée à la maison.",o:["ⓐ as fait ⓑ J'ai passé","ⓐ as fait ⓑ Je suis passé","ⓐ es fait ⓑ J'ai passé","ⓐ es fait ⓑ Je suis passé"],a:0,
+ w:"qu'est-ce que tu as fait(무엇을 했니) + J'ai passé toute la soirée(저녁을 보냈다 — passer 타동사라 avoir).",fr:"Qu'est-ce que tu as fait hier soir ? — J'ai passé toute la soirée à la maison",tr:"어젯밤 뭐 했어? — 저녁 내내 집에 있었어.",ipa:"/kɛs kə ty a fɛ jɛʁ swaʁ ʒe pase tut la swaʁe a la mɛzɔ̃/",
+ v:[["faire","v","fɛʁ","하다"],["passer","v","pase","(시간을) 보내다"],["soirée","f","swaʁe","저녁 (시간)"]]},
+{course:"conv1",l:6,c:"(기출) fermé (문맥)",q:"문맥을 고려할 때 ( ) 안에 들어갈 단어로 알맞은 것은?\nClément : La banque est déjà ( ) ? / Stéphanie : Oui, il y a une grève !",o:["commencée","fermée","ouverte","passée"],a:1,
+ w:"파업(grève) 때문에 → La banque est déjà fermée ?(은행이 벌써 문 닫았어?)",fr:"La banque est déjà fermée ?",tr:"은행이 벌써 문 닫았어?",ipa:"/la bɑ̃k ɛ deʒa fɛʁme/",
+ v:[["fermé","adj","fɛʁme","닫힌"],["grève","f","ɡʁɛv","파업"]]},
+{course:"conv1",l:5,c:"(기출) lequel/laquelle",q:"문맥을 고려할 때 ( ) 안에 들어갈 단어로 알맞은 것은?\nIsabelle : Tu as vu cette jupe… ? / Mathieu : ( ), la noire ?",o:["Celui","Celle","Lequel","Laquelle"],a:3,
+ w:"jupe(여성)을 받아 '어느 것?'을 묻는 의문대명사 → Laquelle ?",fr:"Laquelle ? la noire ?",tr:"어느 거? 검은색?",ipa:"/lakɛl la nwaʁ/",
+ v:[["laquelle","pron","lakɛl","어느 것 (여)"],["jupe","f","ʒyp","치마"]]},
+{course:"conv1",l:10,c:"(기출) Tant mieux",q:"문맥을 고려할 때 ( ) 안에 들어갈 표현으로 알맞은 것은?\nNicole : …aujourd'hui, c'est vide. / Bruno : ( ) C'est plus agréable comme ça.",o:["Tant pis !","Tant mieux !","Malheureusement !","Doucement !"],a:1,
+ w:"한산해서 더 좋다는 맥락 → Tant mieux !(잘됐네!)",fr:"Tant mieux ! C'est plus agréable comme ça.",tr:"잘됐네! 이게 더 좋아.",ipa:"/tɑ̃ mjø sɛ ply z‿aɡʁeabl kɔm sa/",
+ oi:["/tɑ̃ pi/","/tɑ̃ mjø/","/maløʁøzmɑ̃/","/dusmɑ̃/"],ot:["할 수 없죠.","잘됐네요!","안타깝게도!","천천히/살살!"],
+ v:[["tant mieux","expr","tɑ̃ mjø","잘됐다"],["tant pis","expr","tɑ̃ pi","할 수 없지"]]},
+{course:"conv1",l:8,c:"(기출) formule à ~euros",q:"( ) 안에 들어갈 단어로 알맞은 것은?\n\"저는 24유로짜리 정식으로 할게요.\"\nJe vais prendre la formule ( ) 24 euros.",o:["à","comme","de","pour"],a:0,
+ w:"la formule à 24 euros = 24유로짜리 세트 메뉴 (가격의 à).",fr:"Je vais prendre la formule à 24 euros",tr:"24유로짜리 정식으로 할게요.",ipa:"/ʒə vɛ pʁɑ̃dʁ la fɔʁmyl a vɛ̃t katʁ øʁo/",
+ v:[["formule","f","fɔʁmyl","(식당) 세트 메뉴"],["euro","m","øʁo","유로"]]},
+{course:"conv1",l:4,c:"(기출) chez + 사람",q:"( ) 안에 들어갈 단어로 알맞은 것은?\n\"쾰른에서는 친구들 집에 갈 거야.\"\nÀ Cologne, on ira ( ) des amis.",o:["à","chez","dans","en"],a:1,
+ w:"chez + 사람 = ~의 집에 → chez des amis.",fr:"À Cologne, on ira chez des amis",tr:"쾰른에서는 친구들 집에 갈 거야.",ipa:"/a kɔlɔɲ ɔ̃ n‿iʁa ʃe de z‿ami/",
+ v:[["chez","prep","ʃe","~의 집에"],["ami","m","ami","친구"]]},
+{course:"conv1",l:10,c:"(기출) aussi … que",q:"( ) 안에 들어갈 단어로 알맞은 것은?\n\"그제는 오늘만큼 날씨가 더웠어.\"\nAvant-hier, il faisait ( ) chaud qu'aujourd'hui.",o:["plus","moins","aussi","beaucoup"],a:2,
+ w:"aussi … que = ~만큼 …한 (동등 비교) → aussi chaud qu'aujourd'hui.",fr:"Avant-hier, il faisait aussi chaud qu'aujourd'hui",tr:"그제는 오늘만큼 더웠어.",ipa:"/avɑ̃-jɛʁ il fəzɛ osi ʃo koʒuʁdɥi/",
+ v:[["aussi … que","expr","osi … kə","~만큼 …한"],["chaud","adj","ʃo","더운"]]},
+{course:"conv1",l:8,c:"(기출) beaucoup meilleur",q:"( ) 안에 들어갈 단어로 알맞은 것은?\n\"이 포도주가 훨씬 더 맛있다.\"\nCe vin est ( ) meilleur.",o:["plus","moins","aussi","beaucoup"],a:3,
+ w:"meilleur(더 좋은)는 이미 비교급이라 plus를 못 붙이고, 강조는 beaucoup(또는 bien) → beaucoup meilleur.",fr:"Ce vin est beaucoup meilleur",tr:"이 포도주가 훨씬 더 맛있다.",ipa:"/sə vɛ̃ ɛ boku mɛjœʁ/",
+ v:[["meilleur","adj","mɛjœʁ","더 좋은/더 맛있는"],["beaucoup","adv","boku","훨씬/많이"]]},
+{course:"conv1",l:12,c:"(기출) 감탄 Comme",q:"( ) 안에 들어갈 단어로 알맞은 것은?\n\"너무 귀엽다!\"\n( ) il est adorable !",o:["Comme","Combien","Comment","Quel"],a:0,
+ w:"Comme + 문장 ! = 정말 ~하다!(감탄) → Comme il est adorable !",fr:"Comme il est adorable !",tr:"정말 귀엽다!",ipa:"/kɔm il ɛ t‿adɔʁabl/",
+ v:[["comme","adv","kɔm","정말 ~하다 (감탄)"],["adorable","adj","adɔʁabl","사랑스러운"]]},
+{course:"conv1",l:12,c:"(기출) 형용사 어순",q:"( ) 안에 들어갈 표현으로 알맞은 것은?\n\"내게는 털이 노랗고 덩치가 큰 고양이가 한 마리 있다.\"\nJ'ai ( ).",o:["un gros jaune chat","un chat jaune gros","un gros chat jaune","un jaune chat gros"],a:2,
+ w:"형용사 위치: gros(앞) + 명사 + jaune(색, 뒤) → un gros chat jaune.",fr:"J'ai un gros chat jaune",tr:"덩치 크고 노란 고양이가 한 마리 있다.",ipa:"/ʒe œ̃ ɡʁo ʃa ʒon/",
+ oi:["/œ̃ ɡʁo ʒon ʃa/","/œ̃ ʃa ʒon ɡʁo/","/œ̃ ɡʁo ʃa ʒon/","/œ̃ ʒon ʃa ɡʁo/"],ot:["(어순 오류).","(어순 오류).","덩치 크고 노란 고양이 한 마리.","(어순 오류)."],
+ v:[["gros","adj","ɡʁo","큰/뚱뚱한"],["chat","m","ʃa","고양이"],["jaune","adj","ʒon","노란"]]},
+{course:"conv1",l:5,c:"(기출) à la mode",q:"( ) 안에 들어갈 표현으로 알맞은 것은?\n\"이 짧은 치마는 이번 여름 최신 유행이에요.\"\nCette jupe courte est très ( ) cet été.",o:["au mode","à la mode","du mode","de la mode"],a:1,
+ w:"à la mode = 유행하는 (la mode 여성). très à la mode = 아주 유행이다.",fr:"Cette jupe courte est très à la mode cet été",tr:"이 짧은 치마는 이번 여름 최신 유행이에요.",ipa:"/sɛt ʒyp kuʁt ɛ tʁɛ z‿a la mɔd sɛt ete/",
+ v:[["mode","f","mɔd","유행 (à la mode=유행하는)"],["courte","adj","kuʁt","짧은"]]},
+{course:"conv1",l:4,c:"(기출) D'où vient",q:"( ) 안에 들어갈 표현으로 알맞은 것은?\n\"물이 어디서 새나요?\"\nÇa ( ), la fuite d'eau ?",o:["sort où","sort d'où","vient où","vient d'où"],a:3,
+ w:"D'où vient … ? = 어디서 오나요? → Ça vient d'où ?(어디서 새나요?)",fr:"Ça vient d'où, la fuite d'eau ?",tr:"이 누수, 어디서 오는 거예요?",ipa:"/sa vjɛ̃ du la fɥit do/",
+ v:[["venir de","v","vəniʁ","~에서 오다"],["fuite","f","fɥit","누수"]]},
+{course:"conv1",l:11,c:"(기출) 복합과거 어순",q:"시제를 복합과거로 변화시킬 때 가장 올바른 문장 형태는?\nJe mange bien.",o:["J'ai bien mangé","J'ai mangé bien","Je suis bien mangé","Je suis mangé bien"],a:0,
+ w:"manger는 avoir, 부사 bien은 조동사와 과거분사 사이 → J'ai bien mangé.",fr:"J'ai bien mangé",tr:"잘 먹었어요.",ipa:"/ʒe bjɛ̃ mɑ̃ʒe/",
+ oi:["/ʒe bjɛ̃ mɑ̃ʒe/","/ʒe mɑ̃ʒe bjɛ̃/","/ʒə sɥi bjɛ̃ mɑ̃ʒe/","/ʒə sɥi mɑ̃ʒe bjɛ̃/"],ot:["잘 먹었어요 (올바른 어순).","(부사 위치 오류).","(조동사 오류).","(조동사·어순 오류)."],
+ v:[["manger","v","mɑ̃ʒe","먹다"],["bien","adv","bjɛ̃","잘"]]},
+{course:"conv1",l:9,c:"(기출) 날짜 premier",q:"밑줄 친 부분을 올바르게 읽은 것은?\nQu'est-ce que vous allez faire pour le weekend du {u}1er{/u} mai ?",o:["un mai","unième mai","premier mai","première mai"],a:2,
+ w:"날짜의 1일은 서수 premier → le 1er mai = le premier mai.",fr:"le premier mai",tr:"5월 1일.",ipa:"/lə pʁəmje mɛ/",
+ v:[["premier","adj","pʁəmje","첫째의"],["mai","m","mɛ","5월"]]},
+{course:"conv1",l:12,c:"(기출) de grands yeux marron",q:"다음 우리말 문장을 프랑스어로 올바르게 표현한 것은?\n\"그는 눈이 크고 갈색이다.\"",o:["Il a des grands marrons yeux.","Il a des grands yeux marrons.","Il a de grands marron yeux.","Il a de grands yeux marron."],a:3,
+ w:"grand(앞)이라 des→de, yeux(뒤) + marron(명사 유래 색, 불변) → de grands yeux marron.",fr:"Il a de grands yeux marron",tr:"그는 크고 갈색인 눈을 가졌다.",ipa:"/il a də ɡʁɑ̃ z‿jø maʁɔ̃/",
+ oi:["/il a de ɡʁɑ̃ maʁɔ̃ jø/","/il a de ɡʁɑ̃ jø maʁɔ̃/","/il a də ɡʁɑ̃ maʁɔ̃ jø/","/il a də ɡʁɑ̃ jø maʁɔ̃/"],ot:["(어순·성 오류).","(성 일치 오류).","(어순 오류).","그는 크고 갈색인 눈을 가졌다."],
+ v:[["yeux","m","jø","눈 (복수)"],["marron","adj","maʁɔ̃","갈색 (불변)"]]},
+{course:"conv1",l:10,c:"(기출) Quel est le problème",q:"다음 우리말 문장을 프랑스어로 올바르게 표현한 것은?\n\"무슨 일인가요?\"",o:["Quel est l'accident ?","Quel est le problème ?","Quelle est la question ?","Quelle est la raison ?"],a:1,
+ w:"'무슨 일이에요?'에 해당하는 정형 표현 → Quel est le problème ?",fr:"Quel est le problème ?",tr:"무슨 일인가요?",ipa:"/kɛl ɛ lə pʁɔblɛm/",
+ oi:["/kɛl ɛ laksidɑ̃/","/kɛl ɛ lə pʁɔblɛm/","/kɛl ɛ la kɛstjɔ̃/","/kɛl ɛ la ʁɛzɔ̃/"],ot:["무슨 사고예요?","무슨 일인가요?","질문이 뭔가요?","이유가 뭔가요?"],
+ v:[["problème","m","pʁɔblɛm","문제"]]},
+{course:"conv1",l:11,c:"(기출) C'est comme ça",q:"다음 우리말 문장을 프랑스어로 올바르게 표현한 것은?\n\"원래 그러니까요.\"",o:["C'est ça !","C'est comme ça !","C'est par ça !","C'est pour ça !"],a:1,
+ w:"C'est comme ça. = 원래 그래요/그런 거예요.",fr:"C'est comme ça !",tr:"원래 그래요.",ipa:"/sɛ kɔm sa/",
+ oi:["/sɛ sa/","/sɛ kɔm sa/","/sɛ paʁ sa/","/sɛ puʁ sa/"],ot:["맞아요!","원래 그래요!","(비문).","그래서 그래요!"],
+ v:[["comme ça","expr","kɔm sa","그렇게/원래 그런"]]},
+{course:"conv1",l:2,c:"(기출) Ne vous en faites pas",q:"다음 우리말 문장을 프랑스어로 올바르게 표현한 것은?\n\"너무 걱정 마세요.\"",o:["N'en faites pas trop.","Ne s'en faites pas trop.","Ne m'en faites pas trop.","Ne vous en faites pas trop."],a:3,
+ w:"s'en faire = 걱정하다, vous 명령 → Ne vous en faites pas trop.(너무 걱정 마세요.)",fr:"Ne vous en faites pas trop",tr:"너무 걱정 마세요.",ipa:"/nə vu z‿ɑ̃ fɛt pa tʁo/",
+ oi:["/nɑ̃ fɛt pa tʁo/","/nə sɑ̃ fɛt pa tʁo/","/nə mɑ̃ fɛt pa tʁo/","/nə vu z‿ɑ̃ fɛt pa tʁo/"],ot:["너무 무리하지 마세요 (주어 누락).","(인칭 오류).","(인칭 오류).","너무 걱정 마세요."],
+ v:[["s'en faire","expr","sɑ̃ fɛʁ","걱정하다"]]},
+{course:"conv1",l:1,c:"(기출) 컨디션 표현",q:"다음 우리말 문장을 프랑스어로 표현할 때 적절치 않은 것은?\n\"몸이 안 좋아요.\"",o:["Je ne vais pas bien.","Je ne me sens pas bien.","Je ne suis pas en forme.","Je ne suis pas épuisé."],a:3,
+ w:"Je ne vais pas bien·Je ne me sens pas bien·Je ne suis pas en forme은 '몸이 안 좋다'. Je ne suis pas épuisé(지치지 않았다)는 오히려 괜찮다는 뜻이라 부적절.",fr:"Je ne suis pas en forme",tr:"컨디션이 안 좋아요.",ipa:"/ʒə nə sɥi pa z‿ɑ̃ fɔʁm/",
+ oi:["/ʒə nə vɛ pa bjɛ̃/","/ʒə nə mə sɑ̃ pa bjɛ̃/","/ʒə nə sɥi pa z‿ɑ̃ fɔʁm/","/ʒə nə sɥi pa z‿epɥize/"],ot:["몸이 안 좋아요.","몸이 안 좋아요.","컨디션이 안 좋아요.","지치지 않았어요 (몸 안 좋다와 반대)."],
+ v:[["en forme","expr","ɑ̃ fɔʁm","컨디션이 좋은"],["épuisé","adj","epɥize","기진맥진한"]]},
+{course:"conv1",l:2,c:"(기출) 의미 동떨어진 것",q:"다음 표현 중 의미가 동떨어진 하나는?",o:["Ça m'ennuie.","J'en ai assez.","C'est insupportable.","Ce n'est rien."],a:3,
+ w:"Ça m'ennuie·J'en ai assez·C'est insupportable은 불쾌(짜증·지긋지긋·참을 수 없음). Ce n'est rien(별것 아니다)만 의미가 다름.",fr:"Ce n'est rien.",tr:"별것 아니에요.",ipa:"/sə nɛ ʁjɛ̃/",
+ oi:["/sa mɑ̃nɥi/","/ʒɑ̃n e ase/","/sɛ t‿ɛ̃sypɔʁtabl/","/sə nɛ ʁjɛ̃/"],ot:["짜증나요/지루해요.","지긋지긋해요.","참을 수 없어요.","별것 아니에요 (의미 다름)."],
+ v:[["ennuyer","v","ɑ̃nɥije","짜증나게 하다"],["insupportable","adj","ɛ̃sypɔʁtabl","참을 수 없는"]]},
+{course:"conv1",l:8,c:"(기출) 의미 동떨어진 것",q:"다음 표현 중 의미가 동떨어진 하나는?",o:["C'est délicieux.","C'est horrible.","C'est vachement bon.","C'est épatant."],a:1,
+ w:"délicieux/vachement bon/épatant은 긍정(맛있다·멋지다). C'est horrible(끔찍하다)만 부정.",fr:"C'est horrible.",tr:"끔찍해요.",ipa:"/sɛ t‿ɔʁibl/",
+ oi:["/sɛ delisjø/","/sɛ t‿ɔʁibl/","/sɛ vaʃmɑ̃ bɔ̃/","/sɛ t‿epatɑ̃/"],ot:["맛있어요.","끔찍해요 (의미 다름).","엄청 맛있어요.","굉장해요."],
+ v:[["délicieux","adj","delisjø","맛있는"],["épatant","adj","epatɑ̃","멋진"]]},
+{course:"conv1",l:5,c:"(기출) 의미 동떨어진 것",q:"다음 표현 중 의미가 동떨어진 하나는?",o:["Qu'est-ce que vous avez ?","Qu'est-ce que vous cherchez ?","Qu'est-ce que vous désirez ?","Qu'est-ce que je vous sers ?"],a:0,
+ w:"Qu'est-ce que vous cherchez/désirez?·Qu'est-ce que je vous sers?는 '무엇을 찾으세요/원하세요/드릴까요'(손님 응대). Qu'est-ce que vous avez?는 '무슨 일이세요/뭐가 있으세요'로 결이 다름.",fr:"Qu'est-ce que vous désirez ?",tr:"무엇을 원하세요?",ipa:"/kɛs kə vu deziʁe/",
+ oi:["/kɛs kə vu z‿ave/","/kɛs kə vu ʃɛʁʃe/","/kɛs kə vu deziʁe/","/kɛs kə ʒə vu sɛʁ/"],ot:["무슨 일이세요? (결이 다름).","뭘 찾으세요?","뭘 원하세요?","뭘 드릴까요?"],
+ v:[["désirer","v","deziʁe","원하다"],["servir","v","sɛʁviʁ","대접하다"]]},
+{course:"conv1",l:12,c:"(기출) 의미 동떨어진 것",q:"다음 표현 중 의미가 동떨어진 하나는?",o:["C'était pas extraordinaire.","C'était assez ennuyeux.","J'ai trouvé ça superbe.","C'est une série B."],a:2,
+ w:"C'était pas extraordinaire·C'était assez ennuyeux·C'est une série B는 부정(별로·지루·B급). J'ai trouvé ça superbe(아주 멋졌다)만 긍정.",fr:"J'ai trouvé ça superbe",tr:"정말 멋졌어요.",ipa:"/ʒe tʁuve sa sypɛʁb/",
+ oi:["/setɛ pa z‿ɛkstʁaɔʁdinɛʁ/","/setɛ ase ɑ̃nɥijø/","/ʒe tʁuve sa sypɛʁb/","/sɛ t‿yn seʁi be/"],ot:["별로였어요.","꽤 지루했어요.","정말 멋졌어요 (의미 다름).","B급이에요."],
+ v:[["superbe","adj","sypɛʁb","훌륭한"],["ennuyeux","adj","ɑ̃nɥijø","지루한"]]}
+,
+// ========== 듣기와말하기A2 (course: listen) ==========
+// 2강
+{course:"listen",l:2,c:"시각 표현 (moins)",q:"다음 중 '11시 50분'을 바르게 표현한 것은?",o:["onze heure cinquante","midi moins dix","onze moins dix","onze heures quinze"],a:1,
+ w:"12시(midi) 10분 전 = midi moins dix. heure 복수 누락·heure 누락·11시 15분은 오류.",fr:"midi moins dix",tr:"11시 50분 (정오 10분 전).",ipa:"/midi mwɛ̃ dis/",
+ oi:["/ɔ̃z œʁ sɛ̃kɑ̃t/","/midi mwɛ̃ dis/","/ɔ̃z mwɛ̃ dis/","/ɔ̃z œʁ kɛ̃z/"],
+ ot:["11시 50분 (heure 복수 오류)","정오 10분 전 = 11시 50분","(heure 누락 오류)","11시 15분"],
+ v:[["heure","f","œʁ","시(時)"],["midi","m","midi","정오"],["moins","adv","mwɛ̃","덜/~전"],["cinquante","num","sɛ̃kɑ̃t","50"],["quinze","num","kɛ̃z","15"]]},
+{course:"listen",l:2,c:"기간·시기 전치사",q:"다음 중, 기간이나 시기를 표현할 수 있는 전치사가 아닌 것은?",o:["pour","pendant","contre","dans"],a:2,
+ w:"contre는 '~에 반대하여/기대어'로 기간과 무관. pour·pendant·dans는 기간·시기 표현.",fr:"contre",tr:"~에 반대하여 (기간 표현 아님).",ipa:"/kɔ̃tʁ/",
+ oi:["/puʁ/","/pɑ̃dɑ̃/","/kɔ̃tʁ/","/dɑ̃/"],
+ ot:["~동안/위해","~동안","~에 반대하여 (기간 아님)","~후에"],
+ v:[["pour","prep","puʁ","~동안/위해"],["pendant","prep","pɑ̃dɑ̃","~동안"],["contre","prep","kɔ̃tʁ","~에 반대하여"],["dans","prep","dɑ̃","~후에"]]},
+{course:"listen",l:2,c:"출근하다",q:"다음 중, '출근하다'를 의미하는 표현은?",o:["travailler","prendre le bureau","aller au bureau","se reposer"],a:2,
+ w:"aller au bureau = 사무실에 가다 → 출근하다. travailler=일하다, prendre le bureau=비표준, se reposer=쉬다.",fr:"aller au bureau",tr:"출근하다.",ipa:"/ale o byʁo/",
+ oi:["/tʁavaje/","/pʁɑ̃dʁ lə byʁo/","/ale o byʁo/","/sə ʁəpoze/"],
+ ot:["일하다","(비표준 표현)","사무실에 가다=출근하다","쉬다"],
+ v:[["travailler","v","tʁavaje","일하다"],["aller","v","ale","가다"],["bureau","m","byʁo","사무실"],["se reposer","v","sə ʁəpoze","쉬다"]]},
+
+// 3강
+{course:"listen",l:3,c:"allergique à (aux)",q:"빈칸에 들어갈 알맞은 표현은?\nLes enfants sont allergiques ___ tomates.",o:["à","aux","des","dans"],a:1,
+ w:"allergique à + 정관사 복수(les) → à+les = aux. '아이들은 토마토에 알레르기가 있다.'",fr:"Les enfants sont allergiques aux tomates",tr:"아이들은 토마토에 알레르기가 있다.",ipa:"/le z‿ɑ̃fɑ̃ sɔ̃ t‿alɛʁʒik o tɔmat/",
+ oi:["/a/","/o/","/de/","/dɑ̃/"],
+ ot:["~에 (단수)","à+les (~에, 복수) ← 정답","~의 (부정관사 복수)","~안에"],
+ v:[["allergique à","adj","alɛʁʒik","알레르기가 있는"],["enfant","","ɑ̃fɑ̃","아이"],["tomate","f","tɔmat","토마토"]]},
+{course:"listen",l:3,c:"'~경/무렵' 아닌 것",q:"다음 중, '~ 경, ~ 무렵'을 뜻하는 표현이 아닌 것은?",o:["à peu près","environs","exactement","vers"],a:2,
+ w:"exactement=정확히(정확한 시점 강조). à peu près·environs·vers는 '~쯤/~경'.",fr:"exactement",tr:"정확히 (≠ ~무렵).",ipa:"/ɛɡzaktəmɑ̃/",
+ oi:["/a pø pʁɛ/","/ɑ̃viʁɔ̃/","/ɛɡzaktəmɑ̃/","/vɛʁ/"],
+ ot:["대략/~쯤","근처/~경","정확히 (~무렵 아님)","~쯤/~을 향해"],
+ v:[["à peu près","adv","a pø pʁɛ","대략"],["environ","adv","ɑ̃viʁɔ̃","약/~쯤"],["exactement","adv","ɛɡzaktəmɑ̃","정확히"],["vers","prep","vɛʁ","~쯤/~향해"]]},
+{course:"listen",l:3,c:"재료 표현 (au)",q:"다음의 밑줄 친 부분에 공통으로 들어갈 단어는?\nun gâteau ___ chocolat / une glace ___ chocolat",o:["à","du","au","de"],a:2,
+ w:"재료는 à + 정관사 → au (le chocolat). un gâteau au chocolat=초콜릿 케이크.",fr:"un gâteau au chocolat",tr:"초콜릿 케이크.",ipa:"/œ̃ ɡato o ʃɔkɔla/",
+ oi:["/a/","/dy/","/o/","/də/"],
+ ot:["~에/풍의","부분관사 (약간의)","à+le (재료의 ~) ← 정답","~의"],
+ v:[["gâteau","m","ɡato","케이크"],["glace","f","ɡlas","아이스크림"],["chocolat","m","ʃɔkɔla","초콜릿"]]},
+
+// 4강
+{course:"listen",l:4,c:"après avoir + p.p.",q:"빈칸에 들어갈 알맞은 표현은?\nAprès ___ acheté la robe, j'ai choisi mes chaussures.",o:["être","avoir","devoir","en"],a:1,
+ w:"acheter는 avoir 동사 → après avoir + 과거분사.",fr:"Après avoir acheté la robe, j'ai choisi mes chaussures",tr:"원피스를 산 후, 나는 신발을 골랐다.",ipa:"/apʁɛ avwaʁ aʃte la ʁɔb ʒe ʃwazi me ʃosyʁ/",
+ oi:["/ɛtʁ/","/avwaʁ/","/dəvwaʁ/","/ɑ̃/"],
+ ot:["être 조동사","avoir 조동사 ← 정답","~해야 하다","그것 (대명사)"],
+ v:[["acheter","v","aʃte","사다"],["robe","f","ʁɔb","원피스"],["choisir","v","ʃwaziʁ","고르다"],["chaussure","f","ʃosyʁ","신발"]]},
+{course:"listen",l:4,c:"essayer",q:"다음 중, '시도하다, 입어보다'를 뜻하는 단어는?",o:["plaire","préparer","refroidir","essayer"],a:3,
+ w:"essayer = 시도하다·입어보다. plaire=마음에 들다, préparer=준비하다, refroidir=식히다.",fr:"essayer",tr:"시도하다·입어보다.",ipa:"/eseje/",
+ oi:["/plɛʁ/","/pʁepaʁe/","/ʁəfʁwadiʁ/","/eseje/"],
+ ot:["마음에 들다","준비하다","식히다","시도하다·입어보다"],
+ v:[["essayer","v","eseje","시도하다·입어보다"],["plaire","v","plɛʁ","마음에 들다"],["préparer","v","pʁepaʁe","준비하다"],["refroidir","v","ʁəfʁwadiʁ","식히다"]]},
+{course:"listen",l:4,c:"의문부사 comment",q:"다음의 밑줄 친 부분에 공통으로 들어갈 단어는?\nJe me coiffe ___ ? / ___ est le vêtement de Corinne?",o:["combien","quoi","comment","pourquoi"],a:2,
+ w:"comment=어떻게(방식·상태). '머리를 어떻게 하지?' / '코린의 옷은 어때?'",fr:"Je me coiffe comment ?",tr:"머리를 어떻게 하지?",ipa:"/ʒə mə kwaf kɔmɑ̃/",
+ oi:["/kɔ̃bjɛ̃/","/kwa/","/kɔmɑ̃/","/puʁkwa/"],
+ ot:["얼마나/몇","무엇","어떻게 (방식·상태) ← 정답","왜"],
+ v:[["se coiffer","v","sə kwafe","머리를 매만지다"],["comment","adv","kɔmɑ̃","어떻게"],["vêtement","m","vɛtmɑ̃","옷"]]},
+
+// 5강
+{course:"listen",l:5,c:"제안 (Si on + 반과거)",q:"빈칸에 들어갈 알맞은 표현은?\nSi on ___ au cinéma demain ?",o:["ira","irait","aller","allait"],a:3,
+ w:"Si on + 반과거 ? = 제안·권유 → allait.",fr:"Si on allait au cinéma demain ?",tr:"내일 영화관 갈까?",ipa:"/si ɔ̃ alɛ o sinema dəmɛ̃/",
+ oi:["/iʁa/","/iʁɛ/","/ale/","/alɛ/"],
+ ot:["갈 것이다 (미래)","갈 텐데 (조건법)","가다 (원형)","Si+반과거 (제안) ← 정답"],
+ v:[["aller","v","ale","가다"],["cinéma","m","sinema","영화관"],["demain","adv","dəmɛ̃","내일"]]},
+{course:"listen",l:5,c:"긍정 평가 아닌 형용사",q:"다음 중, 공연에 대한 긍정적인 평가와 가장 거리가 먼 형용사는?",o:["extraordinaire","magnifique","fantastique","extravagant"],a:3,
+ w:"extravagant=기이한·과장된(반드시 긍정 아님). 나머지는 찬사.",fr:"extravagant",tr:"기이한·과장된.",ipa:"/ɛkstʁavaɡɑ̃/",
+ oi:["/ɛkstʁaɔʁdinɛʁ/","/maɲifik/","/fɑ̃tastik/","/ɛkstʁavaɡɑ̃/"],
+ ot:["굉장한","멋진","환상적인","기이한·과장된 (긍정 아님)"],
+ v:[["extraordinaire","adj","ɛkstʁaɔʁdinɛʁ","굉장한"],["magnifique","adj","maɲifik","멋진"],["fantastique","adj","fɑ̃tastik","환상적인"],["extravagant","adj","ɛkstʁavaɡɑ̃","기이한"]]},
+{course:"listen",l:5,c:"빈도 (par)",q:"다음의 밑줄 친 부분에 들어갈 가장 적절한 단어는?\n95% des Français sortent une fois ___ an.",o:["d'","en","par","pour"],a:2,
+ w:"une fois par an = 연 1회. 빈도는 par (par jour/semaine/mois/an).",fr:"une fois par an",tr:"연 1회.",ipa:"/yn fwa paʁ ɑ̃/",
+ oi:["/d/","/ɑ̃/","/paʁ/","/puʁ/"],
+ ot:["~의","~안에/로","~당 (빈도) ← 정답","~위해"],
+ v:[["fois","f","fwa","번/회"],["par","prep","paʁ","~당 (빈도)"],["an","m","ɑ̃","해/년"],["sortir","v","sɔʁtiʁ","외출하다"]]},
+
+// 6강
+{course:"listen",l:6,c:"en + 분야",q:"빈칸에 들어갈 알맞은 단어는?\nCette note est pour les étudiants ___ langue française.",o:["en","dans","pour","à"],a:0,
+ w:"en langue française = 프랑스어로(전공으로). 언어·분야 앞에 en.",fr:"les étudiants en langue française",tr:"프랑스어를 전공하는 학생들.",ipa:"/le z‿etydjɑ̃ ɑ̃ lɑ̃ɡ fʁɑ̃sɛz/",
+ oi:["/ɑ̃/","/dɑ̃/","/puʁ/","/a/"],
+ ot:["~(분야)로/전공으로 ← 정답","~안에","~위해","~에"],
+ v:[["étudiant","m","etydjɑ̃","학생"],["langue","f","lɑ̃ɡ","언어"],["français / française","adj","fʁɑ̃sɛ / fʁɑ̃sɛz","프랑스의"]]},
+{course:"listen",l:6,c:"국가 전치사",q:"다음 중, 잘못된 표현은?",o:["en Corée","aux Pays-Bas","au Iran","au Japon"],a:2,
+ w:"Iran은 모음 시작 남성 국가 → en Iran (au 아님). au는 자음 시작 남성 국가.",fr:"en Iran",tr:"이란에 (en Iran).",ipa:"/ɑ̃ n‿iʁɑ̃/",
+ oi:["/ɑ̃ kɔʁe/","/o pɛi-ba/","/o iʁɑ̃/","/o ʒapɔ̃/"],
+ ot:["한국에 (여성)","네덜란드에 (복수)","이란에 (오류 → en Iran)","일본에 (자음 남성)"],
+ v:[["Corée","f","kɔʁe","한국"],["Pays-Bas","m","pɛi-ba","네덜란드"],["Iran","m","iʁɑ̃","이란"],["Japon","m","ʒapɔ̃","일본"]]},
+{course:"listen",l:6,c:"devenir + 직업",q:"다음의 밑줄 친 부분에 들어갈 가장 적절한 단어는?\nJe voudrais ___ professeur de français.",o:["voir","parler","devenir","rencontrer"],a:2,
+ w:"devenir professeur = 선생님이 되다. 직업명 앞에는 관사 없음.",fr:"Je voudrais devenir professeur de français",tr:"프랑스어 선생님이 되고 싶어요.",ipa:"/ʒə vudʁɛ dəvniʁ pʁɔfɛsœʁ də fʁɑ̃sɛ/",
+ oi:["/vwaʁ/","/paʁle/","/dəvniʁ/","/ʁɑ̃kɔ̃tʁe/"],
+ ot:["보다","말하다","되다 ← 정답","만나다"],
+ v:[["devenir","v","dəvniʁ","되다"],["professeur","m","pʁɔfɛsœʁ","선생님"],["vouloir","v","vulwaʁ","원하다"]]},
+
+// 7강
+{course:"listen",l:7,c:"devoir 미래 (devront)",q:"빈칸에 들어갈 알맞은 단어는?\nLes nouveaux habitants ___ supporter le bruit.",o:["devrai","devra","devront","devrons"],a:2,
+ w:"habitants = ils(3인칭 복수). devoir 단순미래 ils → devront.",fr:"Les nouveaux habitants devront supporter le bruit",tr:"새 주민들은 소음을 견뎌야 할 것이다.",ipa:"/le nuvo z‿abitɑ̃ dəvʁɔ̃ sypɔʁte lə bʁɥi/",
+ oi:["/dəvʁe/","/dəvʁa/","/dəvʁɔ̃/","/dəvʁɔ̃/"],
+ ot:["나는 ~할 것이다 (je)","그/그녀는 (il)","그들은 (ils) ← 정답","우리는 (nous)"],
+ v:[["devoir","v","dəvwaʁ","~해야 하다"],["habitant","m","abitɑ̃","주민"],["supporter","v","sypɔʁte","견디다"],["bruit","m","bʁɥi","소음"]]},
+{course:"listen",l:7,c:"층수 표현 (불필요)",q:"'건물은 몇 층짜리입니까?' 문장을 만들 때 불필요한 단어는?",o:["étages","combien","fait","faut"],a:3,
+ w:"L'immeuble fait combien d'étages? 필요: immeuble/fait/combien/étages. faut(falloir)는 불필요.",fr:"L'immeuble fait combien d'étages ?",tr:"건물은 몇 층입니까?",ipa:"/limœbl fɛ kɔ̃bjɛ̃ detaʒ/",
+ oi:["/etaʒ/","/kɔ̃bjɛ̃/","/fɛ/","/fo/"],
+ ot:["층 (étage)","몇/얼마","(faire) ~이다","(falloir) ~해야 한다 ← 불필요"],
+ v:[["immeuble","m","imœbl","건물"],["étage","m","etaʒ","층"],["combien","adv","kɔ̃bjɛ̃","몇/얼마"],["faire","v","fɛʁ","하다/이루다"]]},
+{course:"listen",l:7,c:"방향 (à droite / tout droit)",q:"밑줄 친 부분에 차례로 들어갈 단어로 적절한 것은?\nTournez ___ droite puis allez ___ droit.",o:["à / tout","à / au","tout / au","à / à"],a:0,
+ w:"tourner à droite = 우회전 / aller tout droit = 직진. tout droit는 고정 표현.",fr:"Tournez à droite puis allez tout droit",tr:"오른쪽으로 돌아 똑바로 가세요.",ipa:"/tuʁne a dʁwat pɥi z‿ale tu dʁwa/",
+ oi:["/a / tu/","/a / o/","/tu / o/","/a / a/"],
+ ot:["à(~로) / tout(직진) ← 정답","à / au","tout / au","à / à"],
+ v:[["tourner","v","tuʁne","돌다"],["droite","f","dʁwat","오른쪽"],["tout droit","adv","tu dʁwa","똑바로"]]},
+
+// 8강
+{course:"listen",l:8,c:"être + 직업 무관사",q:"빈칸에 들어갈 알맞은 관사는?\nJe suis ___ professeur de français.",o:["un","le","관사 없음","du"],a:2,
+ w:"être + 직업명 앞에는 관사를 쓰지 않음 → Je suis professeur. (국적·종교도 동일.)",fr:"Je suis professeur de français",tr:"저는 프랑스어 선생님입니다.",ipa:"/ʒə sɥi pʁɔfɛsœʁ də fʁɑ̃sɛ/",
+ oi:["/œ̃/","/lə/","","/dy/"],
+ ot:["한 (부정관사)","그 (정관사)","관사 없음 ← 정답","부분관사"],
+ v:[["être","v","ɛtʁ","~이다"],["professeur","m","pʁɔfɛsœʁ","선생님"]]},
+{course:"listen",l:8,c:"aimer + 정관사 (불필요)",q:"'우리는 한식을 좋아합니다' 문장을 만들 때 불필요한 단어는?",o:["aimons","cuisine coréenne","la","une"],a:3,
+ w:"Nous aimons la cuisine coréenne. → aimer + 정관사(la). une는 불필요.",fr:"Nous aimons la cuisine coréenne",tr:"우리는 한식을 좋아합니다.",ipa:"/nu z‿emɔ̃ la kɥizin kɔʁeɛn/",
+ oi:["/emɔ̃/","/kɥizin kɔʁeɛn/","/la/","/yn/"],
+ ot:["좋아하다 (aimer)","한국 요리","정관사 la","부정관사 une ← 불필요"],
+ v:[["aimer","v","eme","좋아하다"],["cuisine","f","kɥizin","요리"],["coréen / coréenne","adj","kɔʁeɛ̃ / kɔʁeɛn","한국의"]]},
+{course:"listen",l:8,c:"le français / française",q:"밑줄 친 부분에 차례로 들어갈 단어로 적절한 것은?\nJ'étudie ___ parce que j'aime la culture ___.",o:["français, francaise","le français, française","la française, français","le Français, française"],a:1,
+ w:"le français(목적어 정관사) / la culture française(형용사, 소문자 여성). 관사 누락·성 오류·대문자 오류는 틀림.",fr:"J'étudie le français parce que j'aime la culture française",tr:"나는 프랑스 문화를 좋아해서 프랑스어를 공부한다.",ipa:"/ʒetydi lə fʁɑ̃sɛ paʁs kə ʒɛm la kyltyʁ fʁɑ̃sɛz/",
+ oi:["/fʁɑ̃sɛ fʁɑ̃sɛz/","/lə fʁɑ̃sɛ fʁɑ̃sɛz/","/la fʁɑ̃sɛz fʁɑ̃sɛ/","/lə fʁɑ̃sɛ fʁɑ̃sɛz/"],
+ ot:["관사 누락","le français / française ← 정답","성 오류","대문자 오류 (Français)"],
+ v:[["étudier","v","etydje","공부하다"],["français","m","fʁɑ̃sɛ","프랑스어"],["culture","f","kyltyʁ","문화"],["français / française","adj","fʁɑ̃sɛ / fʁɑ̃sɛz","프랑스의"]]},
+
+// 9강
+{course:"listen",l:9,c:"se tromper",q:"빈칸에 들어갈 알맞은 표현은?\nJe me suis ___.",o:["déplacé(e)","trompé(e)","promené(e)","lavé(e)"],a:1,
+ w:"se tromper = 착각하다·실수하다. se déplacer=이동하다, se promener=산책하다, se laver=씻다.",fr:"Je me suis trompé(e)",tr:"저는 착각했습니다.",ipa:"/ʒə mə sɥi tʁɔ̃pe/",
+ oi:["/deplase/","/tʁɔ̃pe/","/pʁɔmne/","/lave/"],
+ ot:["이동했다","착각했다 ← 정답","산책했다","씻었다"],
+ v:[["se tromper","v","sə tʁɔ̃pe","착각하다"],["se déplacer","v","sə deplase","이동하다"],["se promener","v","sə pʁɔmne","산책하다"],["se laver","v","sə lave","씻다"]]},
+{course:"listen",l:9,c:"Prendre ... est facile (불필요)",q:"'지하철을 타는 것은 쉽습니다' 문장을 만들 때 불필요한 단어는?",o:["métro","facile","prendre","se déplacer"],a:3,
+ w:"Prendre le métro est facile. se déplacer(이동하다)는 불필요.",fr:"Prendre le métro est facile",tr:"지하철 타기는 쉽다.",ipa:"/pʁɑ̃dʁ lə metʁo ɛ fasil/",
+ oi:["/metʁo/","/fasil/","/pʁɑ̃dʁ/","/sə deplase/"],
+ ot:["지하철","쉬운","타다","이동하다 ← 불필요"],
+ v:[["métro","m","metʁo","지하철"],["facile","adj","fasil","쉬운"],["prendre","v","pʁɑ̃dʁ","타다/잡다"],["se déplacer","v","sə deplase","이동하다"]]},
+{course:"listen",l:9,c:"소요 시간 (prendre du temps)",q:"밑줄 친 부분에 들어갈 표현으로 적절한 것은?\nSéoul-Paris, ça ___ ?",o:["coûte combien","veut dire quoi","prend combien de temps","a combien d'heures"],a:2,
+ w:"Ça prend combien de temps ? = 시간이 얼마나 걸려? (가격·의미·비문 제외.)",fr:"Ça prend combien de temps ?",tr:"시간이 얼마나 걸립니까?",ipa:"/sa pʁɑ̃ kɔ̃bjɛ̃ də tɑ̃/",
+ oi:["/kut kɔ̃bjɛ̃/","/vø diʁ kwa/","/pʁɑ̃ kɔ̃bjɛ̃ də tɑ̃/","/a kɔ̃bjɛ̃ dœʁ/"],
+ ot:["얼마예요? (가격)","무슨 뜻이야?","시간이 얼마나 걸려? ← 정답","(비문)"],
+ v:[["prendre","v","pʁɑ̃dʁ","(시간이) 걸리다"],["temps","m","tɑ̃","시간"],["coûter","v","kute","값이 나가다"]]},
+
+// 10강
+{course:"listen",l:10,c:"réserver / pour",q:"밑줄 친 부분에 각각 알맞은 표현은?\nJe voudrais ___ une chambre ___ la semaine prochaine.",o:["réserver, dans","réserver, pour","préserver, dans","préserver, pour"],a:1,
+ w:"réserver=예약하다(préserver=보존하다). 목적(~을 위해)은 pour.",fr:"réserver une chambre pour la semaine prochaine",tr:"다음 주를 위해 방을 예약하다.",ipa:"/ʁezɛʁve yn ʃɑ̃bʁ puʁ la səmɛn pʁɔʃɛn/",
+ oi:["/ʁezɛʁve dɑ̃/","/ʁezɛʁve puʁ/","/pʁezɛʁve dɑ̃/","/pʁezɛʁve puʁ/"],
+ ot:["예약하다 / ~후에","예약하다 / ~위해 ← 정답","보존하다 / ~후에","보존하다 / ~위해"],
+ v:[["réserver","v","ʁezɛʁve","예약하다"],["chambre","f","ʃɑ̃bʁ","방"],["semaine","f","səmɛn","주(週)"],["prochain / prochaine","adj","pʁɔʃɛ̃ / pʁɔʃɛn","다음의"]]},
+{course:"listen",l:10,c:"à pied",q:"다음 중, '걸어서'를 뜻하는 표현은?",o:["en pied","en marche","à marche","à pied"],a:3,
+ w:"à pied = 걸어서. à vélo도 à. (en voiture/bus/métro.)",fr:"à pied",tr:"걸어서.",ipa:"/a pje/",
+ oi:["/ɑ̃ pje/","/ɑ̃ maʁʃ/","/a maʁʃ/","/a pje/"],
+ ot:["(비표준)","(비표준)","(비표준)","걸어서 ← 정답"],
+ v:[["pied","m","pje","발 (à pied=걸어서)"],["marche","f","maʁʃ","걷기"]]},
+{course:"listen",l:10,c:"beaucoup de",q:"다음 중 빈칸에 공통적으로 들어갈 단어는?\n... il y a ___ de plats avec ___ d'ingrédients différents.",o:["combien","beaucoup","peu","nombreux"],a:1,
+ w:"beaucoup de + 명사 = 많은 ~. 두 빈칸 모두 beaucoup.",fr:"beaucoup de plats avec beaucoup d'ingrédients",tr:"많은 재료를 가진 많은 요리들.",ipa:"/boku də pla avɛk boku dɛ̃ɡʁedjɑ̃/",
+ oi:["/kɔ̃bjɛ̃/","/boku/","/pø/","/nɔ̃bʁø/"],
+ ot:["몇/얼마 (의문)","많은 ← 정답","적은","수많은 (형용사)"],
+ v:[["beaucoup de","adv","boku","많은"],["plat","m","pla","요리"],["ingrédient","m","ɛ̃ɡʁedjɑ̃","재료"]]},
+
+// 11강
+{course:"listen",l:11,c:"le + 기간 (반복)",q:"빈칸에 들어갈 알맞은 표현은?\n___, je vais souvent dans un supermarché.",o:["Ce week-end","Un week-end","Le week-end","Week-end"],a:2,
+ w:"le + 기간 = 반복 습관 → le week-end(주말마다). Ce week-end=이번 주말, Un week-end=어느 주말.",fr:"Le week-end, je vais souvent dans un supermarché",tr:"주말마다 나는 종종 슈퍼에 간다.",ipa:"/lə wikɛnd ʒə vɛ suvɑ̃ dɑ̃ z‿œ̃ sypɛʁmaʁʃe/",
+ oi:["/sə wikɛnd/","/œ̃ wikɛnd/","/lə wikɛnd/","/wikɛnd/"],
+ ot:["이번 주말 (한 번)","어느 주말","주말마다 (반복) ← 정답","(관사 없음)"],
+ v:[["week-end","m","wikɛnd","주말"],["souvent","adv","suvɑ̃","종종"],["supermarché","m","sypɛʁmaʁʃe","슈퍼마켓"]]},
+{course:"listen",l:11,c:"빈도 (rarement)",q:"다음 중, 가장 낮은 빈도를 뜻하는 단어는?",o:["souvent","parfois","quelquefois","rarement"],a:3,
+ w:"빈도(높음→낮음): toujours>souvent>parfois=quelquefois>rarement>jamais. rarement이 최저.",fr:"rarement",tr:"드물게 (가장 낮은 빈도).",ipa:"/ʁaʁmɑ̃/",
+ oi:["/suvɑ̃/","/paʁfwa/","/kɛlkəfwa/","/ʁaʁmɑ̃/"],
+ ot:["종종","때때로","가끔","드물게 ← 최저"],
+ v:[["souvent","adv","suvɑ̃","종종"],["parfois","adv","paʁfwa","때때로"],["quelquefois","adv","kɛlkəfwa","가끔"],["rarement","adv","ʁaʁmɑ̃","드물게"]]},
+{course:"listen",l:11,c:"지불 (en liquide / par carte)",q:"빈칸에 각각 들어갈 단어는?\nJe peux payer ___ liquide ou ___ carte ?",o:["en, en","en, par","par, par","par, en"],a:1,
+ w:"payer en liquide=현금으로 / payer par carte=카드로. 고정 표현.",fr:"payer en liquide ou par carte",tr:"현금이나 카드로 지불하다.",ipa:"/peje ɑ̃ likid u paʁ kaʁt/",
+ oi:["/ɑ̃ ɑ̃/","/ɑ̃ paʁ/","/paʁ paʁ/","/paʁ ɑ̃/"],
+ ot:["en / en","en(현금) / par(카드) ← 정답","par / par","par / en"],
+ v:[["payer","v","peje","지불하다"],["liquide","m","likid","현금"],["carte","f","kaʁt","카드"]]},
+
+// 12강
+{course:"listen",l:12,c:"la semaine dernière / vu",q:"밑줄 친 부분에 차례로 들어갈 표현으로 적절한 것은?\n___, j'ai ___ un film.",o:["la dernière semaine, vu","la semaine dernière, vu","la dernière semaine, vue","la semaine dernière, vue"],a:1,
+ w:"la semaine dernière=지난 주(dernière는 명사 뒤). voir의 과거분사는 vu (앞에 직접목적어 없어 무변화).",fr:"La semaine dernière, j'ai vu un film",tr:"지난 주에 나는 영화를 한 편 봤다.",ipa:"/la səmɛn dɛʁnjɛʁ ʒe vy œ̃ film/",
+ oi:["/la dɛʁnjɛʁ səmɛn vy/","/la səmɛn dɛʁnjɛʁ vy/","/la dɛʁnjɛʁ səmɛn vy/","/la səmɛn dɛʁnjɛʁ vy/"],
+ ot:["(어순 오류) / 봤다","지난 주 / 봤다 ← 정답","(어순 오류) / (일치 오류)","지난 주 / (일치 오류 vue)"],
+ v:[["semaine","f","səmɛn","주(週)"],["dernier / dernière","adj","dɛʁnje / dɛʁnjɛʁ","지난/마지막의"],["voir","v","vwaʁ","보다"],["film","m","film","영화"]]},
+{course:"listen",l:12,c:"형용사 성수 (오류 찾기)",q:"다음 중 올바르지 않은 문장은?",o:["L'affiche avec la très gros requin est effrayant.","Je peux facilement aller au cinéma.","Je ne vais pas en boîte de nuit.","J'ai vu des films français avec des sous-titres coréens."],a:0,
+ w:"affiche는 여성 → effrayante, requin은 남성 → le très gros requin. 성수 일치 오류.",fr:"L'affiche est effrayante",tr:"그 포스터는 무섭다 (성수 일치 필요).",ipa:"/lafiʃ ɛ efʁɛjɑ̃t/",
+ oi:["/lafiʃ avɛk lə tʁɛ ɡʁo ʁəkɛ̃ ɛ efʁɛjɑ̃t/","/ʒə pø fasilmɑ̃ ale o sinema/","/ʒə nə vɛ pa z‿ɑ̃ bwat də nɥi/","/ʒe vy de film fʁɑ̃sɛ avɛk de su-titʁ kɔʁeɛ̃/"],
+ ot:["성수 일치 오류 ← 정답(틀린 문장)","나는 쉽게 영화관에 갈 수 있다","나는 나이트클럽에 가지 않는다","나는 한국어 자막의 프랑스 영화를 봤다"],
+ v:[["affiche","f","afiʃ","포스터"],["requin","m","ʁəkɛ̃","상어"],["effrayant / effrayante","adj","efʁɛjɑ̃ / efʁɛjɑ̃t","무서운"],["sous-titre","m","su-titʁ","자막"]]},
+{course:"listen",l:12,c:"prendre rendez-vous",q:"밑줄 친 부분에 들어갈 표현으로 가장 적절한 것은?\nVous ___ avec lui.",o:["prenez le soin","prenez rendez-vous","prenez contact","prenez querelle"],a:1,
+ w:"prendre rendez-vous = 약속을 잡다. prendre soin=돌보다, prendre contact=연락, prendre querelle=다투다.",fr:"Vous prenez rendez-vous avec lui",tr:"당신은 그와 약속을 잡습니다.",ipa:"/vu pʁəne ʁɑ̃de-vu avɛk lɥi/",
+ oi:["/pʁəne lə swɛ̃/","/pʁəne ʁɑ̃de-vu/","/pʁəne kɔ̃takt/","/pʁəne kəʁɛl/"],
+ ot:["(돌보다)","약속을 잡다 ← 정답","연락하다","다투다"],
+ v:[["prendre rendez-vous","expr","pʁɑ̃dʁ ʁɑ̃de-vu","약속을 잡다"],["rendez-vous","m","ʁɑ̃de-vu","약속"],["contact","m","kɔ̃takt","연락"]]},
+
+// 13강
+{course:"listen",l:13,c:"proche de",q:"빈칸에 들어갈 알맞은 표현은?\nLe professeur est ___ de ses étudiants.",o:["loin","proche","au bord","en face"],a:1,
+ w:"proche de = ~와 가까운. loin de=먼, au bord de=~가에, en face de=맞은편에.",fr:"Le professeur est proche de ses étudiants",tr:"그 선생님은 학생들과 가깝다.",ipa:"/lə pʁɔfɛsœʁ ɛ pʁɔʃ də se z‿etydjɑ̃/",
+ oi:["/lwɛ̃/","/pʁɔʃ/","/o bɔʁ/","/ɑ̃ fas/"],
+ ot:["먼","가까운 ← 정답","~가에","맞은편에"],
+ v:[["proche de","adj","pʁɔʃ","~와 가까운"],["loin de","adv","lwɛ̃","~에서 먼"],["étudiant","m","etydjɑ̃","학생"]]},
+{course:"listen",l:13,c:"sur Internet",q:"빈칸에 들어갈 가장 적절한 표현은?\nLes inscriptions ___ sont difficiles.",o:["dans l'internet","dans l'Internet","dans Internet","sur Internet"],a:3,
+ w:"인터넷은 sur Internet (대문자, 무관사). 'dans l'internet' 등은 비표준.",fr:"Les inscriptions sur Internet sont difficiles",tr:"인터넷 등록은 어렵다.",ipa:"/le z‿ɛ̃skʁipsjɔ̃ syʁ ɛ̃tɛʁnɛt sɔ̃ difisil/",
+ oi:["/dɑ̃ lɛ̃tɛʁnɛt/","/dɑ̃ lɛ̃tɛʁnɛt/","/dɑ̃ ɛ̃tɛʁnɛt/","/syʁ ɛ̃tɛʁnɛt/"],
+ ot:["(비표준)","(비표준)","(비표준)","인터넷에서 ← 정답"],
+ v:[["inscription","f","ɛ̃skʁipsjɔ̃","등록"],["Internet","m","ɛ̃tɛʁnɛt","인터넷"],["difficile","adj","difisil","어려운"]]},
+{course:"listen",l:13,c:"comment faire",q:"빈칸에 들어갈 가장 적절한 표현은?\nJe ne sais pas ___.",o:["comment faire","combien faire","quoi faire","quand faire"],a:0,
+ w:"Je ne sais pas comment faire. = 어떻게 해야 할지 모르겠어 (간접의문). quoi faire도 구어 가능하나 표준은 comment faire.",fr:"Je ne sais pas comment faire",tr:"나는 어떻게 해야 할지 모르겠다.",ipa:"/ʒə nə sɛ pa kɔmɑ̃ fɛʁ/",
+ oi:["/kɔmɑ̃ fɛʁ/","/kɔ̃bjɛ̃ fɛʁ/","/kwa fɛʁ/","/kɑ̃ fɛʁ/"],
+ ot:["어떻게 할지 ← 정답","얼마나 할지","무엇을 할지","언제 할지"],
+ v:[["savoir","v","savwaʁ","알다"],["comment","adv","kɔmɑ̃","어떻게"],["faire","v","fɛʁ","하다"]]},
+
+// 14강
+{course:"listen",l:14,c:"장점과 단점",q:"'장점과 단점'이란 표현으로 적절한 것은?",o:["les préférences et les fréquences","les fréquences et les préférences","les inconvénients et les avantages","les avantages et les inconvénients"],a:3,
+ w:"les avantages et les inconvénients = 장점과 단점 (관용 순서). 순서가 반대면 어색.",fr:"les avantages et les inconvénients",tr:"장점과 단점.",ipa:"/le z‿avɑ̃taʒ e le z‿ɛ̃kɔ̃venjɑ̃/",
+ oi:["/le pʁefeʁɑ̃s e le fʁekɑ̃s/","/le fʁekɑ̃s e le pʁefeʁɑ̃s/","/le z‿ɛ̃kɔ̃venjɑ̃ e le z‿avɑ̃taʒ/","/le z‿avɑ̃taʒ e le z‿ɛ̃kɔ̃venjɑ̃/"],
+ ot:["선호와 빈도","빈도와 선호","단점과 장점 (순서 반대)","장점과 단점 ← 정답"],
+ v:[["avantage","m","avɑ̃taʒ","장점"],["inconvénient","m","ɛ̃kɔ̃venjɑ̃","단점"],["préférence","f","pʁefeʁɑ̃s","선호"],["fréquence","f","fʁekɑ̃s","빈도"]]},
+{course:"listen",l:14,c:"반과거 (j'étais)",q:"'내가 어렸을 때'의 번역으로 적절한 것은?",o:["Quand j'ai été petit(e)","Quand j'étais petit(e)","Quand j'ai eu petit(e)","Quand j'avais petit(e)"],a:1,
+ w:"어렸을 때=지속 상태 → 반과거: Quand j'étais petit(e). 복합과거·avoir 반과거는 부적절.",fr:"Quand j'étais petit(e)",tr:"내가 어렸을 때.",ipa:"/kɑ̃ ʒetɛ pəti(t)/",
+ oi:["/kɑ̃ ʒe ete pəti/","/kɑ̃ ʒetɛ pəti/","/kɑ̃ ʒe y pəti/","/kɑ̃ ʒavɛ pəti/"],
+ ot:["(복합과거 오류)","어렸을 때 (반과거) ← 정답","(복합과거 오류)","(avoir 반과거 오류)"],
+ v:[["être","v","ɛtʁ","~이다"],["petit / petite","adj","pəti / pətit","작은/어린"],["quand","conj","kɑ̃","~할 때"]]},
+{course:"listen",l:14,c:"au bord de la mer",q:"밑줄 친 부분에 들어갈 표현으로 가장 적절한 것은?\nJe voudrais habiter dans une petite ville ___ la mer.",o:["au bord de","dans","sur","sous"],a:0,
+ w:"au bord de la mer = 바닷가에. au bord de = ~가에(해변·강변).",fr:"une petite ville au bord de la mer",tr:"바닷가의 작은 도시.",ipa:"/yn pətit vil o bɔʁ də la mɛʁ/",
+ oi:["/o bɔʁ də/","/dɑ̃/","/syʁ/","/su/"],
+ ot:["~가에 (해변) ← 정답","~안에","~위에","~아래에"],
+ v:[["bord","m","bɔʁ","가장자리 (au bord de)"],["mer","f","mɛʁ","바다"],["ville","f","vil","도시"]]}
+];
+/*QEND*/
+
+// ---------- engine ----------
+const $ = s => document.querySelector(s);
+const POS={m:["남","m"],f:["여","f"],v:["동","v"],adj:["형","adj"],adv:["부","adv"],conj:["접","conj"],prep:["전","prep"],pron:["대","pron"],num:["수","num"],expr:["숙","expr"]};
+const COURSE_LIST=[{id:"grammar1",name:"프랑스어문법1"},{id:"conv1",name:"프랑스어회화1"},{id:"vocab",name:"기초어휘와발음"},{id:"listen",name:"듣기와말하기A2"}];
+let activeCourse=load("f1course",COURSE_LIST[0].id);
+if(!COURSE_LIST.some(c=>c.id===activeCourse)) activeCourse=COURSE_LIST[0].id;
+let selected = new Set([0]);
+let pool = [];
+let cur = null, answered = false;
+let stats, wrong;
+let reviewMode = false;
+let orderMode = load("f1order","shuffle"); if(orderMode==="random") orderMode="shuffle";
+let seqPos = 0, curPos = 0;
+let curOrder = [];
+let queue = [], qPos = 0;
+function loadCourseState(){ stats=load("f1stats_"+activeCourse,{right:0,total:0}); wrong=new Set(load("f1wrong_"+activeCourse,[])); }
+loadCourseState();
+
+function load(k, d){ try{const v=JSON.parse(localStorage.getItem(k)); return v==null?d:v;}catch(e){return d;} }
+function save(k, v){ try{localStorage.setItem(k, JSON.stringify(v));}catch(e){} }
+function shuffle(a){ a=a.slice(); for(let k=a.length-1;k>0;k--){ const r=Math.floor(Math.random()*(k+1)); const t=a[k]; a[k]=a[r]; a[r]=t; } return a; }
+function buildQueue(){ queue=shuffle(pool.map((_,i)=>i)); qPos=0; }
+
+const fbox = $("#filters");
+const tbox = $("#tabs");
+function mkChip(label, val){
+  const b=document.createElement("span");
+  b.className="chip"+(selected.has(val)?" on":""); b.textContent=label; b.dataset.v=val;
+  b.onclick=()=>toggleChip(val); fbox.appendChild(b);
+}
+function courseQuestions(){ return QUESTIONS.filter(q=>(q.course||"grammar1")===activeCourse); }
+function buildTabs(){
+  tbox.innerHTML="";
+  COURSE_LIST.forEach(c=>{
+    const t=document.createElement("button");
+    t.className="tab"+(c.id===activeCourse?" on":""); t.type="button"; t.textContent=c.name;
+    t.onclick=()=>switchCourse(c.id); tbox.appendChild(t);
+  });
+}
+function buildChips(){
+  fbox.innerHTML='<span class="lab">강 선택</span>';
+  selected=new Set([0]);
+  const lects=[...new Set(courseQuestions().map(q=>q.l))].sort((a,b)=>a-b);
+  mkChip("전체",0); lects.forEach(n=>mkChip(n+"강",n));
+}
+function switchCourse(id){
+  activeCourse=id; save("f1course",id); loadCourseState();
+  reviewMode=false; $("#reviewChk").checked=false;
+  buildTabs(); buildChips(); renderStats(); rebuildPool(); nextQ();
+}
+buildTabs(); buildChips();
+
+function toggleChip(val){
+  if(val===0){ selected=new Set([0]); }
+  else{ selected.delete(0); if(selected.has(val))selected.delete(val); else selected.add(val); if(selected.size===0)selected=new Set([0]); }
+  [...fbox.querySelectorAll(".chip")].forEach(c=>c.classList.toggle("on",selected.has(+c.dataset.v)));
+  rebuildPool(); nextQ();
+}
+function rebuildPool(){
+  let base=QUESTIONS.map((q,i)=>({...q,id:i})).filter(q=>(q.course||"grammar1")===activeCourse);
+  if(!selected.has(0)) base=base.filter(q=>selected.has(q.l));
+  if(reviewMode) base=base.filter(q=>wrong.has(q.id));
+  pool=base; seqPos=0; buildQueue();
+  const cname=(COURSE_LIST.find(c=>c.id===activeCourse)||{}).name||"";
+  $("#poolinfo").textContent=cname+" · 문제 "+pool.length+"개"+(reviewMode?" (오답)":"");
+}
+function dispLen(s){ let n=0; for(const ch of s.normalize("NFC")){ if(!/\p{M}/u.test(ch)) n++; } return n; }
+function alignFrIpa(fr, ipa){
+  const clean=ipa.replace(/\//g,"").trim();
+  const fw=fr.trim().split(/\s+/), iw=clean.split(/\s+/);
+  if(fw.length!==iw.length) return [fr, clean];
+  let l1="",l2="";
+  for(let k=0;k<fw.length;k++){ const w=Math.max(dispLen(fw[k]),dispLen(iw[k]));
+    l1+=fw[k]+" ".repeat(w-dispLen(fw[k])+2); l2+=iw[k]+" ".repeat(w-dispLen(iw[k])+2); }
+  return [l1.replace(/\s+$/,""), l2.replace(/\s+$/,"")];
+}
+function nextQ(){
+  $("#expl").classList.remove("show"); answered=false;
+  $("#hintbox").style.display="none"; $("#hintBtn").style.display="inline-block";
+  if(pool.length===0){
+    $("#qtag").textContent=""; $("#opts").innerHTML=""; $("#hintBtn").style.display="none";
+    const emsg=reviewMode?"오답이 없습니다. 좋아요! 👏":(courseQuestions().length===0?"이 과목의 문제가 아직 없습니다. 강별로 보내주시면 추가할게요.":"선택한 강에 문제가 없습니다.");
+    $("#qtext").innerHTML='<div class="empty">'+emsg+'</div>'; return;
+  }
+  let q;
+  if(orderMode==="sequential"){
+    if(seqPos>=pool.length) seqPos=0;
+    q=pool[seqPos]; curPos=seqPos+1; seqPos++;
+  } else {
+    if(qPos>=queue.length){ buildQueue(); if(pool.length>1&&cur&&pool[queue[0]].id===cur.id){ const t=queue[0];queue[0]=queue[1];queue[1]=t; } }
+    q=pool[queue[qPos]]; curPos=qPos+1; qPos++;
+  }
+  cur=q;
+  $("#qtag").textContent=q.l+"강 · "+curPos+"/"+pool.length; $("#qtext").innerHTML=fmt(q.q);
+  const ob=$("#opts"); ob.innerHTML="";
+  curOrder = shuffle(q.o.map((_,i)=>i));
+  curOrder.forEach((orig,d)=>{
+    const btn=document.createElement("button"); btn.className="opt"; btn.type="button";
+    const ipaLine = q.oi&&q.oi[orig] ? '<div class="optipa">'+escapeHtml(q.oi[orig])+'</div>' : '';
+    const trLine = q.ot&&q.ot[orig] ? '<div class="optr">'+escapeHtml(q.ot[orig])+'</div>' : '';
+    btn.innerHTML='<div class="line"><span class="num">'+(d+1)+'</span><span>'+fmt(q.o[orig])+'</span></div>'+ipaLine+trLine;
+    btn.onclick=()=>choose(d); ob.appendChild(btn);
+  });
+}
+function choose(d){
+  if(answered) return; answered=true;
+  const orig=curOrder[d], correctDisp=curOrder.indexOf(cur.a);
+  [...$("#opts").children].forEach((b,j)=>{ b.disabled=true; b.classList.add("revealed");
+    if(j===correctDisp)b.classList.add("ok"); if(j===d&&orig!==cur.a)b.classList.add("no"); });
+  const ok=orig===cur.a;
+  stats.total++; if(ok){stats.right++; wrong.delete(cur.id);} else {wrong.add(cur.id);}
+  save("f1stats_"+activeCourse,stats); save("f1wrong_"+activeCourse,[...wrong]); renderStats();
+  const v=$("#verdict");
+  v.textContent=ok?"정답입니다 ✓":("오답 — 정답은 "+(correctDisp+1)+"번"); v.className="verdict "+(ok?"ok":"no");
+  $("#why").textContent=cur.w;
+  if(cur.fr&&cur.ipa){ $("#rowSentence").style.display=""; const [l1,l2]=alignFrIpa(cur.fr,cur.ipa); $("#alignFr").textContent=l1; $("#alignIpa").textContent=l2; }
+  else $("#rowSentence").style.display="none";
+  if(cur.tr){ $("#rowTrans").style.display=""; $("#trans").textContent=cur.tr; } else $("#rowTrans").style.display="none";
+  if(cur.v&&cur.v.length){
+    $("#rowVocab").style.display=""; const vt=$("#vocab"); vt.innerHTML="";
+    cur.v.forEach(([w,g,ipa,mean])=>{
+      const tr=document.createElement("tr");
+      const badge = POS[g] ? '<span class="g '+POS[g][1]+'">'+POS[g][0]+'</span>' : '';
+      tr.innerHTML='<td class="w">'+escapeHtml(w)+badge+'</td><td class="p">/'+escapeHtml(ipa)+'/</td><td>'+escapeHtml(mean)+'</td>';
+      vt.appendChild(tr);
+    });
+  } else $("#rowVocab").style.display="none";
+  $("#expl").classList.add("show");
+}
+function showHint(){ if(!cur)return; $("#hintbox").textContent="개념: "+cur.c; $("#hintbox").style.display="block"; $("#hintBtn").style.display="none"; }
+function renderStats(){ $("#sright").textContent=stats.right; $("#stotal").textContent=stats.total;
+  $("#acc").textContent=stats.total?("정답률 "+Math.round(stats.right/stats.total*100)+"%"):""; }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmt(s){ return escapeHtml(s).replace(/\{u\}/g,"<u>").replace(/\{\/u\}/g,"</u>"); }
+
+$("#nextBtn").onclick=nextQ; $("#hintBtn").onclick=showHint;
+$("#reviewChk").onchange=e=>{ reviewMode=e.target.checked; rebuildPool(); nextQ(); };
+$("#resetBtn").onclick=()=>{ if(confirm("이 과목의 점수와 오답 기록을 지울까요?")){ stats={right:0,total:0}; wrong=new Set(); save("f1stats_"+activeCourse,stats); save("f1wrong_"+activeCourse,[]); renderStats(); rebuildPool(); nextQ(); } };
+document.addEventListener("keydown",e=>{
+  if(["1","2","3","4"].includes(e.key)&&!answered){ const b=$("#opts").children[+e.key-1]; if(b)b.click(); }
+  else if(e.key==="Enter"||e.key==="ArrowRight"){ nextQ(); } else if(e.key==="h"||e.key==="H"){ showHint(); }
+});
+function setOrder(m){ orderMode=m; save("f1order",m); seqPos=0;
+  $("#segShuffle").classList.toggle("on",m==="shuffle"); $("#segSeq").classList.toggle("on",m==="sequential");
+  if(m==="shuffle") buildQueue();
+  nextQ(); }
+$("#segShuffle").onclick=()=>setOrder("shuffle");
+$("#segSeq").onclick=()=>setOrder("sequential");
+$("#segShuffle").classList.toggle("on",orderMode==="shuffle"); $("#segSeq").classList.toggle("on",orderMode==="sequential");
+renderStats(); rebuildPool(); nextQ();
+</script>
+</body>
+</html>
