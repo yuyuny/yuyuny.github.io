@@ -1,0 +1,54 @@
+/*
+ * Self-hosted type system — baked by scripts/build-fonts.mjs from the upstream
+ * OFL variable fonts, subset to this site's glyph set. Served from our own
+ * origin (no third-party font CDN), linked from index.html's <head> so the
+ * faces are present in the prerendered shell.
+ *
+ * Each face is variable on weight only (the other axes are pinned at bake time),
+ * so one file covers the whole weight scale via the `font-weight` range.
+ *
+ * font-display policy:
+ *   · The two above-the-fold faces (Fraunces roman, Geist) are <link rel=preload>ed
+ *     in the head and use `optional`: same-origin + preloaded, they almost always
+ *     win the ~100ms block window, so the masthead paints in the real face with no
+ *     swap flash; on a genuinely slow connection the page commits to the fallback
+ *     for that view rather than reflowing the editorial display copy mid-read.
+ *   · The rest (Fraunces italic accent, Geist Mono metadata) are below-the-fold or
+ *     incidental and use `swap` — show fallback immediately, swap when ready.
+ */
+
+/* Fraunces — editorial display serif (masthead, titles). Above the fold. */
+@font-face {
+  font-family: Fraunces;
+  font-weight: 300 600;
+  font-display: optional;
+  font-style: normal;
+  src: url('./fraunces.woff2') format('woff2');
+}
+
+/* Fraunces Italic — the one accent word ("rendered") + occasional emphasis. */
+@font-face {
+  font-family: Fraunces;
+  font-weight: 300 500;
+  font-display: swap;
+  font-style: italic;
+  src: url('./fraunces-italic.woff2') format('woff2');
+}
+
+/* Geist — body + UI. Above the fold (lede, meta labels). */
+@font-face {
+  font-family: Geist;
+  font-weight: 300 600;
+  font-display: optional;
+  font-style: normal;
+  src: url('./geist.woff2') format('woff2');
+}
+
+/* Geist Mono — metadata, numerals, tags. Incidental accent. */
+@font-face {
+  font-family: 'Geist Mono';
+  font-weight: 400 500;
+  font-display: swap;
+  font-style: normal;
+  src: url('./geist-mono.woff2') format('woff2');
+}

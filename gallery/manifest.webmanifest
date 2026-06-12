@@ -1,0 +1,24 @@
+{
+  "name": "Studio Cat — interactive code-art gallery",
+  "short_name": "Studio Cat",
+  "description": "Our cat, Latte, seen through real-time web effects.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#efe7d8",
+  "theme_color": "#13100c",
+  "icons": [
+    {
+      "src": "cat-mark.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "maskable"
+    }
+  ]
+}
