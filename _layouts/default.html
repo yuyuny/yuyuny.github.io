@@ -11,9 +11,7 @@
   <header>
     <p class="site-title"><a href="/">{{ site.title }}</a></p>
     <nav>
-      <a href="/">Home</a>
-      <a href="/posts/">Posts</a>
-      <a href="/about/">About</a>
+      [ <a href="/">Home</a> | <a href="/posts/">Posts</a> | <a href="/about/">About</a> ]
     </nav>
   </header>
 
@@ -23,6 +21,7 @@
 
   <footer>
     <p><a href="https://github.com/yuyuny">GitHub</a> · <a href="mailto:yuyunykk@gmail.com">Email</a></p>
+    <p>Last updated: {{ site.time | date: '%Y.%m.%d' }}</p>
   </footer>
 </body>
 </html>
