@@ -1,0 +1,8 @@
+title: Yun Kim
+description: Yun Kim의 기록 보관소
+lang: ko
+timezone: Asia/Seoul
+permalink: /posts/:year-:month-:day-:title/
+
+exclude:
+  - README.md

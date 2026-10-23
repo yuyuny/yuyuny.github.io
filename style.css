@@ -1,0 +1,38 @@
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+.site-title {
+  font-weight: bold;
+}
+
+header nav a {
+  margin-right: 1rem;
+}
+
+ul.posts {
+  list-style: none;
+  padding: 0;
+}
+
+ul.posts time {
+  display: inline-block;
+  min-width: 6.5rem;
+  color: GrayText;
+  font-variant-numeric: tabular-nums;
+}
+
+footer {
+  margin-top: 4rem;
+  color: GrayText;
+  font-size: 0.875rem;
+}
