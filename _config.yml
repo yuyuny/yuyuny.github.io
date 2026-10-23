@@ -1,8 +1,14 @@
 title: Yun Kim
 description: Yun Kim의 기록 보관소
 lang: ko
+url: https://yuyuny.github.io
+author: Yun Kim
 timezone: Asia/Seoul
 permalink: /posts/:year-:month-:day-:title/
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
 
 exclude:
   - README.md

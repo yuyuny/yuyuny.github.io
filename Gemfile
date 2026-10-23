@@ -5,6 +5,11 @@ source "https://rubygems.org"
 gem "jekyll", "~> 3.10"
 gem "kramdown-parser-gfm"
 
+group :jekyll_plugins do
+  gem "jekyll-seo-tag"
+  gem "jekyll-sitemap"
+end
+
 # Ruby 3.4+에서 기본 포함이 빠진 gem들 (Jekyll 3.x가 필요로 함)
 gem "csv"
 gem "base64"

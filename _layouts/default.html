@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
-  <meta name="description" content="{{ page.description | default: site.description }}">
+  {% seo %}
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -20,7 +19,7 @@
   </main>
 
   <footer>
-    <p><a href="https://github.com/yuyuny">GitHub</a> · <a href="mailto:yuyunykk@gmail.com">Email</a></p>
+    <p><a href="https://github.com/yuyuny">GitHub</a></p>
     <p>Last updated: {{ site.time | date: '%Y.%m.%d' }}</p>
   </footer>
 </body>
