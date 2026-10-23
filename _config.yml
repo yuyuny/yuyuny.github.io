@@ -6,3 +6,6 @@ permalink: /posts/:year-:month-:day-:title/
 
 exclude:
   - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
