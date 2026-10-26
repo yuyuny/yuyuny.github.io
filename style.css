@@ -127,6 +127,11 @@ ul.posts time {
   margin: var(--space-lg) 0;
 }
 
+/* 가로로 긴 전/후 비교 이미지는 한 줄에 하나씩 */
+.shots.wide {
+  grid-template-columns: 1fr;
+}
+
 .shots figure {
   margin: 0;
 }
