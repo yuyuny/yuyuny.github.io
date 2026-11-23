@@ -1,0 +1,218 @@
+/* VOICE: 한밤 아케이드 선곡 부스. 날렵하고 시끄럽게, 정보는 또렷하게.
+   IDEA: 이지투디제이 선곡 화면을 동아시아 리소 포스터로 찍어낸 것. 판이 어긋난 이중 인쇄, 별표, 세로쓰기.
+   PICTURE: 화면 전체를 덮은 장르색 장면 위로 재킷과 반쯤 나온 LP, 크게 걸린 BGA 모니터, 사선으로 파고드는 어두운 목록 패널.
+   COLOUR and TYPE: 먹색 + 곡마다 바뀌는 리소 형광색 + 둘째 잉크(망점) + 종이색 / Gasoek One 제목, Saira 이탤릭 라벨, Plex KR 본문·로고.
+   LAYOUT: 선 없이 레이어로 나눔. 장면은 한 장, 목록은 사선 가장자리 반투명 패널. 900px 아래에선 위에 무대, 아래에 윗변이 사선인 목록 패널. */
+:root {
+  color-scheme: dark;
+  --k: #0b0b0b;
+  --w: #f7f3ea;
+  --c: #ff3d8b;
+  --ci: #0b0b0b;
+  --cp: #1b3bff;
+  --sl: 96px;
+  --pn-bg: rgba(11, 11, 11, 0.95);
+  --pn-fg: var(--w);
+  --pn-edge: var(--w);
+  --pn-row: rgba(255, 255, 255, 0.06);
+  --pn-row-hover: rgba(255, 255, 255, 0.12);
+  --pn-line: #4a4741;
+  --pn-field-bg: var(--w);
+  --pn-field-fg: var(--k);
+  --pn-on-bg: var(--w);
+  --pn-on-fg: var(--k);
+  --pn-sel-bg: var(--w);
+  --pn-sel-fg: var(--k);
+  --pn-dot: var(--c);
+  --ui: "IBM Plex Sans KR", system-ui, sans-serif;
+  --hd: "Gasoek One", "Dela Gothic One", sans-serif;
+  --num: "Saira Extra Condensed", "Anton", sans-serif;
+}
+* {
+  box-sizing: border-box;
+  min-width: 0;
+}
+html,
+body {
+  margin: 0;
+  background: var(--k);
+  color: var(--w);
+}
+body {
+  font: 16px/1.5 var(--ui);
+  overflow-x: clip;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 3px solid var(--w);
+  outline-offset: 3px;
+}
+.app {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* 장면 (화면 전체 배경) */
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--c);
+  pointer-events: none;
+  overflow: hidden;
+}
+.scene > * {
+  position: absolute;
+}
+.wipe {
+  inset: 0;
+}
+/* 세로로 흐르는 장르 글자. 장면색을 어둡게 한 불투명 단색으로 찍는다. 둘째 잉크를 반투명으로 얹으면 파란 장면에서 탁한 회색이 된다.
+   줄 높이를 1보다 줄이거나 left를 음수로 두면 글자 왼쪽이 화면 밖으로 잘린다 */
+.giant {
+  top: -6%;
+  left: max(6px, 0.6vw);
+  writing-mode: vertical-rl;
+  font:
+    400 clamp(120px, 15vw, 240px)/1 "Anton",
+    "Gasoek One",
+    sans-serif;
+  color: color-mix(in oklab, var(--c) 86%, #000);
+  white-space: nowrap;
+  animation: drift 32s linear infinite;
+  text-transform: uppercase;
+}
+@keyframes drift {
+  to {
+    transform: translateY(-50%);
+  }
+}
+.ray {
+  left: 30%;
+  top: -20%;
+  width: 46%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.14) 40%,
+    transparent
+  );
+  transform: rotate(16deg);
+  mix-blend-mode: soft-light;
+}
+
+/* 상단 */
+.bar {
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 12px 22px;
+  flex-wrap: wrap;
+  padding: 16px max(2.6vw, 16px) 6px;
+  color: var(--ci);
+  position: relative;
+  z-index: 4;
+}
+/* 상자 글자: 글자색 위에 장면색. 제목의 상자 글자(stage.js의 drawTitle)가 쓴다. 대비는 RISO의 c·i 쌍이 보장한다 */
+.bx {
+  display: inline-block;
+  line-height: 1;
+  background: var(--ci);
+  color: var(--c);
+  padding: 0 0.08em;
+}
+/* 워드마크는 2단 블록 SVG(#wm-block) 한 장이다. 44px이 머리말 높이를 늘리지 않는 가장 큰 높이다(오른쪽 숫자 묶음의 높이. 넘으면 무대 배치가 밀린다) */
+.logo {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+.logo .wm {
+  display: block;
+  width: 162px;
+  height: 44px;
+}
+.read {
+  display: flex;
+  gap: 18px;
+  margin-left: auto;
+  align-items: flex-end;
+  color: var(--pn-fg);
+}
+.read div {
+  text-align: right;
+  line-height: 1;
+}
+.read b {
+  display: block;
+  font: italic 900 32px/0.9 var(--num);
+  white-space: nowrap;
+}
+.read span {
+  font-size: 13px;
+  opacity: 0.7;
+}
+/* 상단 오른쪽은 패널 위라 패널 글자색. 머리줄은 모니터가 올라와 겹치므로 빈 곳은 클릭을 통과시킨다 */
+.bar > * {
+  pointer-events: auto;
+}
+
+.deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(340px, 1fr);
+  min-height: 0;
+  height: 100%;
+}
+
+@media (max-width: 1100px) {
+  .deck {
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
+  }
+}
+/* 900px 아래: 한 화면에 위(무대: 모니터나 재킷 + 제목 줄), 아래(목록)를 고정한다. 페이지는 스크롤하지 않고 목록만 스크롤한다.
+   곡을 골라도 무대가 화면 밖으로 나가지 않게 하려는 것이라 .app을 height:auto로 풀면 안 된다 */
+@media (max-width: 900px) {
+  .deck {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .bar {
+    flex-wrap: nowrap;
+    padding: max(10px, env(safe-area-inset-top))
+      max(16px, env(safe-area-inset-right)) 4px
+      max(16px, env(safe-area-inset-left));
+  }
+  .logo .wm {
+    width: 125px;
+    height: 34px;
+  }
+  .read {
+    color: var(--ci);
+    gap: 12px;
+  }
+  .read b {
+    font-size: 22px;
+  }
+  .read span {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* * 하나로는 선택 행 떨림(::before)이 남는다 */
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

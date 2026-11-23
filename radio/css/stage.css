@@ -1,0 +1,641 @@
+/* 무대. 901px 이상은 한 화면에 고정(.stage가 size container). 그 아래는 화면 위쪽 띠: 모니터(영상이 없으면 재킷)와 제목 줄, 정보·코멘트는 INFO로 여는 시트.
+   읽는 것(제목·정보·태그·코멘트)은 포스터식 똑바른 단색 블록, 누르는 것(버튼·모니터·재킷)은 기울임과 어긋난 둘째 색. */
+.stage {
+  --lh: 1.02;
+  --gap: 14px;
+  --pr: 16px;
+  position: relative;
+  z-index: 2;
+  color: var(--ci);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "jk" "mon" "ttl" "info" "memo";
+  gap: 18px;
+  padding: 8px var(--pr) 28px 16px;
+}
+.edge {
+  display: none;
+  background: var(--c);
+}
+/* .who·.tog는 900px 아래에서만 쓴다. .sheet는 넓은 화면에선 상자 없이 .info·.memo를 무대 grid에 그대로 둔다 */
+.who,
+.tog {
+  display: none;
+}
+.sheet {
+  display: contents;
+}
+
+/* 망점: 무대 전체를 덮는 둘째 잉크 판. 점 모양은 mask 이미지(--dots, stage.js가 halftone.js로 만든다)이고
+   제목 블록 자리(--ko, stage.js의 drawTitle)는 빼서 제목 글자 아래엔 점이 없다. 다른 글자(정보 표·태그·코멘트·링크)는 제 바탕을 칠한다 */
+.ht {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--cp);
+  mask:
+    var(--dots, none) 0 0 / auto no-repeat,
+    linear-gradient(#000 0 0) var(--ko, 0 0/0 0) no-repeat;
+  mask-composite: subtract, add;
+}
+.ht[hidden] {
+  display: none;
+}
+
+.jwrap {
+  grid-area: jk;
+  position: relative;
+  height: min(58vw, 330px);
+  aspect-ratio: 1.5/1;
+  justify-self: start;
+}
+.vinyl {
+  position: absolute;
+  right: 0;
+  top: 4%;
+  height: 94%;
+  aspect-ratio: 1;
+  animation: spin 5s linear infinite;
+}
+.vinyl svg,
+.cov svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.cov {
+  position: absolute;
+  left: 1%;
+  top: 0;
+  height: 96%;
+  aspect-ratio: 1;
+  transform: rotate(-5deg);
+  background: var(--k);
+  box-shadow:
+    12px 12px 0 var(--k),
+    12px 12px 0 3px var(--w);
+  z-index: 1;
+}
+.cov img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 제목: 한 서체, 단색. 줄과 크기(--fs)는 title.js가 정한다 */
+.ttl {
+  grid-area: ttl;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font: 400 var(--fs, 44px)/var(--lh) var(--hd);
+  color: var(--ci);
+}
+.ttl .ln {
+  display: block;
+  white-space: pre;
+}
+
+.info {
+  grid-area: info;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: fit-content(64%) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "spec tags" "sp tags";
+  gap: 10px 18px;
+  align-items: start;
+  min-height: 0;
+}
+.spec {
+  grid-area: spec;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto minmax(0, 1fr);
+  gap: 1px 14px;
+  margin: 0;
+  padding: 10px 16px;
+  background: var(--ci);
+  color: var(--c);
+}
+.spec dt {
+  font: italic 800 15px/1.55 var(--num);
+  letter-spacing: 0.08em;
+}
+.spec dd {
+  margin: 0;
+  font: 700 15px/1.55 var(--ui);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spec .d {
+  font-variant-numeric: tabular-nums;
+}
+.spec .w {
+  grid-column: 2/-1;
+}
+/* 한 줄에 나란히 놓인 RELEASE · LENGTH · ADDED 사이 */
+.spec .d + dt {
+  margin-left: 6px;
+}
+.sp {
+  grid-area: sp;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px 0 14px;
+  background: var(--k);
+  color: var(--w);
+  font: 700 14px var(--ui);
+  text-decoration: none;
+  white-space: nowrap;
+  transform: skewX(-10deg);
+  box-shadow: 4px 4px 0 var(--cp);
+}
+.sp::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1ed760;
+}
+.sp:hover {
+  background: var(--w);
+  color: var(--k);
+}
+.sp[hidden] {
+  display: none;
+}
+/* 태그는 망점 위에 놓여도 읽히게 바탕을 칠한다 */
+.tags {
+  grid-area: tags;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+  max-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.tag,
+.notag {
+  font: 700 14px/1 var(--ui);
+  padding: 7px 10px;
+  border: 2px solid var(--ci);
+  background: var(--c);
+  color: var(--ci);
+  white-space: nowrap;
+}
+.tag.g {
+  background: var(--ci);
+  color: var(--c);
+}
+/* 최애곡 딱지는 읽는 표시지만 사용자가 기운 딱지로 정했다. 종이색 판을 기울이고 둘째 잉크를 어긋나게 찍어 장르·무드 칩과 구분한다 */
+.best {
+  font: italic 900 15px/1 var(--num);
+  letter-spacing: 0.06em;
+  padding: 7px 12px 6px;
+  margin: 3px 6px 3px 2px;
+  background: var(--w);
+  color: var(--k);
+  white-space: nowrap;
+  transform: rotate(-3deg) skewX(-12deg);
+  box-shadow:
+    4px 3px 0 var(--cp),
+    4px 3px 0 2px var(--k);
+}
+.best + .best {
+  transform: rotate(2deg) skewX(-12deg);
+}
+.notag {
+  font: italic 800 15px/1 var(--num);
+  letter-spacing: 0.1em;
+  border-style: dashed;
+}
+.more,
+.memo-more,
+.note-x {
+  font: italic 900 15px/1 var(--num);
+  letter-spacing: 0.06em;
+  padding: 8px 14px;
+  min-height: 34px;
+  border: 0;
+  background: var(--k);
+  color: var(--w);
+  cursor: pointer;
+  transform: skewX(-10deg);
+  box-shadow: 3px 3px 0 var(--cp);
+}
+.more:hover,
+.memo-more:hover,
+.note-x:hover {
+  background: var(--w);
+  color: var(--k);
+}
+
+.memo {
+  grid-area: memo;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 15em;
+  background: var(--w);
+  color: var(--k);
+  padding: 14px 18px 12px;
+  box-shadow: 6px 6px 0 var(--ci);
+}
+.memo h3,
+.note h3 {
+  margin: 0 0 8px;
+  font: italic 900 18px/1 var(--num);
+  letter-spacing: 0.06em;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.memo h3::before,
+.note h3::before {
+  content: "★";
+}
+.memo p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-line;
+  overflow: hidden;
+  min-height: 0;
+  flex: 0 1 auto;
+}
+.memo-more {
+  display: none;
+  align-self: flex-end;
+  margin-top: 6px;
+}
+.memo.over {
+  cursor: pointer;
+}
+.memo.over p {
+  mask-image: linear-gradient(180deg, #000 calc(100% - 2.4em), transparent);
+}
+.memo.over .memo-more {
+  display: block;
+}
+.memo[hidden] {
+  display: none;
+}
+
+/* 펼친 코멘트: 무대 위 종이 한 장 */
+.note {
+  border: 0;
+  padding: 0;
+  margin: auto;
+  width: min(860px, calc(100vw - 32px));
+  max-height: min(86dvh, 920px);
+  overflow: auto;
+  background: var(--w);
+  color: var(--k);
+  box-shadow:
+    12px 12px 0 var(--c),
+    12px 12px 0 4px var(--k);
+}
+.note::backdrop {
+  background: rgba(11, 11, 11, 0.6);
+}
+.note-in {
+  display: grid;
+  gap: 12px;
+  padding: clamp(20px, 3vw, 36px);
+}
+.note h3 {
+  font-size: clamp(26px, 3vw, 44px);
+}
+.note p {
+  margin: 0;
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.85;
+  white-space: pre-line;
+}
+.note-x {
+  justify-self: end;
+}
+
+@media (min-width: 901px) {
+  /* 세 줄: 재킷·모니터 / 제목 / 정보·코멘트. 제목과 정보 줄은 높이를 고정해 곡이 바뀌어도 모니터 크기가 그대로다.
+    --rh(첫 줄 높이)는 cqh로 계산하므로 이 container 안(.mon, .jwrap)에서만 쓴다 */
+  .stage {
+    container-type: size;
+    --pr: clamp(10px, 1.6vw, 24px);
+    --bleed: calc(var(--pr) + var(--sl) * 0.45);
+    --th: clamp(96px, 18dvh, 210px);
+    --ih: clamp(140px, 20dvh, 230px);
+    --rh: calc(100cqh - var(--th) - var(--ih) - 2 * var(--gap));
+    --rise: clamp(24px, 5dvh, 56px);
+    --jh: calc(var(--rh) * 0.52);
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.2fr);
+    grid-template-rows: minmax(0, 1fr) var(--th) var(--ih);
+    grid-template-areas: "jk mon mon" "ttl ttl ttl" "info info memo";
+    gap: var(--gap) 18px;
+    padding: clamp(4px, 1vh, 12px) var(--pr) clamp(14px, 2.4vh, 28px)
+      clamp(26px, 2.8vw, 44px);
+  }
+  /* 무대 위에 펼친다 */
+  .note {
+    margin-left: clamp(16px, 2.8vw, 44px);
+    width: min(900px, 58vw);
+  }
+  .stage:has(.memo[hidden]) {
+    grid-template-areas: "jk mon mon" "ttl ttl ttl" "info info info";
+  }
+  /* 모니터가 LP 오른쪽 15%를 덮는다. LP는 재킷 밖으로 지름의 40% 남짓 보인다 */
+  .jwrap {
+    height: var(--jh);
+    align-self: end;
+    margin-right: calc(var(--jh) * -0.15);
+  }
+  .memo {
+    max-height: 100%;
+    align-self: start;
+  }
+  .edge {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: clamp(6px, 0.9vw, 14px);
+    top: 10px;
+    margin: 0;
+    writing-mode: vertical-rl;
+    font: 700 12px/1 var(--ui);
+    letter-spacing: 0.18em;
+    white-space: nowrap;
+    max-height: calc(100% - 20px);
+    overflow: hidden;
+  }
+
+  /* 영상 없음: 모니터 자리를 재킷과 코멘트가 나눠 갖고, 제목 줄을 높여 제목을 키운다 */
+  .stage:has(.mon[hidden]) {
+    --th: clamp(110px, 26dvh, 290px);
+    --jh: min(100cqh - var(--th) - var(--ih) - 2 * var(--gap), 36cqw);
+    grid-template-areas: "jk memo memo" "ttl ttl ttl" "info info info";
+  }
+  .stage:has(.mon[hidden]) .jwrap {
+    margin-right: 0;
+  }
+  /* 정보 표는 정보 줄(--ih) 높이 안에 Spotify 링크와 함께 들어가야 한다. 정보 칸이 넓으면 세 줄(셋째 줄에 RELEASE · LENGTH · ADDED, 표 폭 440px 남짓 = 칸의 64%가 690px부터),
+    좁으면(코멘트가 있을 때) 네 줄(RELEASE · LENGTH / ADDED). 네 줄이 낮은 정보 줄(1280×720의 144px)에 들도록 그때만 줄 간격을 조인다.
+    .info 자신은 이 쿼리로 꾸밀 수 없다(컨테이너는 제 쿼리의 대상이 아니다). 표 폭 상한 64%는 위의 .info 규칙에 둔다 */
+  .info {
+    container: info/size;
+  }
+  @container info (max-width:699px) {
+    .spec {
+      grid-template-columns: auto auto auto minmax(0, 1fr);
+    }
+    .spec .length ~ .added {
+      grid-column: 1;
+      margin-left: 0;
+    }
+  }
+  @container info (max-width:699px) and (max-height:170px) {
+    .spec:has(.length ~ .added) {
+      padding-block: 6px;
+    }
+    .spec:has(.length ~ .added) :is(dt, dd) {
+      line-height: 1.3;
+    }
+  }
+  .stage:has(.mon[hidden]) .memo {
+    height: auto;
+    max-height: 100%;
+    align-self: end;
+  }
+}
+
+@media (max-width: 900px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "jk jk" "mon mon" "ttl tog" "who tog";
+    gap: 2px 14px;
+    padding: 6px max(16px, env(safe-area-inset-right)) 16px
+      max(16px, env(safe-area-inset-left));
+    overflow: clip;
+  }
+  .jwrap {
+    height: min(40vw, 24dvh);
+    margin-bottom: 8px;
+  }
+  .stage:not(:has(.mon[hidden])) .jwrap {
+    display: none;
+  }
+  /* 검색창에 글자를 치는 동안(화면 키보드)은 모니터·재킷을 접어 목록을 올린다. 행을 누를 때 접힘이 풀려 행이 움직이지 않도록 list.js가 그 mousedown의 포커스 이동을 막는다 */
+  .app:has(#q:focus) :is(.mon, .jwrap) {
+    display: none;
+  }
+  .ttl {
+    height: clamp(52px, 13vw, 72px);
+    justify-content: center;
+  }
+  .spec {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .spec .w {
+    grid-column: auto;
+  }
+  .spec .d + dt {
+    margin-left: 0;
+  }
+  .who {
+    display: block;
+    grid-area: who;
+    justify-self: start;
+    max-width: 100%;
+    background: var(--c);
+    margin: 0;
+    font: 700 14px/1.4 var(--ui);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tog {
+    display: block;
+    grid-area: tog;
+    align-self: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 0;
+    background: var(--k);
+    color: var(--w);
+    font: italic 900 17px/1 var(--num);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    cursor: pointer;
+    transform: skewX(-10deg);
+    box-shadow: 4px 4px 0 var(--cp);
+  }
+  .tog::after {
+    content: " +";
+  }
+  .tog[aria-expanded="true"] {
+    background: var(--w);
+    color: var(--k);
+  }
+  .tog[aria-expanded="true"]::after {
+    content: " ×";
+  }
+  .stage:has(.memo:not([hidden])) .tog::before {
+    content: "★ ";
+  }
+  /* 시트: 제목 줄 바로 아래부터 화면 끝까지 목록을 덮는다. --sheet-top은 stage.js가 무대 아래 끝으로 맞춘다 */
+  .sheet {
+    display: none;
+    position: fixed;
+    z-index: 6;
+    inset: var(--sheet-top, 40%) 0 0;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 18px max(20px, env(safe-area-inset-right))
+      calc(28px + env(safe-area-inset-bottom))
+      max(16px, env(safe-area-inset-left));
+    background: var(--c);
+    border-top: 3px solid var(--ci);
+  }
+  .stage.open .sheet {
+    display: flex;
+    animation: sheet 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+  .info {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: "spec" "tags" "sp";
+    gap: 14px;
+  }
+  .tags {
+    max-height: none;
+    overflow: visible;
+  }
+  .sheet > * {
+    flex: none;
+  }
+  .memo {
+    max-height: none;
+  }
+  .memo p {
+    overflow: visible;
+  }
+  .sp,
+  .more,
+  .memo-more,
+  .note-x {
+    min-height: 44px;
+  }
+}
+@keyframes sheet {
+  from {
+    transform: translateY(28px);
+    opacity: 0;
+  }
+}
+/* 가로로 눕힌 휴대폰: 위아래로 쌓을 높이가 없어 무대와 목록을 두 열로. 시트는 목록 열을 덮는다 */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 540px) {
+  .deck {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .stage {
+    align-content: start;
+  }
+  .ttl {
+    height: 52px;
+  }
+  .mon {
+    width: min(100%, calc((100dvh - 230px) * 16 / 9 + 22px));
+  }
+  .jwrap {
+    height: min(40vw, calc(100dvh - 190px));
+  }
+  .sheet {
+    inset: 0 0 0 50%;
+  }
+}
+
+/* 곡이 없을 때(stage.js의 clearStage). 무대의 곡 자리를 모두 내리고 큰 글자와 할 일 하나만 남긴다. 망점 판(.ht)은 그대로 둔다 */
+.blank {
+  display: none;
+}
+.stage.empty > :not(.blank, .ht) {
+  display: none;
+}
+.stage.empty .blank {
+  grid-area: 1/1/-1/-1;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  padding: 12px 0;
+}
+.blank-h {
+  margin: 0 0 6px;
+  padding: 0 0.08em;
+  background: var(--c);
+  font: 400 clamp(56px, 14cqw, 200px)/0.98 var(--hd);
+  color: var(--ci);
+}
+.blank-p {
+  margin: 0;
+  padding: 8px 16px;
+  background: var(--ci);
+  color: var(--c);
+  font: 700 clamp(17px, 1.6vw, 22px)/1.4 var(--ui);
+}
+.blank-s {
+  margin: 0;
+  padding: 4px 10px;
+  background: var(--c);
+  font: 500 15px/1.5 var(--ui);
+  word-break: keep-all;
+}
+.blank-b {
+  margin-top: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 0;
+  background: var(--k);
+  color: var(--w);
+  font: italic 900 20px/1 var(--num);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transform: skewX(-10deg);
+  box-shadow: 5px 5px 0 var(--cp);
+}
+.blank-b:hover {
+  background: var(--w);
+  color: var(--k);
+}
+@media (max-width: 900px) {
+  .blank-h {
+    font-size: clamp(44px, 15vw, 96px);
+  }
+  .stage.empty .blank {
+    gap: 10px;
+    padding: 4px 0 6px;
+  }
+}

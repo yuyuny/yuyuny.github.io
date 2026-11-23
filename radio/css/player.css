@@ -1,0 +1,165 @@
+/* 무대 첫 줄 높이(--rh)에 머리줄까지 올라간 만큼(--rise)을 더해 다 쓰도록(둘 다 stage.css) 폭을 정한다. 68px·26px은 .mbar와 테두리·여백이 차지하는 높이·폭이라 그쪽이 바뀌면 같이 고친다 */
+.mon {
+  grid-area: mon;
+  position: relative;
+  z-index: 3;
+  align-self: end;
+  justify-self: end;
+  margin: calc(var(--rise, 0px) * -1) calc(var(--bleed, 0px) * -1) 0 0;
+  width: min(
+    calc(100% + var(--bleed, 0px)),
+    calc((var(--rh) + var(--rise, 0px) - 68px) * 16 / 9 + 26px)
+  );
+  background: var(--k);
+  color: var(--w);
+  padding: 10px;
+  border: 3px solid var(--w);
+  box-shadow: 10px 10px 0 var(--cp);
+  transform: rotate(1.2deg);
+}
+.mbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.mbar span {
+  font: italic 900 18px/1 var(--num);
+  letter-spacing: 0.02em;
+}
+.mbar span i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: var(--c);
+  margin-right: 7px;
+  transform: rotate(45deg);
+  vertical-align: 2px;
+}
+.mon.on .mbar span i {
+  animation: blink 1.2s steps(2) infinite;
+}
+.mon[hidden] {
+  display: none;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+.yt {
+  font: 700 14px var(--ui);
+  color: var(--w);
+  text-decoration: none;
+  border-bottom: 2px solid var(--c);
+  white-space: nowrap;
+  padding: 6px 0;
+}
+.yt:hover {
+  color: var(--c);
+}
+.screen {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: repeating-linear-gradient(0deg, #141414 0 2px, #1c1c1c 2px 4px);
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.screen::before,
+.screen::after {
+  content: "★";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  font-size: 14px;
+  color: var(--c);
+}
+.screen::before {
+  top: 8px;
+  left: 10px;
+}
+.screen::after {
+  bottom: 8px;
+  right: 10px;
+}
+.screen.live::before,
+.screen.live::after {
+  display: none;
+}
+.play {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.play[hidden] {
+  display: none;
+}
+.play img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.play .tri {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border: 3px solid var(--w);
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+}
+.play .tri::after {
+  content: "";
+  border-left: 20px solid var(--w);
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  margin-left: 5px;
+}
+.play:hover .tri,
+.play:focus-visible .tri {
+  border-color: var(--c);
+}
+.play:hover .tri::after,
+.play:focus-visible .tri::after {
+  border-left-color: var(--c);
+}
+.play:focus-visible {
+  outline: 3px solid var(--c);
+  outline-offset: -3px;
+}
+.play:disabled {
+  cursor: progress;
+}
+.screen iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 900px) {
+  /* 폭은 화면 높이의 30%를 넘지 않는 16:9(22px은 여백·테두리). 태블릿 세로에서 모니터가 목록을 밀어내지 않게 */
+  .mon {
+    margin: 0 0 12px;
+    width: min(100%, calc(30dvh * 16 / 9 + 22px));
+    justify-self: start;
+    padding: 8px;
+    box-shadow: 8px 8px 0 var(--cp);
+  }
+  .mbar {
+    margin-bottom: 4px;
+  }
+  .yt {
+    padding: 13px 0 11px;
+  }
+}

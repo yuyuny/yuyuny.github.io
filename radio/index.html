@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>킴스 라디오 클럽</title>
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Dela+Gothic+One&family=Gasoek+One&family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Saira+Extra+Condensed:ital,wght@0,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/stage.css">
+<link rel="stylesheet" href="css/player.css">
+<link rel="stylesheet" href="css/list.css">
+</head>
+<body>
+<div class="app">
+  <div class="scene" aria-hidden="true"><div class="wipe" id="wipe"></div><div class="giant" id="giant"></div><div class="ray"></div></div>
+  <header class="bar">
+    <!-- 로고 원본: 워드마크 wm-block은 design/wordmark-lab.html, 아이콘 kim-l은 design/logo-final.html. 색은 장면 변수(--c, --ci, --cp)를 따른다 -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="wm-block" viewBox="0 0 236 64"><rect width="124" height="64" style="fill:var(--ci)"/><g transform="translate(8 3) scale(.95)" style="fill:var(--c)"><g transform="translate(0 0) skewX(-7)"><g transform="translate(30 32) scale(1.16) translate(-30 -32)"><rect x="10" y="7" width="24" height="8"/><rect x="26" y="7" width="8" height="24"/><rect x="10" y="21" width="24" height="7"/><rect x="42" y="7" width="8" height="27"/><path fill-rule="evenodd" d="M14 40h36v17H14zM22 45h20v7H22z"/></g></g><g transform="translate(58 0) skewX(-7)"><polygon points="26,2 35,2 14,38 4,38"/><polygon points="29,17 34,10 56,38 46,38"/><rect x="4" y="49" width="52" height="9"/></g></g><text x="134" y="28" font-family="Black Han Sans" font-size="30" style="fill:var(--ci)">라디오</text><text x="134" y="61" font-family="Black Han Sans" font-size="30" style="fill:var(--ci)">클럽</text><text x="205" y="61" font-family="Black Han Sans" font-size="24" style="fill:var(--cp)">★</text></symbol><symbol id="kim-l" viewBox="0 0 64 64"><path style="fill:var(--ci,#0b0b0b)" d="M7 13L40 6L43 8.5L59 5L56 30L59.5 33L55 59L24 61L21 58.5L4 60L8 36L4.5 32Z"/><g transform="translate(32 33) scale(.8) translate(-32 -33) translate(5.5 1) skewX(-9)"><g style="fill:var(--cp,#1b3bff)" transform="translate(3 3)"><rect x="10" y="7" width="24" height="8"/><rect x="26" y="7" width="8" height="24"/><rect x="10" y="20" width="24" height="7"/><rect x="42" y="7" width="8" height="27"/><path fill-rule="evenodd" d="M14 39h36v19H14zM22 44.5h20v8H22z"/></g><g style="fill:var(--c,#ff3d8b)"><rect x="10" y="7" width="24" height="8"/><rect x="26" y="7" width="8" height="24"/><rect x="10" y="20" width="24" height="7"/><rect x="42" y="7" width="8" height="27"/><path fill-rule="evenodd" d="M14 39h36v19H14zM22 44.5h20v8H22z"/></g></g></symbol></svg>
+    <h1 class="logo"><svg class="wm" viewBox="0 0 236 64" role="img" aria-label="킴스 라디오 클럽"><use href="#wm-block"/></svg></h1>
+    <div class="read" id="read"></div>
+  </header>
+
+  <main class="deck">
+    <section class="stage" id="stage" aria-label="선택한 곡">
+      <p class="edge" id="edge" aria-hidden="true"></p>
+      <div class="ht" id="htA" aria-hidden="true" hidden></div><div class="ht" id="htB" aria-hidden="true" hidden></div>
+      <div class="blank" role="status"><h2 class="blank-h" id="blankH"></h2><p class="blank-p" id="blankP"></p><p class="blank-s" id="blankS"></p><button class="blank-b" id="blankB" type="button"></button></div>
+      <div class="jwrap">
+        <div class="vinyl" aria-hidden="true"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="98" fill="#0b0b0b" stroke="#f7f3ea" stroke-width="2"/><g fill="none" stroke="#262626"><circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="81"/><circle cx="100" cy="100" r="72"/><circle cx="100" cy="100" r="63"/><circle cx="100" cy="100" r="54"/></g><path d="M44 28 A90 90 0 0 1 118 12" stroke="rgba(255,255,255,.22)" stroke-width="8" fill="none"/><path d="M156 172 A90 90 0 0 1 82 188" stroke="rgba(255,255,255,.1)" stroke-width="6" fill="none"/><circle cx="100" cy="100" r="44" fill="var(--c)"/><use href="#kim-l" x="81" y="60" width="38" height="38"/><text x="100" y="118" text-anchor="middle" font-family="Anton" font-size="9" letter-spacing=".6" fill="var(--ci)">KIM'S RADIO CLUB</text><circle cx="100" cy="100" r="2.6" fill="#0b0b0b" stroke="#f7f3ea" stroke-width=".8"/></svg></div>
+        <div class="cov" id="cov"></div>
+      </div>
+
+      <div class="mon" id="mon">
+        <div class="mbar"><span><i></i>NOW ON AIR</span><a class="yt" id="yt" href="#" target="_blank" rel="noopener" aria-label="YouTube에서 열기">YouTube ↗</a></div>
+        <div class="screen" id="screen"><button class="play" id="play" type="button"><img id="thumb" alt=""><span class="tri" aria-hidden="true"></span></button></div>
+      </div>
+
+      <h2 class="ttl" id="ttl"></h2>
+      <p class="who" id="who"></p>
+      <button class="tog" id="tog" type="button" aria-expanded="false" aria-controls="sheet">INFO</button>
+      <div class="sheet" id="sheet">
+      <div class="info" id="info">
+        <dl class="spec" id="spec"></dl>
+        <a class="sp" id="sp" href="#" target="_blank" rel="noopener" aria-label="Spotify에서 열기">Spotify ↗</a>
+        <div class="tags" id="tags"></div>
+      </div>
+      <section class="memo" id="memo" aria-label="코멘트"><h3>KIM'S NOTE</h3><p id="memoP"></p><button class="memo-more" id="memoMore" aria-haspopup="dialog">전체 읽기</button></section>
+      </div>
+      <dialog class="note" id="note" aria-labelledby="noteH"><div class="note-in"><h3 id="noteH">KIM'S NOTE</h3><p id="noteP"></p><button class="note-x" id="noteX">닫기</button></div></dialog>
+    </section>
+
+    <div class="side">
+      <div class="s s1"></div><div class="s s2"></div>
+      <section class="crate" aria-label="곡 목록">
+        <div class="flt">
+          <div class="fr"><input class="q" id="q" type="search" placeholder="곡 · 아티스트 · 앨범 검색" aria-label="검색"><button class="fbtn" id="fbtn" type="button" aria-expanded="false" aria-controls="sort moods mpanel">필터</button></div>
+          <div class="fr">
+            <select class="sel" id="sort" aria-label="정렬">
+              <option value="recent">최근 추가순</option><option value="artist">아티스트순</option><option value="title">곡 제목순</option><option value="new">최신 발매순</option><option value="old">오래된 발매순</option><option value="note">코멘트 있는 곡 먼저</option>
+            </select>
+            <button class="dice" id="dice">RANDOM</button>
+          </div>
+          <div class="moods" id="moods" role="group" aria-label="무드 갈래"></div>
+          <div class="mpanel" id="mpanel" role="group" hidden></div>
+        </div>
+        <div class="cnt"><span id="cnt"></span><span>↑↓ 선곡 · / 검색</span></div>
+        <ol class="wheel" id="wheel"></ol>
+        <nav class="jump" id="jump" aria-label="초성·알파벳으로 건너뛰기" hidden></nav>
+      </section>
+    </div>
+  </main>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

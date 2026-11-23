@@ -1,0 +1,246 @@
+{
+ "genres": [
+  {
+   "name": "인디록",
+   "color": "#ff3b1f"
+  },
+  {
+   "name": "모던록",
+   "color": "#1b3bff"
+  },
+  {
+   "name": "얼터너티브",
+   "color": "#b8e835"
+  },
+  {
+   "name": "록",
+   "color": "#ffd60a"
+  },
+  {
+   "name": "인디팝",
+   "color": "#ff3d8b"
+  },
+  {
+   "name": "드림팝",
+   "color": "#3fb8f0"
+  },
+  {
+   "name": "슈게이즈",
+   "color": "#1b3bff"
+  },
+  {
+   "name": "브릿팝",
+   "color": "#00b86b"
+  },
+  {
+   "name": "클래식록",
+   "color": "#efe6d2"
+  },
+  {
+   "name": "사이키델릭",
+   "color": "#b8e835"
+  },
+  {
+   "name": "포크",
+   "color": "#00b86b"
+  },
+  {
+   "name": "가요",
+   "color": "#efe6d2"
+  },
+  {
+   "name": "케이팝",
+   "color": "#b8e835"
+  },
+  {
+   "name": "팝",
+   "color": "#ffd60a"
+  },
+  {
+   "name": "알앤비",
+   "color": "#1b3bff"
+  },
+  {
+   "name": "소울",
+   "color": "#efe6d2"
+  },
+  {
+   "name": "펑크·디스코",
+   "color": "#ffd60a"
+  },
+  {
+   "name": "힙합",
+   "color": "#ff3b1f"
+  },
+  {
+   "name": "재즈",
+   "color": "#1b3bff"
+  },
+  {
+   "name": "보사노바",
+   "color": "#3fb8f0"
+  },
+  {
+   "name": "시티팝",
+   "color": "#3fb8f0"
+  },
+  {
+   "name": "제이팝",
+   "color": "#b8e835"
+  },
+  {
+   "name": "애니송",
+   "color": "#ffd60a"
+  },
+  {
+   "name": "클래식",
+   "color": "#ffd60a"
+  },
+  {
+   "name": "사운드트랙",
+   "color": "#efe6d2"
+  },
+  {
+   "name": "일렉트로닉",
+   "color": "#00b86b"
+  },
+  {
+   "name": "로파이",
+   "color": "#efe6d2"
+  }
+ ],
+ "moods": [
+  {
+   "name": "신나는",
+   "group": "기운"
+  },
+  {
+   "name": "들썩이는",
+   "group": "기운"
+  },
+  {
+   "name": "질주하는",
+   "group": "기운"
+  },
+  {
+   "name": "격렬한",
+   "group": "기운"
+  },
+  {
+   "name": "그루비",
+   "group": "기운"
+  },
+  {
+   "name": "느긋한",
+   "group": "기운"
+  },
+  {
+   "name": "나른한",
+   "group": "기운"
+  },
+  {
+   "name": "잔잔한",
+   "group": "기운"
+  },
+  {
+   "name": "쓸쓸한",
+   "group": "감정"
+  },
+  {
+   "name": "애틋한",
+   "group": "감정"
+  },
+  {
+   "name": "설레는",
+   "group": "감정"
+  },
+  {
+   "name": "포근한",
+   "group": "감정"
+  },
+  {
+   "name": "벅찬",
+   "group": "감정"
+  },
+  {
+   "name": "그리운",
+   "group": "감정"
+  },
+  {
+   "name": "가라앉은",
+   "group": "감정"
+  },
+  {
+   "name": "반항적",
+   "group": "감정"
+  },
+  {
+   "name": "발랄한",
+   "group": "감정"
+  },
+  {
+   "name": "어두운",
+   "group": "감정"
+  },
+  {
+   "name": "몽환적",
+   "group": "질감"
+  },
+  {
+   "name": "아득한",
+   "group": "질감"
+  },
+  {
+   "name": "일렁이는",
+   "group": "질감"
+  },
+  {
+   "name": "청량한",
+   "group": "질감"
+  },
+  {
+   "name": "매끈한",
+   "group": "질감"
+  },
+  {
+   "name": "재지한",
+   "group": "질감"
+  },
+  {
+   "name": "빈티지",
+   "group": "질감"
+  },
+  {
+   "name": "로파이",
+   "group": "질감"
+  },
+  {
+   "name": "소박한",
+   "group": "질감"
+  },
+  {
+   "name": "새벽",
+   "group": "장면"
+  },
+  {
+   "name": "도시의 밤",
+   "group": "장면"
+  },
+  {
+   "name": "드라이브",
+   "group": "장면"
+  },
+  {
+   "name": "여름",
+   "group": "장면"
+  },
+  {
+   "name": "집중",
+   "group": "장면"
+  },
+  {
+   "name": "영화적인",
+   "group": "장면"
+  }
+ ]
+}

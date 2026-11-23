@@ -1,0 +1,459 @@
+/* 목록 패널: 선 대신 사선 레이어 */
+.side {
+  position: relative;
+  min-height: 0;
+  margin-top: -70px;
+  filter: drop-shadow(-14px 0 24px rgba(0, 0, 0, 0.25));
+}
+.side > .s {
+  position: absolute;
+  inset: 0;
+}
+.s1 {
+  background: var(--cp);
+  clip-path: polygon(calc(var(--sl) - 34px) 0, 100% 0, 100% 100%, -34px 100%);
+}
+.s2 {
+  background: var(--pn-edge);
+  clip-path: polygon(calc(var(--sl) - 16px) 0, 100% 0, 100% 100%, -16px 100%);
+}
+.crate {
+  position: relative;
+  height: 100%;
+  background: var(--pn-bg);
+  color: var(--pn-fg);
+  clip-path: polygon(var(--sl) 0, 100% 0, 100% 100%, 0 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 78px 0 0 calc(var(--sl) * 0.8);
+}
+.crate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    transparent 30%
+  );
+  pointer-events: none;
+}
+.flt {
+  padding: 4px 18px 8px 16px;
+  display: grid;
+  gap: 10px;
+}
+.fr {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.q,
+.sel {
+  min-height: 44px;
+  background: var(--pn-field-bg);
+  color: var(--pn-field-fg);
+  border: 0;
+  padding: 0 14px;
+  font-size: 16px;
+  font-weight: 500;
+  clip-path: polygon(2% 0, 100% 0, 98% 100%, 0 100%);
+}
+.q {
+  flex: 1 1 100%;
+}
+.sel {
+  flex: 1 1 130px;
+  cursor: pointer;
+}
+.dice {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  background: var(--c);
+  color: var(--ci);
+  font: italic 900 19px var(--num);
+  cursor: pointer;
+  transform: skewX(-10deg);
+  flex: none;
+}
+/* 무드: 갈래 버튼 한 줄 + 연 갈래의 칩(list.js). 고른 무드가 든 갈래는 장면색 둘째 판이 어긋나 붙는다 */
+.moods {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 2px 4px;
+}
+.mb,
+.chip {
+  flex: none;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 2px solid var(--pn-line);
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  transform: skewX(-10deg);
+}
+.mb {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  font-weight: 700;
+}
+.mb i {
+  font-style: normal;
+  font-size: 11px;
+  opacity: 0.7;
+  transition: transform 0.15s;
+}
+.mb[aria-expanded="true"] {
+  border-color: var(--pn-fg);
+}
+.mb[aria-expanded="true"] i {
+  transform: rotate(180deg);
+}
+.mb[aria-pressed="true"],
+.mx,
+.mg[data-on],
+.chip[aria-pressed="true"] {
+  background: var(--pn-on-bg);
+  color: var(--pn-on-fg);
+  border-color: var(--pn-on-bg);
+}
+.mx,
+.mg[data-on] {
+  box-shadow: 4px 3px 0 var(--c);
+}
+/* 칩 세 줄까지. 넘치면(어휘를 못 읽어 무드 전부가 한 갈래로 올 때) 안에서 스크롤해 목록 자리를 지킨다 */
+.mpanel {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 6px 8px 8px;
+  margin: 0 4px;
+  background: var(--pn-row);
+  max-height: 140px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.mpanel[hidden] {
+  display: none;
+}
+/* 장르 칩은 채운 칩(무대의 장르 태그처럼), 무드 칩은 테두리 칩. 앞의 네모가 장면색 */
+.chip.gn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--pn-row-hover);
+  border-color: var(--pn-row-hover);
+}
+.chip.gn[aria-pressed="true"] {
+  background: var(--pn-on-bg);
+  border-color: var(--pn-on-bg);
+}
+.gd {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  background: var(--gc);
+  box-shadow: 0 0 0 1.5px rgba(128, 128, 128, 0.7);
+}
+.cnt {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 18px 6px 16px;
+  font: italic 800 18px var(--num);
+  opacity: 0.8;
+}
+.wheel {
+  list-style: none;
+  margin: 0;
+  padding: 6px 30px 48px 8px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: thin;
+  mask-image: linear-gradient(
+    180deg,
+    transparent,
+    #000 14px,
+    #000 calc(100% - 40px),
+    transparent
+  );
+}
+.wheel li {
+  margin: 3px 0;
+}
+.wheel li:nth-child(4n + 2) {
+  padding-left: 12px;
+}
+.wheel li:nth-child(4n + 3) {
+  padding-left: 22px;
+}
+.wheel li:nth-child(4n) {
+  padding-left: 10px;
+}
+.rb {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  text-align: start;
+  background: transparent;
+  border: 0;
+  padding: 8px 14px;
+  min-height: 58px;
+  cursor: pointer;
+  isolation: isolate;
+  transition: transform 0.2s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.rb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--pn-row);
+  transform: skewX(-12deg);
+}
+.rb:hover::before {
+  background: var(--pn-row-hover);
+}
+.sw {
+  width: 42px;
+  height: 42px;
+  transform: skewX(-8deg);
+}
+.rt {
+  display: block;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ra {
+  display: block;
+  font-size: 13px;
+  opacity: 0.7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rg {
+  font: italic 700 16px var(--num);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+.rb .dot {
+  color: var(--pn-dot);
+  margin-left: 6px;
+  font-size: 12px;
+}
+/* 선택된 행: 들쭉날쭉한 종이 + 두 색 어긋남 + 떨림 */
+.rb[aria-current="true"] {
+  transform: translateX(12px) scale(1.03);
+  color: var(--pn-sel-fg);
+  filter: drop-shadow(-5px -4px 0 var(--cp));
+}
+.rb[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: var(--c);
+  transform: translate(7px, 6px) skewX(-12deg);
+}
+.rb[aria-current="true"]::before {
+  background: var(--pn-sel-bg);
+  clip-path: polygon(0 8%, 3% 0, 100% 0, 97% 92%, 100% 100%, 0 100%);
+  animation: jit 0.32s steps(2) infinite;
+}
+.rb[aria-current="true"] .rt {
+  font-size: 18px;
+}
+.rb[aria-current="true"] .dot {
+  color: var(--pn-sel-fg);
+}
+@keyframes jit {
+  50% {
+    transform: skewX(-12deg) translate(1px, -1px);
+  }
+}
+.none {
+  padding: 40px 16px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.fbtn {
+  display: none;
+}
+@media (max-width: 900px) {
+  /* 윗변만 사선. 둘째 색과 테두리 색 레이어가 그 위로 조금씩 비어져 나온다 */
+  .side {
+    --sk: 22px;
+    margin-top: 0;
+    filter: none;
+  }
+  .side > .s,
+  .crate {
+    clip-path: polygon(0 var(--sk), 100% 0, 100% 100%, 0 100%);
+  }
+  .s1 {
+    inset: -12px 0 0;
+  }
+  .s2 {
+    inset: -6px 0 0;
+  }
+  .crate {
+    padding: calc(var(--sk) + 4px) 0 0;
+  }
+  /* 검색·필터·RANDOM 한 줄. 정렬·태그 줄은 필터 버튼으로 연다(list.js) */
+  .flt {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto;
+    grid-template-areas: "q q f d" "s s s s" "m m m m" "p p p p";
+    gap: 8px;
+    padding: 4px max(16px, env(safe-area-inset-right)) 4px
+      max(16px, env(safe-area-inset-left));
+  }
+  .fr {
+    display: contents;
+  }
+  .q {
+    grid-area: q;
+  }
+  #sort {
+    grid-area: s;
+  }
+  .dice {
+    grid-area: d;
+  }
+  .moods {
+    grid-area: m;
+  }
+  .mpanel {
+    grid-area: p;
+  }
+  .fbtn {
+    display: block;
+    grid-area: f;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 2px solid var(--pn-line);
+    background: transparent;
+    font: 700 14px var(--ui);
+    white-space: nowrap;
+    cursor: pointer;
+    transform: skewX(-10deg);
+  }
+  .fbtn[aria-expanded="true"] {
+    background: var(--pn-on-bg);
+    color: var(--pn-on-fg);
+    border-color: var(--pn-on-bg);
+  }
+  .flt:not(.open) :is(.sel, .moods, .mpanel) {
+    display: none;
+  }
+  .mb,
+  .chip {
+    min-height: 44px;
+  }
+  .mpanel {
+    max-height: 164px;
+  }
+  .cnt {
+    padding: 2px max(16px, env(safe-area-inset-right)) 0
+      max(16px, env(safe-area-inset-left));
+    font-size: 15px;
+  }
+  .cnt span + span {
+    display: none;
+  }
+  /* 고른 행이 아래쪽 흐림에 묻히지 않게 */
+  .wheel {
+    padding-bottom: calc(48px + env(safe-area-inset-bottom));
+    scroll-padding-block: 14px 48px;
+  }
+}
+@media (max-width: 640px) {
+  .rb {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+  .sw {
+    width: 38px;
+    height: 38px;
+  }
+  .rg {
+    display: none;
+  }
+}
+
+/* 가상 스크롤: 그리지 않은 행 자리는 위아래 빈 칸이 채운다(list.js) */
+.wheel {
+  overflow-anchor: none;
+}
+.wheel::before,
+.wheel::after {
+  content: "";
+  display: block;
+}
+.wheel::before {
+  height: var(--pt, 0px);
+}
+.wheel::after {
+  height: var(--pb, 0px);
+}
+/* 건너뛰기 색인(아티스트순·제목순·최근 추가순). 세로 위치는 list.js가 맞춘다 */
+.jump {
+  position: absolute;
+  right: 3px;
+  bottom: 40px;
+  width: 18px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+  z-index: 2;
+}
+.jump[hidden] {
+  display: none;
+}
+/* 연도 네 자리. 목록 오른쪽 여백을 그만큼 넓혀 장르 글자를 덮지 않는다 */
+.jump.yr {
+  width: 30px;
+  right: 2px;
+}
+.crate:has(.jump.yr:not([hidden])) .wheel {
+  padding-right: 42px;
+}
+.jump button {
+  flex: 0 1 24px;
+  min-height: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--pn-fg);
+  font: italic 800 13px/1 var(--num);
+  text-shadow:
+    0 0 3px var(--pn-bg),
+    0 0 1px var(--pn-bg);
+  opacity: 0.75;
+  cursor: pointer;
+}
+.jump button:hover,
+.jump button:focus-visible {
+  opacity: 1;
+  background: var(--c);
+  color: var(--ci);
+  text-shadow: none;
+}
+@media (max-width: 900px) {
+  .jump {
+    display: none;
+  }
+}
