@@ -3,9 +3,15 @@ import { swatch } from "./cover.js";
 import { uniq } from "./data.js";
 import { groups } from "./group.js";
 
-let mood = "",
-  genre = "",
-  best = "";
+/* 고른 태그를 고른 순서대로 [종류, 값]으로 둔다. 종류: g 장르, s 세부 장르, m 무드, b 최애곡 연도 */
+let picks = [];
+const has = (k, v) => picks.some((p) => p[0] === k && p[1] === v);
+const vals = (k) => picks.filter((p) => p[0] === k).map((p) => p[1]);
+const any = (k) => picks.some((p) => p[0] === k);
+const toggle = (k, v) =>
+  (picks = has(k, v)
+    ? picks.filter((p) => p[0] !== k || p[1] !== v)
+    : [...picks, [k, v]]);
 
 export function readouts(data) {
   const a = new Set(data.map((t) => t.artist)).size,
@@ -19,26 +25,31 @@ export function readouts(data) {
     .join("");
 }
 /* 태그 줄은 [전체 | 장르 | 무드 갈래 넷 | 최애곡] 한 줄. 버튼을 누르면 그 칩만 아래 #mpanel에 편다.
-   고른 장르·무드·연도는 첫 버튼 자리에 "■ 인디팝 ✕"·"#무드 ✕"·"★ 2023 ✕"로 남아 접어도 보이고, 누르면 푼다. 그 값의 버튼엔 장면색 판이 붙는다.
-   최애곡 버튼은 곡에 best가 하나라도 있을 때만 그린다. 장르·무드·연도는 따로 걸리는 조건이다 */
+   고른 태그는 첫 버튼 자리에 고른 순서대로 "■ 인디팝 ✕"·"베드룸 팝 ✕"·"#무드 ✕"·"★ 2023 ✕"로 남아 접어도 보이고, 누르면 그것만 푼다. 그 태그가 든 묶음의 버튼엔 장면색 판이 붙는다.
+   장르 버튼의 칩 영역엔 장르 칩 다음에 구분선을 두고 세부 장르 칩이 온다. 최애곡 버튼은 곡에 best가 하나라도 있을 때만 그린다.
+   여러 개를 고를 수 있고 곡은 고른 태그를 모두 가져야 남는다 */
 let mgroups = [],
   years = [],
   gl = [],
+  sl = [],
   openG = "";
 // openG가 최애곡·장르 칩을 편 상태일 때의 값. 갈래 이름과 겹치지 않는다
 const BEST = "\0best",
   GENRE = "\0genre";
 const dot = (c) => (c ? `<span class="gd" style="--gc:${esc(c)}"></span>` : "");
 function options(data, vocab) {
-  const has = (k) => {
+  const inData = (k) => {
     const s = new Set(data.flatMap((t) => t[k]));
     return (x) => s.has(x.name);
   };
   gl = vocab
-    ? vocab.genres.filter(has("genres"))
+    ? vocab.genres.filter(inData("genres"))
     : uniq(data, "genres").map((name) => ({ name }));
+  sl = Array.isArray(vocab?.subgenres)
+    ? vocab.subgenres.filter(inData("sub"))
+    : [];
   if (vocab) {
-    const ms = vocab.moods.filter(has("moods"));
+    const ms = vocab.moods.filter(inData("moods"));
     mgroups = [...new Set(ms.map((m) => m.group))].map((g) => ({
       g,
       ms: ms.filter((m) => m.group === g).map((m) => m.name),
@@ -47,43 +58,58 @@ function options(data, vocab) {
   years = [...new Set(data.flatMap((t) => t.best))].sort().reverse(); // "인생"이 맨 앞, 그다음 최근 연도부터
   moodsUi();
 }
-const attrOf = (b) =>
-  b.dataset.g != null
-    ? `[data-g="${CSS.escape(b.dataset.g)}"]`
-    : b.dataset.b != null
-      ? "[data-b]"
-      : b.dataset.gb != null
-        ? "[data-gb]"
-        : b.dataset.gn != null
-          ? `[data-gn="${CSS.escape(b.dataset.gn)}"]`
-          : b.dataset.y != null
-            ? `[data-y="${CSS.escape(b.dataset.y)}"]`
-            : `[data-m="${CSS.escape(b.dataset.m)}"]`;
+// 고른 태그 칩(✕)은 data-x, 칩 영역의 칩은 data-k·data-v라서 같은 값이어도 포커스를 따로 찾는다
+const attrOf = (b) => {
+  const q = (n) => `[data-${n}="${CSS.escape(b.dataset[n])}"]`;
+  return b.dataset.x != null
+    ? q("x")
+    : b.dataset.k != null
+      ? q("k") + q("v")
+      : b.dataset.g != null
+        ? q("g")
+        : b.dataset.b != null
+          ? "[data-b]"
+          : b.dataset.gb != null
+            ? "[data-gb]"
+            : "[data-all]";
+};
 function moodsUi() {
   const f = document.activeElement,
     box = [$("moods"), $("mpanel")],
     sel = box.some((b) => b.contains(f)) ? attrOf(f) : null; // 다시 그려도 포커스를 같은 버튼에 둔다
-  const x = (attr, label, text) =>
-    `<button class="mb mx" type="button" ${attr} aria-label="${label} 풀기">${text}<i aria-hidden="true">✕</i></button>`;
+  const x = (k, v, label, text) =>
+    `<button class="mb mx" type="button" data-x="${k}:${esc(v)}" aria-label="${label} 풀기">${text}<i aria-hidden="true">✕</i></button>`;
   const gc = (n) => gl.find((g) => g.name === n)?.color;
-  const picked =
-    (genre
-      ? x('data-gn=""', `장르 ${esc(genre)}`, dot(gc(genre)) + esc(genre))
-      : "") +
-    (mood ? x('data-m=""', `무드 #${esc(mood)}`, `#${esc(mood)}`) : "") +
-    (best ? x('data-y=""', `최애곡 ${best}`, `★ ${best}`) : "");
+  const picked = picks
+    .map(([k, v]) =>
+      k === "g"
+        ? x(k, v, `장르 ${esc(v)}`, dot(gc(v)) + esc(v))
+        : k === "s"
+          ? x(k, v, `세부 장르 ${esc(v)}`, esc(v))
+          : k === "m"
+            ? x(k, v, `무드 #${esc(v)}`, `#${esc(v)}`)
+            : x(k, v, `최애곡 ${esc(v)}`, `★ ${esc(v)}`),
+    )
+    .join("");
   const btn = (attr, label, open, on) =>
     `<button class="mb mg" type="button" ${attr} aria-expanded="${open}" aria-controls="mpanel"${on ? " data-on" : ""}>${label}<i aria-hidden="true">▾</i></button>`;
   $("moods").innerHTML =
     (picked ||
-      `<button class="mb" type="button" data-m="" aria-pressed="true">전체</button>`) +
-    (gl.length ? btn("data-gb", "장르", openG === GENRE, genre) : "") +
+      `<button class="mb" type="button" data-all aria-pressed="true">전체</button>`) +
+    (gl.length
+      ? btn("data-gb", "장르", openG === GENRE, any("g") || any("s"))
+      : "") +
     mgroups
       .map(({ g, ms }) =>
-        btn(`data-g="${esc(g)}"`, esc(g), g === openG, ms.includes(mood)),
+        btn(
+          `data-g="${esc(g)}"`,
+          esc(g),
+          g === openG,
+          ms.some((m) => has("m", m)),
+        ),
       )
       .join("") +
-    (years.length ? btn("data-b", "★ 최애곡", openG === BEST, best) : "");
+    (years.length ? btn("data-b", "★ 최애곡", openG === BEST, any("b")) : "");
   const o = mgroups.find((x) => x.g === openG),
     yo = openG === BEST,
     go = openG === GENRE;
@@ -92,27 +118,22 @@ function moodsUi() {
     "aria-label",
     go ? "장르" : yo ? "최애곡 연도" : o ? `${openG} 무드` : "무드",
   );
+  const chip = (k, v, text, cls = "chip") =>
+    `<button class="${cls}" type="button" data-k="${k}" data-v="${esc(v)}" aria-pressed="${has(k, v)}">${text}</button>`;
   $("mpanel").innerHTML = go
     ? gl
-        .map(
-          ({ name, color }) =>
-            `<button class="chip gn" type="button" data-gn="${esc(name)}" aria-pressed="${name === genre}">${dot(color)}${esc(name)}</button>`,
+        .map(({ name, color }) =>
+          chip("g", name, dot(color) + esc(name), "chip gn"),
         )
-        .join("")
+        .join("") +
+      (sl.length
+        ? `<span class="sep" role="separator"></span>` +
+          sl.map(({ name }) => chip("s", name, esc(name))).join("")
+        : "")
     : yo
-      ? years
-          .map(
-            (y) =>
-              `<button class="chip" type="button" data-y="${y}" aria-pressed="${y === best}">★ ${y}</button>`,
-          )
-          .join("")
+      ? years.map((y) => chip("b", y, `★ ${y}`)).join("")
       : o
-        ? o.ms
-            .map(
-              (m) =>
-                `<button class="chip" type="button" data-m="${esc(m)}" aria-pressed="${m === mood}">#${esc(m)}</button>`,
-            )
-            .join("")
+        ? o.ms.map((m) => chip("m", m, `#${esc(m)}`)).join("")
         : "";
   if (sel)
     (
@@ -123,14 +144,15 @@ function moodsUi() {
 export const controls = () => ({
   q: $("q").value,
   sort: $("sort").value,
-  genre,
-  mood,
-  best,
+  genres: vals("g"),
+  subs: vals("s"),
+  moods: vals("m"),
+  bests: vals("b"),
 });
 const narrow = matchMedia("(max-width: 900px)");
-// 좁은 화면에서 접어 둔 장르·정렬·무드·최애곡 중 기본값이 아닌 것의 수를 필터 버튼에 붙인다
+// 좁은 화면에서 접어 둔 고른 태그 수와 기본이 아닌 정렬(1)을 필터 버튼에 붙인다
 const fcount = () => {
-  const n = !!genre + !!mood + !!best + ($("sort").value !== "recent");
+  const n = picks.length + ($("sort").value !== "recent");
   $("fbtn").textContent = n ? `필터 ${n}` : "필터";
 };
 
@@ -236,10 +258,11 @@ export function markRow(sel, scroll) {
   if (scroll) b?.scrollIntoView({ block: "nearest" });
 }
 
-/* 검색어·장르·무드·최애곡 조건을 모두 푼다(정렬은 그대로). 목록을 다시 거르는 건 부른 쪽이 한다 */
+/* 검색어와 고른 태그를 모두 푼다(정렬은 그대로). 목록을 다시 거르는 건 부른 쪽이 한다 */
 export function resetFilters() {
   $("q").value = "";
-  genre = mood = best = openG = "";
+  picks = [];
+  openG = "";
   moodsUi();
   fcount();
 }
@@ -291,27 +314,12 @@ export function initList(data, vocab, st, { onFilter, onPick }) {
       moodsUi();
       return;
     }
-    if (b.dataset.gn != null) {
-      const n = b.dataset.gn === genre ? "" : b.dataset.gn; // 고른 칩을 다시 누르면 푼다
-      if (n === genre) return;
-      genre = n;
-      moodsUi();
-      fcount();
-      onFilter(true);
-      return;
-    }
-    if (b.dataset.y != null) {
-      const y = b.dataset.y === best ? "" : b.dataset.y; // 고른 칩을 다시 누르면 푼다
-      if (y === best) return;
-      best = y;
-      moodsUi();
-      fcount();
-      onFilter(true);
-      return;
-    }
-    const m = b.dataset.m === mood ? "" : b.dataset.m; // 고른 칩을 다시 누르면 푼다
-    if (m === mood) return;
-    mood = m;
+    const [k, v] =
+      b.dataset.x != null
+        ? [b.dataset.x[0], b.dataset.x.slice(2)]
+        : [b.dataset.k, b.dataset.v];
+    if (!k) return; // 전체 버튼
+    toggle(k, v); // 고른 칩을 다시 누르거나 ✕를 누르면 푼다
     moodsUi();
     fcount();
     onFilter(true);

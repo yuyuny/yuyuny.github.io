@@ -1,7 +1,7 @@
 import { $ } from "./util.js";
 import { loadTracks, loadVocab, filterTracks } from "./data.js";
 import { setColors } from "./cover.js";
-import { initStage, showStage, clearStage } from "./stage.js";
+import { initStage, showStage, clearStage, swap } from "./stage.js";
 import { showPlayer, clearPlayer } from "./player.js";
 import {
   initList,
@@ -16,8 +16,10 @@ const st = { view: [], sel: 0, cur: null };
 
 function pick(i, scroll = true) {
   if (!st.view.length) {
-    clearStage();
-    clearPlayer();
+    swap(() => {
+      clearStage();
+      clearPlayer();
+    }, null);
     return;
   }
   st.sel = Math.max(0, Math.min(st.view.length - 1, i));
@@ -25,8 +27,10 @@ function pick(i, scroll = true) {
   markRow(st.sel, scroll);
   if (st.cur === t) return;
   st.cur = t;
-  showPlayer(t);
-  showStage(t);
+  swap(() => {
+    showPlayer(t); // 영상 유무를 먼저 정해야 showStage가 망점 배치를 고른다
+    showStage(t);
+  }, t);
 }
 
 /* first: 고르던 곡을 이어 갈 수 없을 때 고를 자리 */

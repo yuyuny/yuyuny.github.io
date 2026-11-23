@@ -64,7 +64,7 @@ function drawTitle(t) {
 /* 망점 판에서 제목 글자 자리를 뚫는다(stage.css의 .ht mask의 --ko). 경계는 점 격자(16px)에 맞춰 점이 반쪽으로 잘리지 않게 한다.
    줄 상자로 계산하면 틀린다: Gasoek은 획이 줄 상자 밖으로 나오고, 상자 글자(.bx, inline-block)가 든 줄은 상자가 더 높다.
    그래서 글자 조각마다 실제 위치(Range)를 읽고 세로는 잉크 범위(기준선 ± canvas actualBoundingBox)로 잡는다.
-   줄(.ln)은 등장 애니메이션으로 translate 중일 수 있으니 줄 안에서의 상대 위치만 Range로 읽고 줄 자리는 offset(변형 전)으로 잡는다 */
+   줄(.ln) 안에서의 상대 위치만 Range로 읽고 줄 자리는 offset(변형 전)으로 잡는다 */
 let koRaf = 0;
 function knockout(el, fs) {
   const rg = document.createRange(),
@@ -118,19 +118,16 @@ function refit() {
   }
 }
 
-/* 망점: 판 두 장(#htA·#htB)을 번갈아 쓴다. 조합마다 SVG를 무대 크기로 한 번 만들어 mask 이미지 URL로 두고, 곡을 고를 땐 URL만 바꿔 끼운다.
-   나가는 판은 #wipe와 같은 다각형·시간·곡선으로 쓸려 나가 장면색 쓸어내기와 한 획으로 보인다 */
-const SWEEP = { duration: 420, easing: "cubic-bezier(.7,0,.2,1)" },
-  BLANK_PLATE = COUNT; // 결과 없음 화면의 판 번호. 조합 번호(0..COUNT-1)와 겹치지 않는다
+/* 망점: 판 한 장(#ht). 조합마다 SVG를 무대 크기로 한 번 만들어 mask 이미지 URL로 두고, 곡을 고를 땐 URL만 바꿔 끼운다.
+   곡 사이의 전환은 swap의 View Transition이 무대 전체와 함께 한 획으로 넘긴다 */
+const BLANK_PLATE = COUNT; // 결과 없음 화면의 판 번호. 조합 번호(0..COUNT-1)와 겹치지 않는다
 // 장르는 이미 장면색을 정하므로 조합은 곡 ID로. "ht|"는 재킷 무늬(cover.js) 해시와 따로 놀게 한다
 const shapeOf = (t) => hash("ht|" + (t.id || t.title + "|" + t.artist)) % COUNT;
 const idle = window.requestIdleCallback || ((f) => setTimeout(f, 50)); // Safari엔 requestIdleCallback이 없다
-let ht = [],
-  front = 0,
+let ht = null,
   curShape = -1,
   size = "",
-  set = null,
-  sweepBox = [0, 0, 0, 0];
+  set = null;
 /* 배치(무대 크기 + 영상 없음 "n" / 결과 없음 "e") → {k, w, h, lp, floor, urls}. 영상이 없으면 재킷이 커져 조각 자리가 달라지므로 따로 둔다.
    좁은 화면은 영상 유무·검색 키보드로 무대 높이가 곡마다 오가서 배치가 여러 벌 생긴다 */
 const sets = new Map();
@@ -195,65 +192,109 @@ function useSet() {
 }
 function sizeDots() {
   const s = $("stage");
-  // #wipe는 화면 전체(.scene) 기준 다각형이다. 판이 같은 가장자리로 쓸려 가도록 장면 크기와 무대 위치를 무대 좌표로 둔다
-  const a = document.querySelector(".scene").getBoundingClientRect(),
-    b = s.getBoundingClientRect();
-  sweepBox = [a.left - b.left, a.top - b.top, a.width, a.height];
   if (!s.clientWidth) return;
   size = s.clientWidth + "x" + s.clientHeight;
   if (useSet() && curShape >= 0)
-    ht[front].style.setProperty("--dots", shapeUrl(curShape));
+    ht.style.setProperty("--dots", shapeUrl(curShape));
 }
-/* oldCp: 장면색이 바뀌면 나가는 판을 이전 둘째 잉크로 칠해 둔다(바뀌지 않으면 "") */
-function swapDots(v, oldCp) {
+function swapDots(v) {
   if (!size) sizeDots();
   const moved = useSet(); // 영상 있는 곡과 없는 곡은 같은 조합이라도 조각 자리가 다르다
-  if (v === curShape && !oldCp && !moved) return;
-  const first = curShape < 0,
-    out = ht[front];
+  if (v === curShape && !moved) return;
   curShape = v;
-  front ^= 1;
-  const inn = ht[front];
-  for (const e of ht) for (const a of e.getAnimations()) a.cancel();
-  inn.style.background = "";
-  inn.style.setProperty("--dots", shapeUrl(v));
-  inn.hidden = false;
-  out.before(inn); // 나가는 판이 위
-  if (calm || first) {
-    out.hidden = true;
-    return;
+  ht.style.setProperty("--dots", shapeUrl(v));
+  ht.hidden = false;
+}
+
+/* 곡 사이의 전환: '/' 사선 경계가 왼쪽에서 오른쪽으로 지나가며 경계 왼쪽은 새 곡, 오른쪽은 옛 곡을 보인다.
+   무대(.stage)는 범위 지정 View Transition으로 옛 그림과 새 그림(살아 있는 그림)을 나눠 자르고, 무대 밖 장면색은 #wipe(옛 색)로 같은 경계를 쓸어낸다.
+   - 문서 전체 전환(document.startViewTransition)은 쓰지 않는다. 전환 동안 모든 클릭·휠이 <html>로 가서 목록이 먹지 않는다(::view-transition에 pointer-events:none을 줘도 같다)
+   - 옛 그림은 다음 프레임에 찍히므로 무대를 바꾸는 DOM 변경(플레이어 포함)은 전부 fn 안에 둬야 한다. 밖에서 먼저 바꾸면 옛 그림에 새 상태가 찍힌다 */
+const SWEEP = { duration: 420, easing: "cubic-bezier(.7,0,.2,1)" },
+  QUICK = 150; // ms. 이보다 빨리 연달아 고르면 새 획을 시작하지 않는다
+let vt = null,
+  pending = false,
+  lastSwap = -Infinity;
+/* next: 새로 보일 곡(결과 없음 화면이면 null). 지금 보이는 곡과 같으면(정렬·필터로 같은 곡이 다시 골라짐) 획 없이 그린다 */
+export function swap(fn, next) {
+  const quick = performance.now() - lastSwap < QUICK,
+    st = $("stage");
+  lastSwap = performance.now();
+  // 앞 획이 옛 그림을 찍기 전이면 그 fn 뒤에 잇는다. 먼저 돌면 옛 그림에 새 상태가 찍히고 순서도 뒤집힌다
+  if (pending) return void vt.updateCallbackDone.finally(fn);
+  // quick: 키를 누르고 있을 때처럼 연달아 고르면 새 획 없이 바꾼다(진행 중인 획이 있으면 그 새 그림이 따라 바뀐다). 획마다 옛 그림을 찍느라 프레임이 하나씩 빠진다.
+  // 좁은 화면의 정보 시트(.open, position:fixed)는 무대 그림 밖으로 나가 있어 열려 있으면 그냥 바꾼다
+  if (quick || next === shown || calm || st.classList.contains("open"))
+    return fn();
+  // 범위 지정 View Transition(Element.startViewTransition)이 없는 브라우저: 무대는 바로 바뀌고 장면색만 같은 획으로 쓸어낸다
+  if (!st.startViewTransition) {
+    const was = getComputedStyle(document.documentElement).getPropertyValue(
+      "--c",
+    );
+    fn();
+    return void sweep(null, was);
   }
-  out.style.background = oldCp;
-  const [x, y, W, H] = sweepBox,
-    P = (pts) =>
-      `polygon(${pts.map(([u, v]) => `${x + u * W}px ${y + v * H}px`)})`; // showStage의 #wipe와 같은 점
-  out.animate(
-    [
-      {
-        clipPath: P([
-          [0, 0],
-          [1.3, 0],
-          [1, 1],
-          [0, 1],
-        ]),
-      },
-      {
-        clipPath: P([
-          [1.2, 0],
-          [1.3, 0],
-          [1, 1],
-          [0.9, 1],
-        ]),
-      },
-    ],
-    { ...SWEEP, fill: "forwards" },
-  ).onfinish = () => {
-    if (out === ht[front]) return; // finish 이벤트는 늦게 온다. 그사이 곡을 또 바꿔 이 판이 들어오는 판이 됐으면 그대로 둔다
-    out.hidden = true;
-    out.style.background = "";
-    for (const a of out.getAnimations()) a.cancel();
+  let old;
+  pending = true;
+  const v = (vt = st.startViewTransition(() => {
+    pending = false;
+    old = getComputedStyle(document.documentElement).getPropertyValue("--c");
+    fn();
+  }));
+  v.ready.then(
+    () => {
+      if (v !== vt) return;
+      const anims = sweep(st, old);
+      // fill:forwards라 끝난 뒤에도 남는다. 전환이 끝나면 지운다(먼저 지우면 끝 프레임에 옛 그림이 통째로 비친다)
+      v.finished.then(() => anims.forEach((x) => x.cancel()));
+    },
+    () => {},
+  );
+}
+/* 경계는 화면 좌표로 위 끝 x = p, 아래 끝 x = p - 장면 높이/2(좁은 화면에서도 같은 각도). p가 0에서 끝까지 간다.
+   요소 b(무대, 장면)마다 자기 좌표로 옮겨 경계 왼쪽(left) 또는 오른쪽 다각형을 만든다 */
+function sweep(st, old) {
+  const a = document.querySelector(".scene").getBoundingClientRect(),
+    end = a.width + a.height / 2,
+    far = 1e4;
+  const poly = (b, p, left) => {
+    const ox = b.left - a.left,
+      oy = b.top - a.top,
+      t = p - oy / 2 - ox,
+      u = p - (oy + b.height) / 2 - ox;
+    return {
+      clipPath: left
+        ? `polygon(${-far}px 0,${t}px 0,${u}px 100%,${-far}px 100%)`
+        : `polygon(${t}px 0,${far}px 0,${far}px 100%,${u}px 100%)`,
+    };
   };
-  inn.animate([{ translate: "-10px 6px" }, { translate: "0 0" }], SWEEP); // 판이 어긋나 찍혔다가 맞는다
+  const run = (el, left, pseudoElement) => {
+    const b = el.getBoundingClientRect();
+    return el.animate([poly(b, 0, left), poly(b, end, left)], {
+      ...SWEEP,
+      pseudoElement,
+      fill: "forwards",
+    });
+  };
+  // st가 없으면(View Transition 없이 부른 경우) 장면색만 쓸어낸다
+  const anims = st
+    ? [
+        run(st, true, "::view-transition-new(root)"),
+        run(st, false, "::view-transition-old(root)"),
+      ]
+    : [];
+  // 장면색이 같으면 쓸지 않는다. #wipe가 장르 글자를 덮으므로 쓸면 같은 색에서 글자만 사라졌다 다시 나온다
+  const w = $("wipe"),
+    same =
+      old ===
+      getComputedStyle(document.documentElement).getPropertyValue("--c");
+  for (const x of w.getAnimations()) x.cancel();
+  w.style.background = same ? "" : old;
+  if (!same)
+    run(w, false).onfinish = () => {
+      w.style.background = ""; // 다각형이 px라 끝난 뒤 창이 넓어지면 옛 색이 드러난다
+    };
+  return anims;
 }
 
 function paint(tn) {
@@ -265,6 +306,7 @@ function paint(tn) {
 function tagsHtml(t) {
   const all = [
     ...t.genres.map((g) => [g, "g"]),
+    ...t.sub.map((x) => [x, "s"]),
     ...t.moods.map((m) => [m, ""]),
   ];
   const bests = t.best
@@ -302,7 +344,7 @@ function cover(t, tn) {
 }
 
 export function initStage() {
-  ht = [$("htA"), $("htB")];
+  ht = $("ht");
   $("tags").addEventListener("click", (e) => {
     if (e.target.id === "more") {
       allTags = !allTags;
@@ -386,34 +428,18 @@ export function clearStage(kind = "none") {
   $("tog").setAttribute("aria-expanded", false);
   cancelAnimationFrame(koRaf);
   st.style.removeProperty("--ko");
-  swapDots(BLANK_PLATE, "");
+  swapDots(BLANK_PLATE);
 }
 
 export function showStage(t) {
+  const again = t === shown;
   shown = t;
   allTags = false;
   $("stage").classList.remove("empty");
   if ($("note").open) $("note").close();
-  const tn = tone(t),
-    oldCp = document.documentElement.style.getPropertyValue("--cp"),
-    old = getComputedStyle(document.documentElement)
-      .getPropertyValue("--c")
-      .trim();
-  if (!calm && old && old !== tn.c) {
-    const w = $("wipe");
-    w.style.background = old;
-    paint(tn);
-    w.animate(
-      [
-        { clipPath: "polygon(0 0,130% 0,100% 100%,0 100%)" },
-        { clipPath: "polygon(120% 0,130% 0,100% 100%,90% 100%)" },
-      ],
-      { duration: 420, easing: "cubic-bezier(.7,0,.2,1)", fill: "forwards" },
-    ).onfinish = () => {
-      w.style.background = "transparent";
-    };
-  } else paint(tn);
-  swapDots(shapeOf(t), oldCp && oldCp !== tn.p ? oldCp : "");
+  const tn = tone(t);
+  paint(tn);
+  swapDots(shapeOf(t));
   cover(t, tn);
   giant(t.genres[0] || "radio");
   $("edge").textContent = [date(t.released) || "----", "KIM'S RADIO CLUB"].join(
@@ -448,7 +474,8 @@ export function showStage(t) {
   document.fonts.load(`100px ${FONT}`, t.title || "제목 없음").then(() => {
     if (shown === t) refit();
   });
-  if (!calm) {
+  // 등장은 재킷만. 제목·정보·모니터까지 움직이면 획이 드러내는 자리에 반투명한 중간 상태가 비친다
+  if (!calm && !again) {
     $("cov").animate(
       [
         {
@@ -463,36 +490,6 @@ export function showStage(t) {
         { transform: "rotate(-5deg)" },
       ],
       { duration: 440, easing: "cubic-bezier(.2,.9,.3,1)" },
-    );
-    $("ttl")
-      .querySelectorAll(".ln")
-      .forEach((l, j) =>
-        l.animate(
-          [
-            { transform: "translateY(.4em)", clipPath: "inset(0 0 100% 0)" },
-            { transform: "none", clipPath: "inset(0 0 -20% 0)" },
-          ],
-          {
-            duration: 280,
-            delay: 40 + j * 60,
-            easing: "cubic-bezier(.2,.9,.3,1)",
-            fill: "backwards",
-          },
-        ),
-      );
-    [$("info"), $("memo"), $("mon")].forEach((e, j) =>
-      e.animate(
-        [
-          { translate: "-30px 0", opacity: 0 },
-          { translate: "0 0", opacity: 1 },
-        ],
-        {
-          duration: 260,
-          delay: 110 + j * 50,
-          easing: "ease-out",
-          fill: "backwards",
-        },
-      ),
     );
   }
 }

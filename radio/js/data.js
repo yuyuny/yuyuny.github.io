@@ -4,6 +4,7 @@ export const norm = (t) => ({
   album: t.album || "",
   released: String(t.released ?? t.year ?? ""),
   genres: [].concat(t.genres || []),
+  sub: [].concat(t.sub || []),
   moods: [].concat(t.moods || []),
   best: [].concat(t.best || []),
   added: t.added || "",
@@ -16,7 +17,7 @@ export async function loadTracks() {
   return (await r.json()).map(norm);
 }
 
-/* site/vocab.json: {genres:[{name,color?}], moods:[{name,group}]}. 못 읽으면 null(목록은 곡에서 값을 모아 뜬다) */
+/* site/vocab.json: {genres:[{name,color?}], moods:[{name,group}], subgenres?:[{name}]}. 못 읽으면 null(목록은 곡에서 값을 모아 뜬다) */
 export const loadVocab = () =>
   fetch("./vocab.json")
     .then((r) => (r.ok ? r.json() : null))
@@ -37,15 +38,23 @@ export const SORTS = {
 
 export function filterTracks(
   data,
-  { q = "", sort = "recent", genre = "", mood = "", best = "" } = {},
+  {
+    q = "",
+    sort = "recent",
+    genres = [],
+    subs = [],
+    moods = [],
+    bests = [],
+  } = {},
 ) {
   q = q.trim().toLowerCase();
   return data
     .filter(
       (t) =>
-        (!genre || t.genres.includes(genre)) &&
-        (!mood || t.moods.includes(mood)) &&
-        (!best || t.best.includes(best)) &&
+        genres.every((g) => t.genres.includes(g)) &&
+        subs.every((s) => t.sub.includes(s)) &&
+        moods.every((m) => t.moods.includes(m)) &&
+        bests.every((b) => t.best.includes(b)) &&
         (!q ||
           [t.title, t.artist, t.album].join(" ").toLowerCase().includes(q)),
     )

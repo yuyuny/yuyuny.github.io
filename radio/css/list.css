@@ -54,10 +54,12 @@
   background: var(--pn-field-bg);
   color: var(--pn-field-fg);
   border: 0;
-  padding: 0 14px;
+  padding: 0 18px;
   font-size: 16px;
   font-weight: 500;
-  clip-path: polygon(2% 0, 100% 0, 98% 100%, 0 100%);
+  /* 틀은 버튼의 skewX(-10deg)와 같은 각도로 기울이고 글자는 세운다(값은 읽고 고치는 내용이라서. 목록의 곡 행과 같은 규칙).
+     높이 44px에서 8px이 10도다. %로 두면 폭에 따라 각도가 달라진다 */
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
 }
 .q {
   flex: 1 1 100%;
@@ -65,6 +67,14 @@
 .sel {
   flex: 1 1 130px;
   cursor: pointer;
+  /* 기본 화살표는 오른쪽 끝에 붙어 사선으로 잘리는 모서리에 걸린다. 직접 그려 안쪽에 둔다.
+     data URL 안에서는 CSS 변수를 못 써서 입력칸 글자색(먹색)을 직접 적었다 */
+  appearance: none;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%230b0b0b'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 22px center;
+  background-size: 10px 6px;
 }
 .dice {
   min-height: 44px;
@@ -153,6 +163,12 @@
 .chip.gn[aria-pressed="true"] {
   background: var(--pn-on-bg);
   border-color: var(--pn-on-bg);
+}
+/* 장르 칩과 세부 장르 칩 사이를 가르는 선. 한 줄을 다 쓴다 */
+.sep {
+  flex: 0 0 100%;
+  height: 0;
+  border-top: 2px solid var(--pn-line);
 }
 .gd {
   flex: none;

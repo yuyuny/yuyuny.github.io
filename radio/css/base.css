@@ -73,6 +73,7 @@ select {
 .scene > * {
   position: absolute;
 }
+/* 옛 장면색. stage.js의 sweep이 곡 전환 동안 경계 오른쪽에만 남긴다. 장르 글자(.giant)보다 위에 둔다: 아래면 새 장르 글자가 새 색조로 옛 색 위에 먼저 보인다 */
 .wipe {
   inset: 0;
 }

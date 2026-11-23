@@ -41,6 +41,13 @@
 .ht[hidden] {
   display: none;
 }
+/* 곡 전환(stage.js의 swap). 옛·새 그림은 stage.js의 sweep이 사선으로 자른다. 기본 효과(겹쳐 흐려지기)를 끈다 */
+.stage::view-transition-group(*),
+.stage::view-transition-old(*),
+.stage::view-transition-new(*) {
+  animation: none;
+  mix-blend-mode: normal;
+}
 
 .jwrap {
   grid-area: jk;
@@ -55,7 +62,11 @@
   top: 4%;
   height: 94%;
   aspect-ratio: 1;
-  animation: spin 5s linear infinite;
+  animation: spin 5s linear infinite paused;
+}
+/* LP는 재생 중일 때만 돈다(사용자 결정). .on은 player.js가 재생·버퍼링 동안 모니터에 붙인다 */
+.stage:has(.mon.on) .vinyl {
+  animation-play-state: running;
 }
 .vinyl svg,
 .cov svg {
