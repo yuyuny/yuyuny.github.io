@@ -61,6 +61,81 @@ select {
   overflow: hidden;
 }
 
+/* 로딩 화면: 곡 목록이 오기 전 화면 전체를 덮는 모니터의 꺼진 화면(줄무늬와 ★ 둘은 player.css의 .screen, ◆ 깜빡임은 .mbar와 같다).
+   - 웹폰트나 JS에 기대는 것을 넣지 않는다. 첫 페인트에 다 그려져야 한다. ★을 글자가 아니라 도형으로 그린 것도 그래서다
+   - --c를 여기서 다시 정한다. 첫 곡이 :root의 --c를 바꾸는 순간에도 걷히는 중인 ★·◆ 색이 그대로다 */
+.boot {
+  --c: #ff3d8b;
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  background: repeating-linear-gradient(0deg, #141414 0 2px, #1c1c1c 2px 4px);
+  color: var(--w);
+}
+.boot::before,
+.boot::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: var(--c);
+  clip-path: polygon(
+    50% 0,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+.boot::before {
+  left: max(2.6vw, 16px);
+  top: calc(24px + env(safe-area-inset-top));
+}
+.boot::after {
+  right: max(2.6vw, 16px);
+  bottom: calc(24px + env(safe-area-inset-bottom));
+}
+.boot-s {
+  position: absolute;
+  left: max(2.6vw, 16px);
+  bottom: calc(26px + env(safe-area-inset-bottom));
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.boot-s i {
+  width: 9px;
+  height: 9px;
+  background: var(--c);
+  transform: rotate(45deg);
+  animation: blink 1.2s steps(2) infinite;
+}
+.boot-s b {
+  font: italic 900 18px/1 var(--num);
+  letter-spacing: 0.02em;
+}
+.boot-s span {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+/* 글자는 1.5초 뒤에 나온다. 웹폰트가 곡 목록보다 늦게 오면 글꼴이 바뀌는 순간이 보여서, 빨리 열릴 때는 글자 없이 지나가게 한다 */
+.boot-s :is(b, span) {
+  animation: late 0.2s 1.5s both;
+}
+@keyframes late {
+  from {
+    opacity: 0;
+  }
+}
+
 /* 장면 (화면 전체 배경) */
 .scene {
   position: absolute;

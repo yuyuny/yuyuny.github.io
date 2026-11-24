@@ -1,7 +1,7 @@
 import { $ } from "./util.js";
 import { loadTracks, loadVocab, filterTracks } from "./data.js";
 import { setColors } from "./cover.js";
-import { initStage, showStage, clearStage, swap } from "./stage.js";
+import { initStage, showStage, clearStage, swap, reveal } from "./stage.js";
 import { showPlayer, clearPlayer } from "./player.js";
 import {
   initList,
@@ -85,3 +85,4 @@ else {
   clearStage("error");
   $("blankB").onclick = () => location.reload();
 }
+reveal();

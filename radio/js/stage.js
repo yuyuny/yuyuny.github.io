@@ -223,8 +223,15 @@ export function swap(fn, next) {
   // 앞 획이 옛 그림을 찍기 전이면 그 fn 뒤에 잇는다. 먼저 돌면 옛 그림에 새 상태가 찍히고 순서도 뒤집힌다
   if (pending) return void vt.updateCallbackDone.finally(fn);
   // quick: 키를 누르고 있을 때처럼 연달아 고르면 새 획 없이 바꾼다(진행 중인 획이 있으면 그 새 그림이 따라 바뀐다). 획마다 옛 그림을 찍느라 프레임이 하나씩 빠진다.
-  // 좁은 화면의 정보 시트(.open, position:fixed)는 무대 그림 밖으로 나가 있어 열려 있으면 그냥 바꾼다
-  if (quick || next === shown || calm || st.classList.contains("open"))
+  // 좁은 화면의 정보 시트(.open, position:fixed)는 무대 그림 밖으로 나가 있어 열려 있으면 그냥 바꾼다.
+  // 로딩 화면(#boot)이 덮고 있을 때도 그냥 바꾼다. 보이는 획은 reveal 하나여야 한다: 무대 획은 한두 프레임 늦게 시작해서 같이 돌리면 두 경계 사이로 빈 무대가 비친다
+  if (
+    quick ||
+    next === shown ||
+    calm ||
+    st.classList.contains("open") ||
+    $("boot")
+  )
     return fn();
   // 범위 지정 View Transition(Element.startViewTransition)이 없는 브라우저: 무대는 바로 바뀌고 장면색만 같은 획으로 쓸어낸다
   if (!st.startViewTransition) {
@@ -252,8 +259,8 @@ export function swap(fn, next) {
   );
 }
 /* 경계는 화면 좌표로 위 끝 x = p, 아래 끝 x = p - 장면 높이/2(좁은 화면에서도 같은 각도). p가 0에서 끝까지 간다.
-   요소 b(무대, 장면)마다 자기 좌표로 옮겨 경계 왼쪽(left) 또는 오른쪽 다각형을 만든다 */
-function sweep(st, old) {
+   요소 b(무대, 장면, 로딩 화면)마다 자기 좌표로 옮겨 경계 왼쪽(left) 또는 오른쪽 다각형을 만든다. 돌려주는 run(el, left, pseudoElement)이 그 요소에 획을 건다 */
+function stroke() {
   const a = document.querySelector(".scene").getBoundingClientRect(),
     end = a.width + a.height / 2,
     far = 1e4;
@@ -268,7 +275,7 @@ function sweep(st, old) {
         : `polygon(${t}px 0,${far}px 0,${far}px 100%,${u}px 100%)`,
     };
   };
-  const run = (el, left, pseudoElement) => {
+  return (el, left, pseudoElement) => {
     const b = el.getBoundingClientRect();
     return el.animate([poly(b, 0, left), poly(b, end, left)], {
       ...SWEEP,
@@ -276,6 +283,9 @@ function sweep(st, old) {
       fill: "forwards",
     });
   };
+}
+function sweep(st, old) {
+  const run = stroke();
   // st가 없으면(View Transition 없이 부른 경우) 장면색만 쓸어낸다
   const anims = st
     ? [
@@ -295,6 +305,13 @@ function sweep(st, old) {
       w.style.background = ""; // 다각형이 px라 끝난 뒤 창이 넓어지면 옛 색이 드러난다
     };
   return anims;
+}
+/* 로딩 화면(index.html의 #boot)을 곡 전환과 같은 획으로 걷는다. 그 아래에 첫 화면(첫 곡이나 OFF AIR)을 그린 뒤에 부른다 */
+export function reveal() {
+  const b = $("boot");
+  document.querySelector(".deck").inert = false;
+  if (calm) return b.remove();
+  stroke()(b, false).onfinish = () => b.remove();
 }
 
 function paint(tn) {

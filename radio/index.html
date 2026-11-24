@@ -7,6 +7,7 @@
 <link rel="icon" href="favicon-32.png" sizes="32x32">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- tracks.json을 preload하지 않는다. 렌더를 막는 아래 글꼴 CSS와 대역을 나눠 써서, 느린 회선에서 첫 페인트(로딩 화면)가 0.5~1.9초 늦어지고 준비는 0.1~0.3초만 빨라진다(실측) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Dela+Gothic+One&family=Gasoek+One&family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Saira+Extra+Condensed:ital,wght@0,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -17,6 +18,8 @@
 </head>
 <body>
 <div class="app">
+  <!-- 로딩 화면(시안: design/loading-lab.html의 A). JS 없이 첫 페인트에 그려지고 stage.js의 reveal이 걷는다. 그동안 아래 .deck은 inert다 -->
+  <div class="boot" id="boot"><p class="boot-s" role="status"><i aria-hidden="true"></i><b>STAND BY</b><span>곡 목록을 불러오는 중</span></p></div>
   <div class="scene" aria-hidden="true"><div class="giant" id="giant"></div><div class="wipe" id="wipe"></div><div class="ray"></div></div>
   <header class="bar">
     <!-- 로고 원본: 워드마크 wm-block은 design/wordmark-lab.html, 아이콘 kim-l은 design/logo-final.html. 색은 장면 변수(--c, --ci, --cp)를 따른다 -->
@@ -25,7 +28,7 @@
     <div class="read" id="read"></div>
   </header>
 
-  <main class="deck">
+  <main class="deck" inert>
     <section class="stage" id="stage" aria-label="선택한 곡">
       <p class="edge" id="edge" aria-hidden="true"></p>
       <div class="ht" id="ht" aria-hidden="true" hidden></div>
