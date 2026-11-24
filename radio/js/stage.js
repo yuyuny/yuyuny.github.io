@@ -6,7 +6,7 @@ import { dur } from "./data.js";
 
 const TAGMAX = 8,
   FONT = '"Gasoek One","Dela Gothic One"',
-  wide = matchMedia("(min-width: 901px)");
+  wide = matchMedia("(width > 56.25em)");
 const date = (s) =>
   !s
     ? ""
@@ -378,9 +378,11 @@ export function initStage() {
   note.addEventListener("click", (e) => {
     if (e.target === note || e.target.id === "noteX") note.close();
   });
+  // 제목은 제목 칸 크기를 따른다. 창 크기 말고도 좁은 화면에서 무대가 띠로 접히고 펼 때(player.js의 .away) 바뀐다
+  new ResizeObserver(() => shown && drawTitle(shown)).observe($("ttl"));
   addEventListener("resize", () => {
     cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(refit);
+    raf = requestAnimationFrame(() => shown && memoFit());
   });
   // 좁은 화면: INFO가 정보·코멘트 시트를 연다. 시트는 무대 아래 끝부터 덮으므로 그 위치를 따라간다
   const stage = $("stage"),

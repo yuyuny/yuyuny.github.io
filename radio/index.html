@@ -45,6 +45,7 @@
 
       <h2 class="ttl" id="ttl"></h2>
       <p class="who" id="who"></p>
+      <button class="cue" id="cue" type="button" hidden>▶</button>
       <button class="tog" id="tog" type="button" aria-expanded="false" aria-controls="sheet">INFO</button>
       <div class="sheet" id="sheet">
       <div class="info" id="info">
@@ -74,9 +75,21 @@
         <div class="cnt"><span id="cnt"></span><span>↑↓ 선곡 · / 검색</span></div>
         <ol class="wheel" id="wheel"></ol>
         <nav class="jump" id="jump" aria-label="초성·알파벳으로 건너뛰기" hidden></nav>
+        <!-- 방송 중인 곡(시안: design/radio-lab.html의 나). 처음 재생을 누를 때 생긴다. 다른 곡을 보는 동안 영상은 도크로 내려온다 -->
+        <section class="radio" id="radio" aria-label="방송 중" hidden>
+          <div class="dock" id="dock" hidden><div class="slot" id="slot"></div></div>
+          <div class="onair">
+            <span class="oa"><i></i>ON AIR</span>
+            <button class="oat" id="oat" type="button"><b id="oaT"></b><span id="oaA"></span></button>
+            <button class="step" id="prev" type="button" aria-label="이전 곡">PREV</button>
+            <button class="step" id="next" type="button" aria-label="다음 곡">NEXT</button>
+          </div>
+        </section>
       </section>
     </div>
   </main>
+  <!-- 유튜브 플레이어. player.js가 모니터 화면이나 도크 칸 위에 겹쳐 놓는다 -->
+  <div class="pv" id="pv" hidden></div>
 </div>
 <script type="module" src="js/main.js"></script>
 </body>

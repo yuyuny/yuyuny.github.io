@@ -149,7 +149,7 @@ export const controls = () => ({
   moods: vals("m"),
   bests: vals("b"),
 });
-const narrow = matchMedia("(max-width: 900px)");
+const narrow = matchMedia("(width <= 56.25em)");
 // 좁은 화면에서 접어 둔 고른 태그 수와 기본이 아닌 정렬(1)을 필터 버튼에 붙인다
 const fcount = () => {
   const n = picks.length + ($("sort").value !== "recent");

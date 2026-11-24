@@ -2,7 +2,7 @@
    IDEA: 이지투디제이 선곡 화면을 동아시아 리소 포스터로 찍어낸 것. 판이 어긋난 이중 인쇄, 별표, 세로쓰기.
    PICTURE: 화면 전체를 덮은 장르색 장면 위로 재킷과 반쯤 나온 LP, 크게 걸린 BGA 모니터, 사선으로 파고드는 어두운 목록 패널.
    COLOUR and TYPE: 먹색 + 곡마다 바뀌는 리소 형광색 + 둘째 잉크(망점) + 종이색 / Gasoek One 제목, Saira 이탤릭 라벨, Plex KR 본문·로고.
-   LAYOUT: 선 없이 레이어로 나눔. 장면은 한 장, 목록은 사선 가장자리 반투명 패널. 900px 아래에선 위에 무대, 아래에 윗변이 사선인 목록 패널. */
+   LAYOUT: 선 없이 레이어로 나눔. 장면은 한 장, 목록은 사선 가장자리 반투명 패널. 56.25em 아래에선 위에 무대, 아래에 윗변이 사선인 목록 패널. */
 :root {
   color-scheme: dark;
   --k: #0b0b0b;
@@ -250,14 +250,14 @@ select {
   height: 100%;
 }
 
-@media (max-width: 1100px) {
+@media (width <= 68.75em) {
   .deck {
     grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
   }
 }
-/* 900px 아래: 한 화면에 위(무대: 모니터나 재킷 + 제목 줄), 아래(목록)를 고정한다. 페이지는 스크롤하지 않고 목록만 스크롤한다.
+/* 56.25em 아래: 한 화면에 위(무대: 모니터나 재킷 + 제목 줄), 아래(목록)를 고정한다. 페이지는 스크롤하지 않고 목록만 스크롤한다.
    곡을 골라도 무대가 화면 밖으로 나가지 않게 하려는 것이라 .app을 height:auto로 풀면 안 된다 */
-@media (max-width: 900px) {
+@media (width <= 56.25em) {
   .deck {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);

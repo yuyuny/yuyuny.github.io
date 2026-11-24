@@ -309,7 +309,7 @@
 .fbtn {
   display: none;
 }
-@media (max-width: 900px) {
+@media (width <= 56.25em) {
   /* 윗변만 사선. 둘째 색과 테두리 색 레이어가 그 위로 조금씩 비어져 나온다 */
   .side {
     --sk: 22px;
@@ -395,8 +395,12 @@
     padding-bottom: calc(48px + env(safe-area-inset-bottom));
     scroll-padding-block: 14px 48px;
   }
+  /* 방송 바가 있으면 홈 표시줄 자리는 바가 갖는다 */
+  .crate:has(.radio:not([hidden])) .wheel {
+    padding-bottom: 48px;
+  }
 }
-@media (max-width: 640px) {
+@media (width <= 40em) {
   .rb {
     grid-template-columns: 38px minmax(0, 1fr);
   }
@@ -424,11 +428,11 @@
 .wheel::after {
   height: var(--pb, 0px);
 }
-/* 건너뛰기 색인(아티스트순·제목순·최근 추가순). 세로 위치는 list.js가 맞춘다 */
+/* 건너뛰기 색인(아티스트순·제목순·최근 추가순). 윗변은 list.js가 맞추고, 아랫변은 방송 칸(--radio-h, player.js) 위에서 끝난다 */
 .jump {
   position: absolute;
   right: 3px;
-  bottom: 40px;
+  bottom: calc(40px + var(--radio-h, 0px));
   width: 18px;
   display: flex;
   flex-direction: column;
@@ -468,7 +472,7 @@
   color: var(--ci);
   text-shadow: none;
 }
-@media (max-width: 900px) {
+@media (width <= 56.25em) {
   .jump {
     display: none;
   }

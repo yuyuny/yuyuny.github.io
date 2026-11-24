@@ -1,4 +1,4 @@
-/* 무대. 901px 이상은 한 화면에 고정(.stage가 size container). 그 아래는 화면 위쪽 띠: 모니터(영상이 없으면 재킷)와 제목 줄, 정보·코멘트는 INFO로 여는 시트.
+/* 무대. 56.25em(900px)보다 넓으면 한 화면에 고정(.stage가 size container). 그 아래는 화면 위쪽 띠: 모니터(영상이 없으면 재킷)와 제목 줄, 정보·코멘트는 INFO로 여는 시트.
    읽는 것(제목·정보·태그·코멘트)은 포스터식 똑바른 단색 블록, 누르는 것(버튼·모니터·재킷)은 기울임과 어긋난 둘째 색. */
 .stage {
   --lh: 1.02;
@@ -17,9 +17,10 @@
   display: none;
   background: var(--c);
 }
-/* .who·.tog는 900px 아래에서만 쓴다. .sheet는 넓은 화면에선 상자 없이 .info·.memo를 무대 grid에 그대로 둔다 */
+/* .who·.tog·.cue는 56.25em 아래에서만 쓴다. .sheet는 넓은 화면에선 상자 없이 .info·.memo를 무대 grid에 그대로 둔다 */
 .who,
-.tog {
+.tog,
+.cue {
   display: none;
 }
 .sheet {
@@ -345,7 +346,7 @@
   justify-self: end;
 }
 
-@media (min-width: 901px) {
+@media (width > 56.25em) {
   /* 세 줄: 재킷·모니터 / 제목 / 정보·코멘트. 제목과 정보 줄은 높이를 고정해 곡이 바뀌어도 모니터 크기가 그대로다.
     --rh(첫 줄 높이)는 cqh로 계산하므로 이 container 안(.mon, .jwrap)에서만 쓴다 */
   .stage {
@@ -436,7 +437,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (width <= 56.25em) {
   .stage {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas: "jk jk" "mon mon" "ttl tog" "who tog";
@@ -449,12 +450,42 @@
     height: min(40vw, 24dvh);
     margin-bottom: 8px;
   }
-  .stage:not(:has(.mon[hidden])) .jwrap {
+  .stage:not(.away, :has(.mon[hidden])) .jwrap {
     display: none;
   }
-  /* 검색창에 글자를 치는 동안(화면 키보드)은 모니터·재킷을 접어 목록을 올린다. 행을 누를 때 접힘이 풀려 행이 움직이지 않도록 list.js가 그 mousedown의 포커스 이동을 막는다 */
+  /* 검색창에 글자를 치는 동안(화면 키보드)은 모니터·재킷을 접어 목록을 올린다. 행을 누를 때 접힘이 풀려 행이 움직이지 않도록 list.js가 그 mousedown의 포커스 이동을 막는다.
+     방송 중인 영상이 모니터에 있었으면 그동안 도크로 내려간다(player.js) */
   .app:has(#q:focus) :is(.mon, .jwrap) {
     display: none;
+  }
+  /* 방송 곡과 다른 곡을 보는 동안(player.js): 도크가 목록 아래를 쓰므로 무대를 재킷 · 제목 · ▶ · INFO 한 띠로 접는다 */
+  .stage.away {
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "jk ttl cue tog" "jk who cue tog";
+    gap: 2px 12px;
+    align-items: center;
+  }
+  .stage.away :is(.mon, .ht, .vinyl) {
+    display: none;
+  }
+  .stage.away .jwrap {
+    height: 58px;
+    aspect-ratio: 1;
+    margin: 0 5px 5px 0;
+  }
+  .stage.away .cov {
+    left: 0;
+    height: 100%;
+    box-shadow:
+      5px 5px 0 var(--k),
+      5px 5px 0 2px var(--w);
+  }
+  .stage.away .ttl {
+    height: 40px;
+  }
+  .stage.away .cue:not([hidden]) {
+    display: block;
+    grid-area: cue;
   }
   .ttl {
     height: clamp(52px, 13vw, 72px);
@@ -484,6 +515,9 @@
   .tog {
     display: block;
     grid-area: tog;
+  }
+  .tog,
+  .cue {
     align-self: center;
     min-height: 44px;
     padding: 0 14px;
@@ -510,12 +544,13 @@
   .stage:has(.memo:not([hidden])) .tog::before {
     content: "★ ";
   }
-  /* 시트: 제목 줄 바로 아래부터 화면 끝까지 목록을 덮는다. --sheet-top은 stage.js가 무대 아래 끝으로 맞춘다 */
+  /* 시트: 제목 줄 바로 아래부터 방송 칸 위까지 목록을 덮는다. --sheet-top은 stage.js가 무대 아래 끝으로, --radio-h는 player.js가 방송 칸 높이로 맞춘다.
+     유튜브 정책상 재생 중인 플레이어 앞을 가리면 안 되므로 도크를 덮지 않는다 */
   .sheet {
     display: none;
     position: fixed;
     z-index: 6;
-    inset: var(--sheet-top, 40%) 0 0;
+    inset: var(--sheet-top, 40%) 0 var(--radio-h, 0px);
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
@@ -563,7 +598,7 @@
   }
 }
 /* 가로로 눕힌 휴대폰: 위아래로 쌓을 높이가 없어 무대와 목록을 두 열로. 시트는 목록 열을 덮는다 */
-@media (max-width: 900px) and (orientation: landscape) and (max-height: 540px) {
+@media (width <= 56.25em) and (orientation: landscape) and (height <= 33.75em) {
   .deck {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
@@ -581,7 +616,7 @@
     height: min(40vw, calc(100dvh - 190px));
   }
   .sheet {
-    inset: 0 0 0 50%;
+    inset: 0 0 var(--radio-h, 0px) 50%;
   }
 }
 
@@ -641,7 +676,7 @@
   background: var(--w);
   color: var(--k);
 }
-@media (max-width: 900px) {
+@media (width <= 56.25em) {
   .blank-h {
     font-size: clamp(44px, 15vw, 96px);
   }

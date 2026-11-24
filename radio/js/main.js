@@ -2,7 +2,7 @@ import { $ } from "./util.js";
 import { loadTracks, loadVocab, filterTracks } from "./data.js";
 import { setColors } from "./cover.js";
 import { initStage, showStage, clearStage, swap, reveal } from "./stage.js";
-import { showPlayer, clearPlayer } from "./player.js";
+import { initPlayer, showPlayer, clearPlayer } from "./player.js";
 import {
   initList,
   controls,
@@ -25,12 +25,22 @@ function pick(i, scroll = true) {
   st.sel = Math.max(0, Math.min(st.view.length - 1, i));
   const t = st.view[st.sel];
   markRow(st.sel, scroll);
+  put(t);
+}
+function put(t) {
   if (st.cur === t) return;
   st.cur = t;
   swap(() => {
     showPlayer(t); // 영상 유무를 먼저 정해야 showStage가 망점 배치를 고른다
     showStage(t);
   }, t);
+}
+/* 바의 곡 이름, 방송 곡을 따라가는 PREV·NEXT. 필터로 목록에서 빠진 방송 곡이면 무대만 바꾸고 목록 선택 표시를 지운다 */
+function show(t) {
+  const i = st.view.indexOf(t);
+  if (i >= 0) return pick(i);
+  markRow(-1, false);
+  put(t);
 }
 
 /* first: 고르던 곡을 이어 갈 수 없을 때 고를 자리 */
@@ -44,6 +54,7 @@ function filter(data, keep, first = 0) {
 
 function start(data, vocab) {
   if (vocab) setColors(vocab.genres);
+  initPlayer({ view: () => st.view, show });
   initList(data, vocab, st, {
     onFilter: (keep) => filter(data, keep),
     onPick: pick,
