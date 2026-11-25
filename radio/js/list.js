@@ -386,9 +386,10 @@ export function initList(data, vocab, st, { onFilter, onPick }) {
   };
   $("moods").addEventListener("click", pickMood);
   $("mpanel").addEventListener("click", pickMood);
+  // 정렬은 곡을 빼지 않아 keep이면 선택이 늘 그대로라, 바뀐 순서를 첫 곡부터 보여 준다(사용자 결정)
   $("sort").addEventListener("change", () => {
     fcount();
-    onFilter(true);
+    onFilter(false);
   });
   $("q").addEventListener("input", () => onFilter(false));
   $("dice").addEventListener("click", () => {
