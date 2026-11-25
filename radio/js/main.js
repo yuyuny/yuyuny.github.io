@@ -43,13 +43,13 @@ function show(t) {
   put(t);
 }
 
-/* first: 고르던 곡을 이어 갈 수 없을 때 고를 자리 */
+/* first: 고르던 곡을 이어 갈 수 없을 때 고를 자리. 목록은 맨 위에 두고(renderList), first를 줄 때만 그 행으로 옮긴다 */
 function filter(data, keep, first = 0) {
   st.view = filterTracks(data, controls());
   renderList(st.view);
   const k = keep && st.cur ? st.view.indexOf(st.cur) : -1;
   st.cur = null;
-  pick(k >= 0 ? k : first, k >= 0 || first > 0);
+  pick(k >= 0 ? k : first, first > 0);
 }
 
 function start(data, vocab) {

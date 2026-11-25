@@ -178,7 +178,8 @@ function pad(w, top, bottom) {
 function draw() {
   const w = $("wheel"),
     n = rows.length;
-  if (!n) return;
+  // 필터를 연 동안 목록은 숨는다(list.css). 숨은 채 그리면 행 높이를 0으로 재서 pitch가 틀어진다. 다시 보이면 ResizeObserver가 그린다
+  if (!n || !w.clientHeight) return;
   const a = Math.max(0, Math.floor((w.scrollTop - 6) / pitch)),
     b = Math.min(n, Math.ceil((w.scrollTop + w.clientHeight) / pitch));
   if (hi > lo && a >= lo && b <= hi) return;
@@ -227,12 +228,43 @@ function jumpIndex(view) {
     .join("");
 }
 
+/* 좁은 화면에서 목록을 직접 내렸거나 필터를 연 동안 무대를 띠로 접는다(stage.css의 .fold). 목록을 맨 위로 올리면 편다.
+   - 코드가 옮긴 스크롤(곡 고르기·PREV·NEXT·RANDOM, 처음 무작위 곡)로는 접지도 펴지도 않는다. 접으면 고른 곡이 무대에서 작아지고, 펴면 누른 행이 밀린다
+   - 접어서 목록이 다 들어가면 스크롤이 0으로 당겨진다. 그때 펴면 다시 접고 펴기를 되풀이하므로, 스크롤할 게 남아 있을 때만 편다
+   - 방송 영상이 모니터에 있을 때(.screen.live) 필터를 열면 접지 않는다. 접으면 영상이 아래 도크로 내려가 필터 자리를 먹는다. 대신 제목 줄과 방송 바를 숨긴다(stage.css) */
+let down = false,
+  auto = 0; // 코드가 마지막으로 옮긴 스크롤 위치. 그 위치로 오는 scroll 이벤트 한 번을 빼고 나면 지운다
+// 가로로 눕힌 휴대폰은 무대와 목록이 두 열이라(stage.css) 접어도 목록이 늘지 않는다
+const flat = matchMedia("(orientation: landscape) and (height <= 33.75em)");
+const fold = () =>
+  $("stage").classList.toggle(
+    "fold",
+    !flat.matches &&
+      (down ||
+        ($("fbtn").getAttribute("aria-expanded") === "true" &&
+          !$("screen").classList.contains("live"))),
+  );
+flat.addEventListener("change", fold);
+function onScroll() {
+  const w = $("wheel"),
+    y = w.scrollTop,
+    byCode = y === auto;
+  auto = NaN;
+  if (!byCode && y > 0) down = true;
+  else if (!byCode && w.scrollHeight > w.clientHeight) down = false;
+  fold();
+  draw();
+}
+
 export function renderList(view) {
   const w = $("wheel");
   $("cnt").textContent = `${fmt(view.length)}곡`;
   rows = view;
   curIdx = -1;
   lo = hi = 0;
+  w.scrollTop = auto = 0; // 조건이 바뀌면 목록은 맨 위부터 보인다(사용자 결정). 고르던 곡이 남아 있어도 그 행으로 옮기지 않는다(main.js의 filter)
+  down = false;
+  fold();
   jumpIndex(view);
   if (!view.length) {
     pad(w, 0, 0);
@@ -240,7 +272,7 @@ export function renderList(view) {
     return;
   }
   pad(w, 0, view.length * pitch);
-  w.innerHTML = ""; // 스크롤 위치가 새 길이에 맞게 줄어든 뒤에 draw가 읽는다
+  w.innerHTML = "";
   draw();
 }
 
@@ -255,7 +287,9 @@ export function markRow(sel, scroll) {
   rowEl(prev)?.setAttribute("aria-current", "false");
   const b = rowEl(sel);
   b?.setAttribute("aria-current", "true");
-  if (scroll) b?.scrollIntoView({ block: "nearest" });
+  if (!scroll) return;
+  b?.scrollIntoView({ block: "nearest" });
+  auto = w.scrollTop;
 }
 
 /* 검색어와 고른 태그를 모두 푼다(정렬은 그대로). 목록을 다시 거르는 건 부른 쪽이 한다 */
@@ -290,8 +324,33 @@ export function initList(data, vocab, st, { onFilter, onPick }) {
       o = f.getAttribute("aria-expanded") !== "true";
     f.setAttribute("aria-expanded", o);
     f.closest(".flt").classList.toggle("open", o);
+    // 숨어 있던 목록은 맨 위부터 다시 보인다(숨는 동안 조건이 바뀌었으면 renderList의 맨 위가 숨은 목록엔 먹지 않는다)
+    if (!o) $("wheel").scrollTop = auto = 0;
+    down = false;
+    fold();
   });
-  $("wheel").addEventListener("scroll", draw, { passive: true });
+  $("wheel").addEventListener("scroll", onScroll, { passive: true });
+  // 이미 맨 위면 더 끌어내려도 scroll 이벤트가 나지 않는다. 끌어내리는 손가락·휠로 편다
+  let ty = 0;
+  const unfold = () => {
+    if (down && $("wheel").scrollTop <= 0) {
+      down = false;
+      fold();
+    }
+  };
+  $("wheel").addEventListener(
+    "touchstart",
+    (e) => (ty = e.touches[0].clientY),
+    { passive: true },
+  );
+  $("wheel").addEventListener(
+    "touchmove",
+    (e) => e.touches[0].clientY - ty > 30 && unfold(),
+    { passive: true },
+  );
+  $("wheel").addEventListener("wheel", (e) => e.deltaY < 0 && unfold(), {
+    passive: true,
+  });
   // 색인은 곡을 고르지 않는다(고르면 무대가 바뀌고 재생이 멈춘다). 그 행으로 옮기고 포커스만 준다. Enter가 행의 click이 된다
   $("jump").addEventListener("click", (e) => {
     const b = e.target.closest("button");
@@ -301,9 +360,10 @@ export function initList(data, vocab, st, { onFilter, onPick }) {
     draw();
     rowEl(i)?.focus({ preventScroll: true });
   });
-  // 색인은 목록 스크롤 영역과 같은 높이에 둔다(검색창 줄이 접히면 목록 위치가 바뀐다)
+  // 색인은 목록 스크롤 영역과 같은 높이에 둔다(검색창 줄이 접히면 목록 위치가 바뀐다). 목록이 커지거나(무대가 접힘) 다시 보이면 행을 더 그린다
   new ResizeObserver(() => {
     $("jump").style.top = $("wheel").offsetTop + 14 + "px";
+    draw();
   }).observe($("wheel"));
   const pickMood = (e) => {
     const b = e.target.closest("button");

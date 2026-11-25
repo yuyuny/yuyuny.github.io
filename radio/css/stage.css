@@ -450,7 +450,7 @@
     height: min(40vw, 24dvh);
     margin-bottom: 8px;
   }
-  .stage:not(.away, :has(.mon[hidden])) .jwrap {
+  .stage:not(.away, .fold, :has(.mon[hidden])) .jwrap {
     display: none;
   }
   /* 검색창에 글자를 치는 동안(화면 키보드)은 모니터·재킷을 접어 목록을 올린다. 행을 누를 때 접힘이 풀려 행이 움직이지 않도록 list.js가 그 mousedown의 포커스 이동을 막는다.
@@ -458,32 +458,43 @@
   .app:has(#q:focus) :is(.mon, .jwrap) {
     display: none;
   }
-  /* 방송 곡과 다른 곡을 보는 동안(player.js): 도크가 목록 아래를 쓰므로 무대를 재킷 · 제목 · ▶ · INFO 한 띠로 접는다 */
-  .stage.away {
+  /* 방송 영상이 모니터에 있는 채로 필터를 열면(list.js의 fold 참고) 모니터만 남기고, PREV·NEXT 바도 숨겨 필터 자리를 늘린다.
+     검색창에 포커스가 있으면 위 규칙이 모니터를 접어 영상이 도크로 가므로 제목 줄을 남긴다 */
+  .app:has(.flt.open):not(:has(#q:focus))
+    .stage:not(.away, .fold)
+    :is(.ttl, .who, .tog, .cue) {
+    display: none;
+  }
+  .app:has(.flt.open) .onair {
+    display: none;
+  }
+  /* 무대를 재킷 · 제목 · ▶ · INFO 한 띠로 접는다. 방송 곡과 다른 곡을 보는 동안(player.js의 .away, 도크가 목록 아래를 쓴다),
+     목록을 직접 내렸거나 필터를 연 동안(list.js의 .fold). 방송 중인 영상이 모니터에 있었으면 그동안 도크로 내려간다(player.js) */
+  .stage:is(.away, .fold) {
     grid-template-columns: auto minmax(0, 1fr) auto auto;
     grid-template-areas: "jk ttl cue tog" "jk who cue tog";
     gap: 2px 12px;
     align-items: center;
   }
-  .stage.away :is(.mon, .ht, .vinyl) {
+  .stage:is(.away, .fold) :is(.mon, .ht, .vinyl) {
     display: none;
   }
-  .stage.away .jwrap {
+  .stage:is(.away, .fold) .jwrap {
     height: 58px;
     aspect-ratio: 1;
     margin: 0 5px 5px 0;
   }
-  .stage.away .cov {
+  .stage:is(.away, .fold) .cov {
     left: 0;
     height: 100%;
     box-shadow:
       5px 5px 0 var(--k),
       5px 5px 0 2px var(--w);
   }
-  .stage.away .ttl {
+  .stage:is(.away, .fold) .ttl {
     height: 40px;
   }
-  .stage.away .cue:not([hidden]) {
+  .stage:is(.away, .fold) .cue:not([hidden]) {
     display: block;
     grid-area: cue;
   }

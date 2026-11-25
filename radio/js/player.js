@@ -83,7 +83,7 @@ const queue = () => {
   raf = requestAnimationFrame(place);
 };
 /* 플레이어를 지금 자리에 겹친다. 모니터는 기울어 있어(player.css의 .mon) 같은 변형을 모니터 중심 기준으로 건다.
-   좁은 화면에서 검색하는 동안 모니터가 접히면(stage.css) 화면 폭이 0이 되어 도크로 내려간다 */
+   좁은 화면에서 검색하거나 무대가 띠로 접혀 모니터가 사라지면(stage.css) 화면 폭이 0이 되어 도크로 내려간다 */
 function place() {
   const here = !!air && cur === air && screen.offsetWidth > 0;
   dock.hidden = !air || here;

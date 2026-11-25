@@ -136,7 +136,7 @@
 .mg[data-on] {
   box-shadow: 4px 3px 0 var(--c);
 }
-/* 칩 세 줄까지. 넘치면(어휘를 못 읽어 무드 전부가 한 갈래로 올 때) 안에서 스크롤해 목록 자리를 지킨다 */
+/* 넓은 화면에선 칩 세 줄까지(좁은 화면은 아래 .flt.open). 넘치면(어휘를 못 읽어 무드 전부가 한 갈래로 올 때) 안에서 스크롤해 목록 자리를 지킨다 */
 .mpanel {
   display: flex;
   gap: 6px;
@@ -375,12 +375,53 @@
   .flt:not(.open) :is(.sel, .moods, .mpanel) {
     display: none;
   }
+  /* 숨은 줄이 남기는 gap(8px × 3)만큼 목록이 줄지 않게 */
+  .flt:not(.open) {
+    grid-template-areas: "q q f d";
+  }
+  /* 필터를 열면 목록을 숨기고(곡 수는 남긴다) 그 자리를 필터가 다 써서 한 덩어리로 스크롤한다. 칩 영역은 따로 스크롤하지 않는다.
+     검색 줄은 위에 붙여 두고, 그 뒤로 지나가는 칩은 ::before 띠가 가린다.
+     - sticky의 top은 스크롤 영역의 padding(위 4px) 안쪽에서 잰다. 띠는 그래서 -4px
+     - 띠 색은 목록 패널(.crate)이 종이색 층(.s2) 위에 얹힌 색이다. 패널 위쪽 광택(.crate::before)은 띠 위로 올린다 */
+  /* 숨은 목록 자리를 채운다. 내용이 짧아도 곡 수 줄과 방송 칸이 화면 맨 아래에 남는다 */
+  .flt.open {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    align-content: start;
+  }
+  .crate:has(.flt.open) .wheel {
+    display: none;
+  }
+  /* 목록과 방송 바가 숨으면 곡 수 줄이 화면 맨 아래라 홈 표시줄 자리를 갖는다 */
+  .crate:has(.flt.open) .cnt {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .flt.open :is(.q, .fbtn, .dice) {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .flt.open::before {
+    content: "";
+    grid-area: 1 / 1 / 2 / -1;
+    position: sticky;
+    top: -4px;
+    z-index: 1;
+    margin: -4px -8px -8px;
+    background: linear-gradient(var(--pn-bg), var(--pn-bg)), var(--pn-edge);
+  }
+  .crate:has(.flt.open)::before {
+    z-index: 2;
+  }
+  .mpanel {
+    max-height: none;
+    overflow: visible;
+  }
   .mb,
   .chip {
     min-height: 44px;
-  }
-  .mpanel {
-    max-height: 164px;
   }
   .cnt {
     padding: 2px max(16px, env(safe-area-inset-right)) 0

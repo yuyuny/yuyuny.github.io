@@ -378,7 +378,7 @@ export function initStage() {
   note.addEventListener("click", (e) => {
     if (e.target === note || e.target.id === "noteX") note.close();
   });
-  // 제목은 제목 칸 크기를 따른다. 창 크기 말고도 좁은 화면에서 무대가 띠로 접히고 펼 때(player.js의 .away) 바뀐다
+  // 제목은 제목 칸 크기를 따른다. 창 크기 말고도 좁은 화면에서 무대가 띠로 접히고 펼 때(stage.css의 .away·.fold) 바뀐다
   new ResizeObserver(() => shown && drawTitle(shown)).observe($("ttl"));
   addEventListener("resize", () => {
     cancelAnimationFrame(raf);
