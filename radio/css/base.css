@@ -137,6 +137,23 @@ select {
     opacity: 0;
   }
 }
+/* JS가 꺼져 있으면 로딩 문구 대신 소개(index.html의 noscript)를 보인다. right는 오른쪽 아래 ★을 비켜 간다 */
+@media (scripting: none) {
+  .boot-s {
+    display: none;
+  }
+}
+.boot-n {
+  position: absolute;
+  left: max(2.6vw, 16px);
+  right: calc(max(2.6vw, 16px) + 34px);
+  bottom: calc(26px + env(safe-area-inset-bottom));
+  max-width: 34em;
+  font-size: 14px;
+}
+.boot-n p {
+  margin: 0.6em 0 0;
+}
 
 /* 장면 (화면 전체 배경) */
 .scene {

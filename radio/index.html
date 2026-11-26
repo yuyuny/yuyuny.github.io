@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>킴스 라디오 클럽</title>
+<meta name="description" content="Yun Kim이 고른 곡을 장르와 무드로 골라 듣는 라디오. 인디팝, 인디록, 드림팝, 알앤비, 시티팝, 케이팝, 제이팝까지.">
+<link rel="canonical" href="https://yuyuny.github.io/radio/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="킴스 라디오 클럽">
+<meta property="og:description" content="Yun Kim이 고른 곡을 장르와 무드로 골라 듣는 라디오. 인디팝, 인디록, 드림팝, 알앤비, 시티팝, 케이팝, 제이팝까지.">
+<meta property="og:url" content="https://yuyuny.github.io/radio/">
+<meta property="og:image" content="https://yuyuny.github.io/radio/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon-32.png" sizes="32x32">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -19,7 +27,9 @@
 <body>
 <div class="app">
   <!-- 로딩 화면(시안: design/loading-lab.html의 A). JS 없이 첫 페인트에 그려지고 stage.js의 reveal이 걷는다. 그동안 아래 .deck은 inert다 -->
-  <div class="boot" id="boot"><p class="boot-s" role="status"><i aria-hidden="true"></i><b>STAND BY</b><span>곡 목록을 불러오는 중</span></p></div>
+  <div class="boot" id="boot"><p class="boot-s" role="status"><i aria-hidden="true"></i><b>STAND BY</b><span>곡 목록을 불러오는 중</span></p>
+  <!-- JS를 돌리지 않는 검색 크롤러(네이버·빙)가 읽는 본문은 이것뿐이다. JS를 켠 사람에겐 안 보여도 지우지 않는다 -->
+  <noscript><div class="boot-n"><p>킴스 라디오 클럽(Kim's Radio Club)은 Yun Kim이 고른 곡을 장르와 무드로 골라 듣는 라디오예요. 인디팝, 인디록, 드림팝, 알앤비, 시티팝, 브릿팝, 슈게이즈, 케이팝, 제이팝, 재즈, 보사노바까지 유튜브 영상과 함께 들을 수 있어요.</p><p>곡 목록과 재생은 JavaScript로 동작해요. JavaScript를 켜고 다시 열어 주세요.</p></div></noscript></div>
   <div class="scene" aria-hidden="true"><div class="giant" id="giant"></div><div class="wipe" id="wipe"></div><div class="ray"></div></div>
   <header class="bar">
     <!-- 로고 원본: 워드마크 wm-block은 design/wordmark-lab.html, 아이콘 kim-l은 design/logo-final.html. 색은 장면 변수(--c, --ci, --cp)를 따른다 -->
