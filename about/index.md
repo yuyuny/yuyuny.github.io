@@ -1,7 +1,6 @@
 ---
-layout: default
+layout: page
 title: About
+crumb: about
 ---
-# About
-
 안녕하세요, Yun Kim입니다.

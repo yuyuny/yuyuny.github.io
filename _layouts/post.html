@@ -1,8 +1,56 @@
 ---
 layout: default
 ---
-<article>
-  <h1>{{ page.title }}</h1>
-  <p><time datetime="{{ page.date | date: '%F' }}">{{ page.date | date: '%F' }}</time></p>
+{% include top.html dir="posts" file=page.slug progress=true %}
+{%- assign chars = content | strip_html | strip_newlines | remove: ' ' | size %}
+{%- assign mins = chars | divided_by: 500 | at_least: 1 %}
+{%- assign tag = page.tags | first %}
+<div class="wrap">
+  <header class="head">
+    <canvas class="band" data-seed="{{ page.url }}" aria-hidden="true"></canvas>
+    <div class="head-in">
+      <p class="kicker">
+        <span class="ty">post</span>
+        {%- for t in page.tags %}<span class="tag">#{{ t }}</span>{% endfor %}
+        <time datetime="{{ page.date | date: '%F' }}">{{ page.date | date: '%Y.%m.%d' }}</time>
+        <span>읽는 데 {{ mins }}분</span>
+      </p>
+      <h1>{{ page.title }}</h1>
+      {%- if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+    </div>
+  </header>
+
+  <div class="body">
+    <aside class="toc" aria-label="목차">
+      <div class="bar"><b>목차</b><span class="toc-count"></span></div>
+      <ol class="toc-list"></ol>
+      {%- if tag %}{% assign series = site.tags[tag] | reverse %}{% if series.size > 1 %}
+      <div class="series">
+        <p>#{{ tag }} · {{ series.size }}편</p>
+        {%- for p in series %}
+        <a href="{{ p.url }}"{% if p.url == page.url %} aria-current="page"{% endif %}>{{ forloop.index }}. {{ p.title }}</a>
+        {%- endfor %}
+      </div>
+      {%- endif %}{% endif %}
+    </aside>
+
+    <main class="sheet">
+      <article class="article">
 {{ content }}
-</article>
+      </article>
+    </main>
+  </div>
+
+  <nav class="pn" aria-label="이전 글, 다음 글">
+    {%- if page.previous %}
+    <a href="{{ page.previous.url }}"><small>← 이전 글 · {{ page.previous.date | date: '%m.%d' }}</small><b>{{ page.previous.title }}</b></a>
+    {%- else %}
+    <span><small>← 이전 글</small><b>첫 글이에요</b></span>
+    {%- endif %}
+    {%- if page.next %}
+    <a href="{{ page.next.url }}"><small>다음 글 → · {{ page.next.date | date: '%m.%d' }}</small><b>{{ page.next.title }}</b></a>
+    {%- else %}
+    <span><small>다음 글 →</small><b>가장 최근 글이에요</b></span>
+    {%- endif %}
+  </nav>
+</div>

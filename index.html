@@ -1,30 +1,118 @@
 ---
 layout: default
 ---
-<p>사이버 창고에 오신 것을 환영합니다.</p>
+<div class="ticker" aria-hidden="true"><div class="ticker-in"><span>YUN KIM ▽ 사이버 창고</span><span>NEW ▷ {{ site.posts.first.title }}</span><span>WORK 02 · POSTS {{ site.posts.size }}</span><span>TRY ▷ 터미널에 help 입력</span></div></div>
 
-<h2>최근 글</h2>
-<ul class="posts">
-  {% for post in site.posts limit: 5 %}
-  <li><time datetime="{{ post.date | date: '%F' }}">{{ post.date | date: '%F' }}</time> <a href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-</ul>
-<p><a href="/posts/">전체 글 →</a></p>
+<div class="wrap">
 
-<h2>프로젝트</h2>
-<ul>
-  <li><a href="https://silver-lingo.vercel.app">Silver Lingo</a></li>
-  <li><a href="/french/">French</a></li>
-</ul>
+  <header class="win hero">
+    <div class="bar">
+      <i class="x"></i>~/yun
+      <nav class="nav" aria-label="주 메뉴"><a href="#work">work/</a><a href="/posts/">posts/</a><a href="/about/">about</a></nav>
+      <span class="r">
+        <span class="clock" id="clock">SEOUL --:--:--</span>
+        {% include themes.html %}
+      </span>
+    </div>
+    <div class="name" id="name">
+      <h1 class="sr">Yun Kim</h1>
+      <canvas id="field" aria-hidden="true"></canvas>
+    </div>
+    <div class="hero-row">
+      <div>
+        <p class="slogan">사이버<br>창고<span>.</span></p>
+        <p class="tagline">Work &amp; Notes</p>
+      </div>
+      <section class="win term" aria-label="터미널">
+        <div class="bar"><i class="x"></i>zsh<span class="r">입력할 수 있어요</span></div>
+        <div class="term-body" id="term">
+          <div class="out" id="out" aria-live="polite">
+            <p class="dim">help를 입력하거나 아래 버튼을 눌러 보세요.</p>
+          </div>
+          <form class="line" id="cmd">
+            <label for="cmd-in">$</label>
+            <input id="cmd-in" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+          </form>
+          <div class="chips">
+            <button type="button" data-cmd="help">help</button>
+            <button type="button" data-cmd="ls">ls</button>
+            <button type="button" data-cmd="theme blue">theme blue</button>
+            <button type="button" data-cmd="log radio">log radio</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </header>
 
-<a class="radio" href="/radio/" title="킴스 라디오 클럽" aria-label="킴스 라디오 클럽">
-  <svg viewBox="0 0 200 200" aria-hidden="true">
-    <circle cx="100" cy="100" r="99" fill="#0b0b0b"/>
-    <g fill="none" stroke="#2a2a2a"><circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="81"/><circle cx="100" cy="100" r="72"/><circle cx="100" cy="100" r="63"/><circle cx="100" cy="100" r="54"/></g>
-    <path d="M44 28 A90 90 0 0 1 118 12" stroke="rgba(255,255,255,.22)" stroke-width="8" fill="none"/>
-    <path d="M156 172 A90 90 0 0 1 82 188" stroke="rgba(255,255,255,.1)" stroke-width="6" fill="none"/>
-    <circle cx="100" cy="100" r="44" fill="#ff3d8b"/>
-    <g transform="translate(69 68) scale(.97)" fill="#0b0b0b"><rect x="10" y="7" width="24" height="8"/><rect x="26" y="7" width="8" height="24"/><rect x="10" y="21" width="24" height="7"/><rect x="42" y="7" width="8" height="27"/><path fill-rule="evenodd" d="M14 40h36v17H14zM22 45h20v7H22z"/></g>
-    <circle cx="100" cy="100" r="3" fill="#0b0b0b" stroke="#f7f3ea"/>
-  </svg>
-</a>
+  <div class="strip" aria-hidden="true">
+    <div class="glitch" id="glitch"></div>
+    <div class="red"></div>
+    <div class="pink">/* since */<br>2026 → ∞</div>
+  </div>
+
+  <section class="win" id="work" aria-labelledby="work-h">
+    <div class="bar"><i class="x"></i><h2 id="work-h">~/work</h2><span class="r">2 items · 최신순</span></div>
+
+    <article class="proj">
+      <div class="proj-text">
+        <span class="no">01</span>
+        <h3>킴스 라디오 클럽</h3>
+        <p>좋아하는 노래만 골라 담은 음악 사이트.</p>
+        <dl><dt>TYPE</dt><dd>Web</dd><dt>DATE</dt><dd>2026.11</dd></dl>
+        <a class="go" href="/radio/">들어가기 <span aria-hidden="true">↗</span></a>
+      </div>
+      <figure class="shot reveal"><img src="/assets/work/radio.jpg" alt="킴스 라디오 클럽 화면. 형광 연두 배경에 곡 제목과 곡 목록" loading="lazy"></figure>
+    </article>
+
+    <article class="proj">
+      <div class="proj-text">
+        <span class="no">02</span>
+        <h3>실전! 시리즈</h3>
+        <p>카페에서, 식당에서 바로 쓰는 한마디를 익히는 외국어 앱.</p>
+        <div class="icons">
+          <img src="/assets/work/silver-en.png" alt="실전! 영어 아이콘" width="96" height="96">
+          <img src="/assets/work/silver-fr.png" alt="실전! 프랑스어 아이콘" width="96" height="96">
+          <img src="/assets/work/silver-pl.png" alt="실전! 폴란드어 아이콘" width="96" height="96">
+        </div>
+        <dl><dt>TYPE</dt><dd>App · Web</dd><dt>DATE</dt><dd>2026.10</dd></dl>
+        <a class="go" href="https://silver-lingo.vercel.app">써 보기 <span aria-hidden="true">↗</span></a>
+      </div>
+      {%- comment -%} 원본이 이전/새 화면을 나란히 놓은 비교 그림이라 한쪽 패널만 잘라 보여 준다 (--l: 패널 왼쪽 위치) {%- endcomment %}
+      <figure class="shot silver reveal">
+        <div class="phones">
+          <div class="phone"><img src="/assets/silver-lingo-redesign/03-home.png" alt="실전! 홈 화면. 오늘의 학습 카드와 이번 주 기록" loading="lazy" style="--l:-116.2%"></div>
+          <div class="phone"><img src="/assets/silver-lingo-redesign/04-card.png" alt="실전! 학습 카드. 영어 문장과 뜻" loading="lazy" style="--l:-116.2%"></div>
+          <div class="phone"><img src="/assets/silver-lingo-redesign/06-new-cards.png" alt="실전! 빈칸 고르기. 프랑스어 문장" loading="lazy" style="--l:-8%"></div>
+        </div>
+      </figure>
+    </article>
+  </section>
+
+  <div class="split">
+    <section class="win" id="posts" aria-labelledby="posts-h">
+      <div class="bar"><i class="x"></i><h2 id="posts-h">ls -la ~/posts</h2><span class="r"><a href="/posts/">{{ site.posts.size }} files →</a></span></div>
+      {% include post-table.html posts=site.posts limit=8 %}
+    </section>
+
+    <section class="win" id="log" aria-labelledby="log-h">
+      <div class="bar"><i class="x"></i><h2 id="log-h">trace.log</h2>
+        <span class="r filters" role="group" aria-label="걸러 보기">
+          <button type="button" data-f="all" aria-pressed="true">all</button>
+          <button type="button" data-f="site" aria-pressed="false">site</button>
+          <button type="button" data-f="radio" aria-pressed="false">radio</button>
+        </span>
+      </div>
+      {%- comment -%} site 줄은 _data/log.yml. radio 줄은 site.js가 /radio/log.json을 받아 날짜 자리에 끼운다 {%- endcomment %}
+      <ol class="entries" id="entries" data-f="all">
+        {%- for e in site.data.log limit: 12 %}
+        <li data-type="site" data-date="{{ e.date | date: '%F' }}">
+          {%- if e.url %}<a class="e" href="{{ e.url }}">{% else %}<span class="e">{% endif -%}
+          <span class="ts">{{ e.date | date: '%m-%d' }}</span><span class="ty">site</span><span class="tx">{{ e.text }}</span>
+          {%- if e.url %}</a>{% else %}</span>{% endif -%}
+        </li>
+        {%- endfor %}
+      </ol>
+    </section>
+  </div>
+
+</div>

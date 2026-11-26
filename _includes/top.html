@@ -1,0 +1,17 @@
+{%- comment -%}
+  홈을 뺀 페이지의 위에 붙어 다니는 막대. dir: 경로 가운데 폴더(posts), file: 마지막 조각, progress: 글 읽은 만큼 표시
+{%- endcomment -%}
+<div class="top">
+  <div class="top-in">
+    <nav class="crumb" aria-label="경로">
+      <a href="/" title="홈">~</a>
+      {%- if include.dir %}<span>/</span><a href="/{{ include.dir }}/">{{ include.dir }}</a>{% endif %}
+      {%- if include.file %}<span>/</span><b>{{ include.file }}</b>{% endif %}
+    </nav>
+    <span class="r">
+      {%- if include.progress %}<span class="pct" id="pct">0%</span>{% endif %}
+      {% include themes.html %}
+    </span>
+  </div>
+  {%- if include.progress %}<div class="progress" aria-hidden="true"><i id="bar"></i></div>{% endif %}
+</div>

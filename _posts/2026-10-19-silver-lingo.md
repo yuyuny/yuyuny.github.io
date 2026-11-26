@@ -2,6 +2,7 @@
 layout: post
 title: "어렵게보다 계속하게: 어머니를 위한 외국어 앱 만들기"
 description: 어머니를 위한 외국어 학습 앱 silver-lingo를 만들며 무엇을 넣고 무엇을 뺐는지에 대한 기록.
+tags: [실전]
 ---
 ## 시작
 

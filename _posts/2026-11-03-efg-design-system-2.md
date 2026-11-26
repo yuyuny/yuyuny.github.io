@@ -2,6 +2,7 @@
 layout: post
 title: "EFG 개발기: 정리, 정리, 정리... 디자인 시스템 2탄"
 description: 1탄 이후 남은 세 가지 불만에서 시작해 팔레트를 네 단계로 줄이기까지, EFG 디자인 시스템 2탄.
+tags: [디자인시스템]
 ---
 [1탄](/posts/2026-10-27-efg-design-system-1/)을 마치고 남은 불만은 이랬다.
 
